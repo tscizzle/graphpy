@@ -16,14 +16,6 @@ class UndirectedGraph(object):
         self._edges = set()
         self._names_to_vertices_map = {}
 
-    @property
-    def vertices(self):
-        return self._vertices
-
-    @property
-    def edges(self):
-        return self._edges
-
     def __str__(self):
         vertices_str = ", ".join(str(v) for v in self._vertices)
         edges_str = ", ".join(str(e) for e in self._edges)
@@ -51,8 +43,8 @@ class UndirectedGraph(object):
                 except EdgeAlreadyExistsException:
                     pass
                 except KeyError:
-                    m = (str(n_name) + " in a neighbor list but not in the "
-                         "vertex list.")
+                    m = (str(n_name) + " is in a neighbor list but is not a "
+                         "vertex key.")
                     raise BadGraphInputException(m)
         return g
 
@@ -72,7 +64,7 @@ class UndirectedGraph(object):
         return g
 
     @classmethod
-    def random_graph(cls, vertex_names, p=0.5):
+    def random_graph(cls, vertex_names, p):
         """ Generate a graph using a set of vertex names where each pair of
             vertices has some probability of having an edge between them """
         g = cls()
@@ -88,15 +80,38 @@ class UndirectedGraph(object):
     def complete_graph(cls, vertex_names):
         """ Generate a graph with all possible edges using a set of vertex
             names """
-        return cls.random_graph(vertex_names, p=1.0)
+        return cls.random_graph(vertex_names, 1.0)
 
+    @property
+    def vertices(self):
+        return self._vertices
+
+    @property
+    def edges(self):
+        return self._edges
+
+    @property
     def num_vertices(self):
         """ Number of vertices in this graph """
         return len(self._vertices)
 
+    @property
     def num_edges(self):
         """ Number of edges in this graph """
         return len(self._edges)
+
+    @property
+    def average_degree(self):
+        """ Average number of neighbors vertices in this graph have """
+        if not self.num_vertices:
+            return 0
+        return 2.0 * self.num_edges / self.num_vertices
+
+    @property
+    def is_connected(self):
+        """ Checks if this graph has paths from each vertex to each other
+            vertex """
+        return len(self.search(tuple(self._vertices)[0])) == self.num_vertices
 
     def has_vertex(self, v):
         """ Checks if a certain vertex already exists in this graph """
@@ -112,7 +127,7 @@ class UndirectedGraph(object):
             raise VertexNameAlreadyExistsException(v.name)
         if self.has_vertex(v):
             raise VertexAlreadyExistsException(v)
-        if v.degree():
+        if v.degree:
             raise VertexAlreadyHasEdgesException(v)
 
         self._vertices.add(v)
@@ -128,17 +143,6 @@ class UndirectedGraph(object):
         self._edges.add(v0.add_edge(v1))
         return e
 
-    def average_degree(self):
-        """ Average number of neighbors vertices in this graph have """
-        if not self.num_vertices:
-            return 0
-        return 2.0 * self.num_edges() / self.num_vertices()
-
-    def is_connected(self):
-        """ Checks if this graph has paths from each vertex to each other
-            vertex """
-        return len(self.search(tuple(self._vertices)[0])) == self.num_vertices
-
     def search(self, start, goal=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from
             some vertex """
@@ -152,14 +156,6 @@ class DirectedGraph(object):
         self._vertices = set()
         self._edges = set()
         self._names_to_vertices_map = {}
-
-    @property
-    def vertices(self):
-        return self._vertices
-
-    @property
-    def edges(self):
-        return self._edges
 
     def __str__(self):
         vertices_str = ", ".join(str(v) for v in self._vertices)
@@ -180,7 +176,7 @@ class DirectedGraph(object):
             mapped to a set of names of vertices to which there is an edge """
         g = cls()
         for v_name in graph_dict:
-            g.add_vertex(UndirectedVertex(name=v_name))
+            g.add_vertex(DirectedVertex(name=v_name))
         for v_name, o_name_list in graph_dict.items():
             for o_name in o_name_list:
                 try:
@@ -198,7 +194,7 @@ class DirectedGraph(object):
         g = cls()
         for v in transpose_graph.vertices:
             g.add_vertex(DirectedVertex(name=v.name))
-        for e in transpose_graph:
+        for e in transpose_graph.edges:
             g.add_edge(g[e.v_to.name], g[e.v_from.name])
         return g
 
@@ -222,13 +218,51 @@ class DirectedGraph(object):
             names """
         return cls.random_graph(vertex_names, p=1.0)
 
+    @property
+    def vertices(self):
+        return self._vertices
+
+    @property
+    def edges(self):
+        return self._edges
+
+    @property
     def num_vertices(self):
         """ Number of vertices in this graph """
         return len(self._vertices)
 
+    @property
     def num_edges(self):
         """ Number of edges in this graph """
         return len(self._edges)
+
+    @property
+    def average_ins(self):
+        """ Average number of ins vertices in this graph have """
+        if not self.num_vertices:
+            return 0
+        return 1.0 * self.num_edges / self.num_vertices
+
+    @property
+    def average_outs(self):
+        """ Average number of outs vertices in this graph have """
+        if not self.num_vertices:
+            return 0
+        return 1.0 * self.num_edges / self.num_vertices
+
+    @property
+    def is_weakly_connected(self):
+        """ Checks if this graph has a path from each vertex to each other
+            vertex when treating its edges as undirected """
+        return UndirectedGraph.from_directed_graph(self).is_connected
+
+    @property
+    def is_strongly_connected(self):
+        """ Checks if this graph has a path from each vertex to each other
+            vertex """
+        v = tuple(self._vertices)[0]
+        t = self.from_transpose(self)
+        return len(self.search(v)) == len(t.search(v)) == self.num_vertices
 
     def has_vertex(self, v):
         """ Checks if a certain vertex already exists in this graph """
@@ -244,7 +278,7 @@ class DirectedGraph(object):
             raise VertexNameAlreadyExistsException(v.name)
         if self.has_vertex(v):
             raise VertexAlreadyExistsException(v)
-        if v.in_degree() or v.out_degree():
+        if v.in_degree or v.out_degree:
             raise VertexAlreadyHasEdgesException(v)
 
         self._vertices.add(v)
@@ -259,30 +293,6 @@ class DirectedGraph(object):
 
         self._edges.add(v0.add_edge(v1))
         return e
-
-    def average_ins(self):
-        """ Average number of ins vertices in this graph have """
-        if not self.num_vertices:
-            return 0
-        return 1.0 * self.num_edges() / self.num_vertices()
-
-    def average_outs(self):
-        """ Average number of outs vertices in this graph have """
-        if not self.num_vertices:
-            return 0
-        return 1.0 * self.num_edges() / self.num_vertices()
-
-    def is_weakly_connected(self):
-        """ Checks if this graph has a path from each vertex to each other
-            vertex when treating its edges as undirected """
-        return UndirectedGraph.from_directed_graph(self).is_connected()
-
-    def is_strongly_connected(self):
-        """ Checks if this graph has a path from each vertex to each other
-            vertex """
-        v = tuple(self._vertices)[0]
-        t = self.from_transpose(self)
-        return len(self.search(v)) == len(t.search(v)) == self.num_vertices
 
     def search(self, start, goal=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from

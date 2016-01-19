@@ -9,41 +9,61 @@ class UndirectedEdge(object):
         if v0 == v1:
             raise NoSelfEdgeException("Cannot make edge from " + str(v0) +
                                       " to itself.")
-        self.vertices = set([v0, v1])
+        self._vertices = frozenset([v0, v1])
 
     def __repr__(self):
-        vertices = tuple(self.vertices)
+        vertices = tuple(self._vertices)
         return "Edge(%s, %s)" % (vertices[0], vertices[1])
 
     def __str__(self):
-        vertices = tuple(self.vertices)
+        vertices = tuple(self._vertices)
         return "E(%s, %s)" % (str(vertices[0]), str(vertices[1]))
 
     def __eq__(self, other):
-        return self.vertices == other.vertices
+        return self._vertices == other.vertices
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash(self._vertices)
+
+    @property
+    def vertices(self):
+        return self._vertices
 
 
 class DirectedEdge(object):
 
     def __init__(self, v_from, v_to):
-        self.v_from = v_from
-        self.v_to = v_to
+        self._v_from = v_from
+        self._v_to = v_to
 
     def __repr__(self):
-        return "Edge(%s, %s)" % (self.v_from, self.v_to)
+        return "Edge(%s, %s)" % (self._v_from, self._v_to)
 
     def __str__(self):
-        return "E(%s, %s)" % (str(self.v_from), str(self.v_to))
+        return "E(%s, %s)" % (str(self._v_from), str(self._v_to))
 
     def __eq__(self, other):
-        return (self.v_from, self.v_to) == (other.v_from, other.v_to)
+        return (self._v_from, self._v_to) == (other.v_from, other.v_to)
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __hash__(self):
+        return hash((self._v_from, self._v_to))
+
+    @property
+    def v_from(self):
+        return self._v_from
+
+    @property
+    def v_to(self):
+        return self._v_to
+
 
 class NoSelfEdgeException(Exception):
-    pass
+    def __init__(self, e):
+        m = "No undirected self-edges like " + str(e) + "."
+        super(NoSelfEdgeException, self).__init__(m)

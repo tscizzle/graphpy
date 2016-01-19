@@ -4,7 +4,8 @@ Tests for vertex.py
 
 
 from edge import UndirectedEdge, DirectedEdge
-from vertex import UndirectedVertex, DirectedVertex, EdgeAlreadyExistsException
+from vertex import (UndirectedVertex, DirectedVertex,
+                    VertexAlreadyHasEdgeException)
 
 import unittest
 
@@ -12,12 +13,40 @@ import unittest
 class TestUndirectedVertex(unittest.TestCase):
 
     def test_create_undirected_vertex(self):
+        """ Create an undirected vertex """
         v0 = UndirectedVertex(name='v0')
 
         self.assertEqual(v0.name, 'v0')
         self.assertEqual(v0.edges, [])
 
+    def test_undirected_vertex_neighbors_and_degree(self):
+        """ Get undirected vertices' neighbors and degree properties """
+        v0 = UndirectedVertex(name='v0')
+        v1 = UndirectedVertex(name='v1')
+        v2 = UndirectedVertex(name='v2')
+        v3 = UndirectedVertex(name='v3')
+        v4 = UndirectedVertex(name='v4')
+        v0.add_edge(v1)
+        v0.add_edge(v2)
+        v1.add_edge(v3)
+
+        self.assertEqual(v0.neighbors, set([v1, v2]))
+        self.assertEqual(v1.neighbors, set([v0, v3]))
+        self.assertEqual(v2.neighbors, set([v0]))
+        self.assertEqual(v3.neighbors, set([v1]))
+        self.assertEqual(v4.neighbors, set())
+        with self.assertRaises(AttributeError):
+            v0.neighbors = set()
+        self.assertEqual(v0.degree, 2)
+        self.assertEqual(v1.degree, 2)
+        self.assertEqual(v2.degree, 1)
+        self.assertEqual(v3.degree, 1)
+        self.assertEqual(v4.degree, 0)
+        with self.assertRaises(AttributeError):
+            v0.degree = 0
+
     def test_undirected_vertex_add_and_has_edge(self):
+        """ Add an edge to an undirected vertex """
         v0 = UndirectedVertex(name='v0')
         v1 = UndirectedVertex(name='v1')
         v2 = UndirectedVertex(name='v2')
@@ -33,38 +62,21 @@ class TestUndirectedVertex(unittest.TestCase):
         self.assertFalse(v2.has_edge(e01))
         self.assertFalse(v0.has_edge(e02))
 
-    def test_undirected_edge_already_exists(self):
+    def test_undirected_vertex_edge_already_exists(self):
+        """ An undirected vertex should not be able to add an edge that it
+            already has """
         v0 = UndirectedVertex(name='v0')
         v1 = UndirectedVertex(name='v1')
         v0.add_edge(v1)
 
-        with self.assertRaises(EdgeAlreadyExistsException):
+        with self.assertRaises(VertexAlreadyHasEdgeException):
             v0.add_edge(v1)
-        with self.assertRaises(EdgeAlreadyExistsException):
+        with self.assertRaises(VertexAlreadyHasEdgeException):
             v1.add_edge(v0)
 
-    def test_undirected_vertex_neighbors_and_degree(self):
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
-        v2 = UndirectedVertex(name='v2')
-        v3 = UndirectedVertex(name='v3')
-        v4 = UndirectedVertex(name='v4')
-        v0.add_edge(v1)
-        v0.add_edge(v2)
-        v1.add_edge(v3)
-
-        self.assertEqual(v0.neighbors(), set([v1, v2]))
-        self.assertEqual(v1.neighbors(), set([v0, v3]))
-        self.assertEqual(v2.neighbors(), set([v0]))
-        self.assertEqual(v3.neighbors(), set([v1]))
-        self.assertEqual(v4.neighbors(), set())
-        self.assertEqual(v0.degree(), 2)
-        self.assertEqual(v1.degree(), 2)
-        self.assertEqual(v2.degree(), 1)
-        self.assertEqual(v3.degree(), 1)
-        self.assertEqual(v4.degree(), 0)
-
     def test_undirected_vertex_search(self):
+        """ Search for paths from an undirected vertex to all vertices reachable
+            from it """
         v0 = UndirectedVertex(name='v0')
         v1 = UndirectedVertex(name='v1')
         v2 = UndirectedVertex(name='v2')
@@ -97,12 +109,49 @@ class TestUndirectedVertex(unittest.TestCase):
 class TestDirectedVertex(unittest.TestCase):
 
     def test_create_directed_vertex(self):
+        """ Create a directed vertex """
         v0 = DirectedVertex(name='v0')
 
         self.assertEqual(v0.name, 'v0')
         self.assertEqual(v0.edges, [])
 
+    def test_directed_vertex_ins_and_outs_and_degrees(self):
+        """ Get directed vertices' ins, outs, in_degree, and out_degree
+            properties """
+        v0 = DirectedVertex(name='v0')
+        v1 = DirectedVertex(name='v1')
+        v2 = DirectedVertex(name='v2')
+        v3 = DirectedVertex(name='v3')
+        v4 = DirectedVertex(name='v4')
+        v0.add_edge(v0)
+        v0.add_edge(v1)
+        v0.add_edge(v2)
+        v1.add_edge(v3)
+        v3.add_edge(v1)
+
+        self.assertEqual(v0.outs, set([v0, v1, v2]))
+        self.assertEqual(v1.outs, set([v3]))
+        self.assertEqual(v2.outs, set())
+        self.assertEqual(v3.outs, set([v1]))
+        self.assertEqual(v4.outs, set())
+        self.assertEqual(v0.ins, set([v0]))
+        self.assertEqual(v1.ins, set([v0, v3]))
+        self.assertEqual(v2.ins, set([v0]))
+        self.assertEqual(v3.ins, set([v1]))
+        self.assertEqual(v4.ins, set())
+        self.assertEqual(v0.out_degree, 3)
+        self.assertEqual(v1.out_degree, 1)
+        self.assertEqual(v2.out_degree, 0)
+        self.assertEqual(v3.out_degree, 1)
+        self.assertEqual(v4.out_degree, 0)
+        self.assertEqual(v0.in_degree, 1)
+        self.assertEqual(v1.in_degree, 2)
+        self.assertEqual(v2.in_degree, 1)
+        self.assertEqual(v3.in_degree, 1)
+        self.assertEqual(v4.in_degree, 0)
+
     def test_directed_vertex_add_and_has_edge(self):
+        """ Add an edge to a directed vertex """
         v0 = DirectedVertex(name='v0')
         v1 = DirectedVertex(name='v1')
         v2 = DirectedVertex(name='v2')
@@ -118,54 +167,25 @@ class TestDirectedVertex(unittest.TestCase):
         self.assertFalse(v2.has_edge(e01))
         self.assertFalse(v0.has_edge(e02))
 
-    def test_directed_vertex_already_exists(self):
+    def test_directed_vertex_edge_already_exists(self):
+        """ A directed vertex should not be able to add an edge that it already
+            has """
         v0 = DirectedVertex(name='v0')
         v1 = DirectedVertex(name='v1')
         v0.add_edge(v1)
 
-        with self.assertRaises(EdgeAlreadyExistsException):
+        with self.assertRaises(VertexAlreadyHasEdgeException):
             v0.add_edge(v1)
         try:
             v1.add_edge(v0)
-        except EdgeAlreadyExistsException:
+        except VertexAlreadyHasEdgeException:
             self.fail("There should be no EdgeAlreadyExistsException because "
                       "(v1 -> v0) is a different edge than (v0 -> v1) for a "
                       "DirectedVertex.")
 
-    def test_directed_vertex_ins_and_outs_and_degrees(self):
-        v0 = DirectedVertex(name='v0')
-        v1 = DirectedVertex(name='v1')
-        v2 = DirectedVertex(name='v2')
-        v3 = DirectedVertex(name='v3')
-        v4 = DirectedVertex(name='v4')
-        v0.add_edge(v0)
-        v0.add_edge(v1)
-        v0.add_edge(v2)
-        v1.add_edge(v3)
-        v3.add_edge(v1)
-
-        self.assertEqual(v0.outs(), set([v0, v1, v2]))
-        self.assertEqual(v0.ins(), set([v0]))
-        self.assertEqual(v1.outs(), set([v3]))
-        self.assertEqual(v1.ins(), set([v0, v3]))
-        self.assertEqual(v2.outs(), set())
-        self.assertEqual(v2.ins(), set([v0]))
-        self.assertEqual(v3.outs(), set([v1]))
-        self.assertEqual(v3.ins(), set([v1]))
-        self.assertEqual(v4.outs(), set())
-        self.assertEqual(v4.ins(), set())
-        self.assertEqual(v0.out_degree(), 3)
-        self.assertEqual(v0.in_degree(), 1)
-        self.assertEqual(v1.out_degree(), 1)
-        self.assertEqual(v1.in_degree(), 2)
-        self.assertEqual(v2.out_degree(), 0)
-        self.assertEqual(v2.in_degree(), 1)
-        self.assertEqual(v3.out_degree(), 1)
-        self.assertEqual(v3.in_degree(), 1)
-        self.assertEqual(v4.out_degree(), 0)
-        self.assertEqual(v4.in_degree(), 0)
-
     def test_directed_vertex_search(self):
+        """ Search for paths from a directed vertex to all vertices reachable
+            from it """
         v0 = DirectedVertex(name='v0')
         v1 = DirectedVertex(name='v1')
         v2 = DirectedVertex(name='v2')
