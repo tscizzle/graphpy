@@ -9,6 +9,13 @@ from vertex import UndirectedVertex, DirectedVertex
 import random
 
 
+################################################################################
+#                                                                              #
+#                                  Undirected                                  #
+#                                                                              #
+################################################################################
+
+
 class UndirectedGraph(object):
 
     def __init__(self):
@@ -123,16 +130,15 @@ class UndirectedGraph(object):
 
     def add_vertex(self, v):
         """ Adds a vertex to this graph """
-        if v.name in self._names_to_vertices_map:
-            raise VertexNameAlreadyExistsException(v.name)
         if self.has_vertex(v):
             raise VertexAlreadyExistsException(v)
+        if v.name in self._names_to_vertices_map:
+            raise VertexNameAlreadyExistsException(v.name)
         if v.degree:
             raise VertexAlreadyHasEdgesException(v)
 
         self._vertices.add(v)
         self._names_to_vertices_map[v.name] = v
-        return v
 
     def add_edge(self, v0, v1):
         """ Adds an edge between two vertices in this graph """
@@ -140,13 +146,52 @@ class UndirectedGraph(object):
         if self.has_edge(e):
             raise EdgeAlreadyExistsException(e)
 
-        self._edges.add(v0.add_edge(v1))
-        return e
+        v0.add_edge(e)
+        v1.add_edge(e)
+        self._edges.add(e)
 
     def search(self, start, goal=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from
             some vertex """
-        return start.search(goal=goal, method=method)
+        assert self.has_vertex(start)
+        assert method in set(['breadth_first', 'depth_first'])
+        pop_idx = 0 if method == 'breadth_first' else -1
+
+        vertex_queue = [(start, [start])]
+        seen_so_far = set([start])
+        paths = {}
+
+        # handle each vertex until there are no vertices left to check
+        while vertex_queue:
+            current_vertex, current_path = vertex_queue.pop(pop_idx)
+
+            # if searching for a specific vertex, check if this is it
+            if current_vertex == goal:
+                return current_path
+
+            # if this is the first visit to this vertex, store its path
+            if current_vertex not in paths:
+                paths[current_vertex] = current_path
+
+            # put this vertex's neighbors onto the back of the queue
+            for neighbor in current_vertex.neighbors:
+                if neighbor not in seen_so_far:
+                    new_path = current_path + [neighbor]
+                    vertex_queue.append((neighbor, new_path))
+                    seen_so_far.add(neighbor)
+
+        # if searching for a specific vertex, it was not reachable
+        if goal is not None:
+            return None
+
+        return paths
+
+
+################################################################################
+#                                                                              #
+#                                   Directed                                   #
+#                                                                              #
+################################################################################
 
 
 class DirectedGraph(object):
@@ -181,6 +226,8 @@ class DirectedGraph(object):
             for o_name in o_name_list:
                 try:
                     g.add_edge(g[v_name], g[o_name])
+                except EdgeAlreadyExistsException:
+                    pass
                 except KeyError:
                     m = (str(o_name) + " in a neighbor list but not in the "
                          "vertex list.")
@@ -237,15 +284,15 @@ class DirectedGraph(object):
         return len(self._edges)
 
     @property
-    def average_ins(self):
-        """ Average number of ins vertices in this graph have """
+    def average_outs(self):
+        """ Average number of outs vertices in this graph have """
         if not self.num_vertices:
             return 0
         return 1.0 * self.num_edges / self.num_vertices
 
     @property
-    def average_outs(self):
-        """ Average number of outs vertices in this graph have """
+    def average_ins(self):
+        """ Average number of ins vertices in this graph have """
         if not self.num_vertices:
             return 0
         return 1.0 * self.num_edges / self.num_vertices
@@ -260,9 +307,11 @@ class DirectedGraph(object):
     def is_strongly_connected(self):
         """ Checks if this graph has a path from each vertex to each other
             vertex """
-        v = tuple(self._vertices)[0]
+        v_self = tuple(self._vertices)[0]
         t = self.from_transpose(self)
-        return len(self.search(v)) == len(t.search(v)) == self.num_vertices
+        v_t = tuple(t.vertices)[0]
+        return (len(self.search(v_self)) == len(t.search(v_t)) ==
+                self.num_vertices)
 
     def has_vertex(self, v):
         """ Checks if a certain vertex already exists in this graph """
@@ -283,7 +332,6 @@ class DirectedGraph(object):
 
         self._vertices.add(v)
         self._names_to_vertices_map[v.name] = v
-        return v
 
     def add_edge(self, v0, v1):
         """ Adds an edge from one vertex in this graph to another """
@@ -291,27 +339,67 @@ class DirectedGraph(object):
         if self.has_edge(e):
             raise EdgeAlreadyExistsException(e)
 
-        self._edges.add(v0.add_edge(v1))
-        return e
+        v0.add_edge(e)
+        if v0 != v1:
+            v1.add_edge(e)
+        self._edges.add(e)
 
     def search(self, start, goal=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from
             some vertex """
-        return start.search(goal=goal, method=method)
+        assert self.has_vertex(start)
+        assert method in set(['breadth_first', 'depth_first'])
+        pop_idx = 0 if method == 'breadth_first' else -1
+
+        vertex_queue = [(start, [start])]
+        seen_so_far = set([start])
+        paths = {}
+
+        # handle each vertex until there are no vertices left to check
+        while vertex_queue:
+            current_vertex, current_path = vertex_queue.pop(pop_idx)
+
+            # if searching for a specific vertex, check if this is it
+            if current_vertex == goal:
+                return current_path
+
+            # if this is the first visit to this vertex, store its path
+            if current_vertex not in paths:
+                paths[current_vertex] = current_path
+
+            # put the vertices this vertex points to onto the back of the queue
+            for out in current_vertex.outs:
+                if out not in seen_so_far:
+                    new_path = current_path + [out]
+                    vertex_queue.append((out, new_path))
+                    seen_so_far.add(out)
+
+        # if searching for a specific vertex, it was not reachable
+        if goal is not None:
+            return None
+
+        return paths
+
+
+################################################################################
+#                                                                              #
+#                                  Exceptions                                  #
+#                                                                              #
+################################################################################
 
 
 class BadGraphInputException(Exception):
     pass
 
-class VertexNameAlreadyExistsException(Exception):
-    def __init__(self, name):
-        m = "A vertex with name " + name + " already exists in the graph."
-        super(VertexNameAlreadyExistsException, self).__init__(m)
-
 class VertexAlreadyExistsException(Exception):
     def __init__(self, v):
         m = str(v) + " already exists."
         super(VertexAlreadyExistsException, self).__init__(m)
+
+class VertexNameAlreadyExistsException(Exception):
+    def __init__(self, name):
+        m = "A vertex with name " + name + " already exists in the graph."
+        super(VertexNameAlreadyExistsException, self).__init__(m)
 
 class EdgeAlreadyExistsException(Exception):
     def __init__(self, e):

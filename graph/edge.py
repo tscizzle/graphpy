@@ -3,6 +3,13 @@ Implementation of an edge, as used in graphs
 """
 
 
+################################################################################
+#                                                                              #
+#                                  Undirected                                  #
+#                                                                              #
+################################################################################
+
+
 class UndirectedEdge(object):
 
     def __init__(self, v0, v1):
@@ -33,6 +40,13 @@ class UndirectedEdge(object):
         return self._vertices
 
 
+################################################################################
+#                                                                              #
+#                                   Directed                                   #
+#                                                                              #
+################################################################################
+
+
 class DirectedEdge(object):
 
     def __init__(self, v_from, v_to):
@@ -61,6 +75,13 @@ class DirectedEdge(object):
     @property
     def v_to(self):
         return self._v_to
+
+
+################################################################################
+#                                                                              #
+#                                  Exceptions                                  #
+#                                                                              #
+################################################################################
 
 
 class NoSelfEdgeException(Exception):

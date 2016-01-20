@@ -1,5 +1,6 @@
-- finish test_graph.py
 - doc the shit out of the project with explanations, args, returns, and modifies
+    - readthedocs
+    - README.rst
 - upload to Github
 - distribute on PyPI
 - do I have to do anything to make it OpenSource?
