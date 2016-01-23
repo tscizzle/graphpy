@@ -14,7 +14,7 @@ setup(
     version='0.0.2',
     description='A Python implementation of a edges, vertices, and graphs',
     long_description=long_description,
-    url='https://github.com/tscizzle/graph',
+    url='https://github.com/tscizzle/pygraph',
     author='Tyler Singer-Clark',
     author_email='tscizzle@gmail.com',
     license='MIT',
