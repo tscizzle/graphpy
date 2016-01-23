@@ -323,10 +323,10 @@ class DirectedGraph(object):
 
     def add_vertex(self, v):
         """ Adds a vertex to this graph """
-        if v.name in self._names_to_vertices_map:
-            raise VertexNameAlreadyExistsException(v.name)
         if self.has_vertex(v):
             raise VertexAlreadyExistsException(v)
+        if v.name in self._names_to_vertices_map:
+            raise VertexNameAlreadyExistsException(v.name)
         if v.in_degree or v.out_degree:
             raise VertexAlreadyHasEdgesException(v)
 

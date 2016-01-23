@@ -472,7 +472,48 @@ class TestDirectedGraph(unittest.TestCase):
                           v1: [v0, v1],
                           v3: [v0, v1, v3]})
 
-    ## TODO: test the rest of the exceptions
+    def test_directed_graph_vertex_name_already_exists(self):
+        """ A directed graph should not be able to add a vertex with the same
+            name as an existing vertex in the graph """
+        g = DirectedGraph.from_dict({'v0': []})
+
+        with self.assertRaises(VertexNameAlreadyExistsException):
+            g.add_vertex(DirectedVertex(name='v0'))
+
+    def test_directed_graph_vertex_already_exists(self):
+        """ A directed graph should not be able to add a vertex that already
+            exists in the graph """
+        v0 = DirectedVertex(name='v0')
+        g = DirectedGraph()
+        g.add_vertex(v0)
+
+        with self.assertRaises(VertexAlreadyExistsException):
+            g.add_vertex(v0)
+
+    def test_directed_graph_edge_already_exists_exception(self):
+        """ A directed graph should not be able to add an edge that already
+            exists in the graph """
+        v0 = DirectedVertex(name='v0')
+        v1 = DirectedVertex(name='v1')
+        g = DirectedGraph()
+        g.add_vertex(v0)
+        g.add_vertex(v1)
+        g.add_edge(v0, v1)
+
+        with self.assertRaises(EdgeAlreadyExistsException):
+            g.add_edge(v0, v1)
+
+    def test_directed_graph_vertex_already_has_edges(self):
+        """ A directed graph should not be able to add a vertex that already
+            contains edges """
+        v0 = DirectedVertex(name='v0')
+        v1 = DirectedVertex(name='v1')
+        e01 = DirectedEdge(v0, v1)
+        v0.add_edge(e01)
+        g = DirectedGraph()
+
+        with self.assertRaises(VertexAlreadyHasEdgesException):
+            g.add_vertex(v0)
 
 
 def n_choose_2(n):
