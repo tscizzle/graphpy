@@ -39,8 +39,7 @@ Perform graph algorithms, such as search::
     paths = g.search(start=v, method='depth_first')
     print paths
 
-From there, use graphs to model situations, implement more graph algorithms, and whatever else you desire.
-And as always have fun!
+From there, use graphs to model situations, implement more graph algorithms, and whatever else you desire. And as always have fun!
 
 (The tests found on Github at https://github.com/tscizzle/graph give many more examples and showcase the rest of the library's functionality.)
 
