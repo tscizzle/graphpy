@@ -10,7 +10,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='graph',
+    name='pygraph',
     version='0.0.2',
     description='A Python implementation of a edges, vertices, and graphs',
     long_description=long_description,
