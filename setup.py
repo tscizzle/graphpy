@@ -10,11 +10,11 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='pygraph',
-    version='0.0.2',
+    name='graphpy',
+    version='0.0.3',
     description='A Python implementation of a edges, vertices, and graphs',
     long_description=long_description,
-    url='https://github.com/tscizzle/pygraph',
+    url='https://github.com/tscizzle/graphpy',
     author='Tyler Singer-Clark',
     author_email='tscizzle@gmail.com',
     license='MIT',

@@ -1,5 +1,5 @@
-PyGraph
-=====
+Graphpy
+=======
 
 A Python implementation of edges, vertices, and graphs
 
@@ -10,16 +10,16 @@ There are two types of each object: ``Undirected`` and ``Directed``.
 
 To begin, create a graph from a dictionary of vertex names::
 
-    from pygraph.graph import UndirectedGraph
+    from graphpy.graph import UndirectedGraph
 
     g = UndirectedGraph.from_dict({'v0': ['v1'],
                                    'v1': []})
 
 You can also initialize a graph, then add vertices and edges::
 
-    from pygraph.edge import UndirectedEdge
-    from pygraph.vertex import UndirectedVertex
-    from pygraph.graph import UndirectedGraph
+    from graphpy.edge import UndirectedEdge
+    from graphpy.vertex import UndirectedVertex
+    from graphpy.graph import UndirectedGraph
 
     g = UndirectedGraph()
     v0 = UndirectedVertex(name='v0')
@@ -41,7 +41,7 @@ Perform graph algorithms, such as search::
 
 From there, use graphs to model situations, implement more graph algorithms, and whatever else you desire. And as always have fun!
 
-(The tests found on Github at https://github.com/tscizzle/pygraph give many more examples and showcase the rest of the library's functionality.)
+(The tests found on Github at https://github.com/tscizzle/graphpy give many more examples and showcase the rest of the library's functionality.)
 
 Documentation
 -------------
@@ -51,14 +51,14 @@ Docs will be up on ReadTheDocs soon.
 Installation
 ------------
 
-Run the command ``pip install pygraph`` in your terminal.
+Run the command ``pip install graphpy`` in your terminal.
 
-To test your installation, start a Python interpreter with the ``python`` command and make sure you can run ``import pygraph`` in it without getting an error.
+To test your installation, start a Python interpreter with the ``python`` command and make sure you can run ``import graphpy`` in it without getting an error.
 
 Contribute
 ----------
 
-Find the code at: https://github.com/tscizzle/pygraph
+Find the code at: https://github.com/tscizzle/graphpy
 
 Support
 -------
