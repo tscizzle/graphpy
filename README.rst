@@ -46,7 +46,7 @@ From there, use graphs to model situations, implement more graph algorithms, and
 Documentation
 -------------
 
-Docs will be up on ReadTheDocs soon.
+Find the documentation at: http://graphpy.readthedocs.org/en/latest
 
 Installation
 ------------

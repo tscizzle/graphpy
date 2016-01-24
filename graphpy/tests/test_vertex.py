@@ -19,6 +19,14 @@ class TestUndirectedVertex(unittest.TestCase):
         self.assertEqual(v0.name, 'v0')
         self.assertEqual(v0.edges, set())
 
+    def test_undirected_vertex_name(self):
+        """ Get an undirected vertex's name property """
+        v0 = UndirectedVertex(name='v0')
+
+        self.assertEqual(v0.name, 'v0')
+        with self.assertRaises(AttributeError):
+            v0.name = ''
+
     def test_undirected_vertex_neighbors_and_degree(self):
         """ Get undirected vertices' neighbors and degree properties """
         v0 = UndirectedVertex(name='v0')
@@ -86,6 +94,14 @@ class TestDirectedVertex(unittest.TestCase):
 
         self.assertEqual(v0.name, 'v0')
         self.assertEqual(v0.edges, set())
+
+    def test_directed_vertex_name(self):
+        """ Get a directed vertex's name property """
+        v0 = DirectedVertex(name='v0')
+
+        self.assertEqual(v0.name, 'v0')
+        with self.assertRaises(AttributeError):
+            v0.name = ''
 
     def test_directed_vertex_outs_and_ins_and_degrees(self):
         """ Get directed vertices' outs, ins, out_degree, and in_degree

@@ -4,8 +4,7 @@ graphpy
 .. toctree::
    :maxdepth: 2
 
-   readme
-   library documentation
+   library
 
 * :ref:`search`
 

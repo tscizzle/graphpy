@@ -13,7 +13,7 @@ Implementation of a vertex, as used in graphs
 class UndirectedVertex(object):
 
     def __init__(self, name=''):
-        self.name = name or id(self)
+        self._name = name or id(self)
         self._edges = set()
 
     def __repr__(self):
@@ -25,6 +25,10 @@ class UndirectedVertex(object):
 
     def __contains__(self, e):
         return e in self._edges
+
+    @property
+    def name(self):
+        return self._name
 
     @property
     def edges(self):
@@ -60,7 +64,7 @@ class UndirectedVertex(object):
 class DirectedVertex(object):
 
     def __init__(self, name=''):
-        self.name = name
+        self._name = name
         self._edges = set()
 
     def __repr__(self):
@@ -72,6 +76,10 @@ class DirectedVertex(object):
 
     def __contains__(self, e):
         return e in self._edges
+
+    @property
+    def name(self):
+        return self._name
 
     @property
     def edges(self):
