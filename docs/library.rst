@@ -4,37 +4,31 @@ graphpy
 graph.edge
 ----------
 
-*class* graph.edge.\ **UndirectedEdge**(*v0*, *v1*)
-    An edge with no concept of direction
+*class* graph.edge.UndirectedEdge(*v0*, *v1*)
     **Parameters**
-        - **v0** (UndirectedVertex): one endpoint of this edge
-        - **v1**: (UndirectedVertex): the other endpoint of this edge
+        - **v0** (UndirectedVertex)
+        - **v1** (UndirectedVertex)
     *property* **vertices**
         frozenset of the two UndirectedVertex objects this edge connects
 
-*class* graph.edge.\ **DirectedEdge**(*v_from*, *v_to*)
-    An edge with a concept of direction
+*class* graph.edge.DirectedEdge(*v_from*, *v_to*)
     **Parameters**
-        - **v_from** (DirectedVertex): tail of this edge
-        - **v_to**: (DirectedVertex): head of this edge
+        - **v_from** (DirectedVertex)
+        - **v_to** (DirectedVertex)
     *property* **v_from**
         DirectedVertex object from which this edge points (the tail)
     *property* **v_from**
         DirectedVertex object to which this edge points (the head)
 
-*exception* graph.edge.\ **NoSelfEdgeException**(*v0*, *v1*)
-    UndirectedEdge objects are not allowed to connect an UndirectedVertex object to itself
-    **Parameters**
-        - **v0** (UndirectedVertex): one endpoint of the offending edge
-        - **v1** (UndirectedVertex): the other endpoint of the offending edge
+*exception* graph.edge.NoSelfEdgeException(*v0*, *v1*)
+    UndirectedEdge objects are not allowed to connect a vertex to itself
 
 graph.vertex
 ------------
 
-*class* graph.vertex.\ **UndirectedVertex**(*name=None*)
-    A vertex used with undirected edges
+*class* graph.vertex.UndirectedVertex(*name=None*)
     **Parameters**
-        - **name**: String, identifying name of this vertex
+        - **name** (String)
     *property* **name**
         String name of this vertex
     *property* **edges**
@@ -46,12 +40,11 @@ graph.vertex
     *method* **add_edge**(*e*)
         Add an UndirectedEdge object to this vertex
         **Parameters**
-            - **e**: UndirectedEdge, edge to add
+            - **e** (UndirectedEdge)
 
-*class* graph.vertex.\ **DirectedVertex**(*name=None*)
-    A vertex used with directed edges
+*class* graph.vertex.DirectedVertex(*name=None*)
     **Parameters**
-        - **name**: String, identifying name of this vertex
+        - **name** (String)
     *property* **name**
         String name of this vertex
     *property* **edges**
