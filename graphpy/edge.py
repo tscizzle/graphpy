@@ -14,8 +14,7 @@ class UndirectedEdge(object):
 
     def __init__(self, v0, v1):
         if v0 == v1:
-            raise NoSelfEdgeException("Cannot make edge from " + str(v0) +
-                                      " to itself.")
+            raise NoSelfEdgeException(v0, v1)
         self._vertices = frozenset([v0, v1])
 
     def __repr__(self):
@@ -85,6 +84,7 @@ class DirectedEdge(object):
 
 
 class NoSelfEdgeException(Exception):
-    def __init__(self, e):
-        m = "No undirected self-edges like " + str(e) + "."
+    def __init__(self, v0, v1):
+        m = ("Cannot make an edge from a vertex (" + str(v0) + ") to itself (" +
+             str(v1) + ").")
         super(NoSelfEdgeException, self).__init__(m)

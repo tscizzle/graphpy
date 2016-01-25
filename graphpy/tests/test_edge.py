@@ -19,14 +19,6 @@ class TestUndirectedEdge(unittest.TestCase):
 
         self.assertEqual(e01.vertices, set([v0, v1]))
 
-    def test_no_self_undirected_edge(self):
-        """ An undirected edge should not be able to connect a vertex to
-            itself """
-        v0 = UndirectedVertex(name='v0')
-
-        with self.assertRaises(NoSelfEdgeException):
-            UndirectedEdge(v0, v0)
-
     def test_undirected_edge_equality(self):
         """ Compare undirected edges for equality """
         v0 = UndirectedVertex(name='v0')
@@ -70,6 +62,14 @@ class TestUndirectedEdge(unittest.TestCase):
         self.assertEqual(e01.vertices, frozenset([v0, v1]))
         with self.assertRaises(AttributeError):
             e01.vertices = frozenset()
+
+    def test_no_self_undirected_edge(self):
+        """ An undirected edge should not be able to connect a vertex to
+            itself """
+        v0 = UndirectedVertex(name='v0')
+
+        with self.assertRaises(NoSelfEdgeException):
+            UndirectedEdge(v0, v0)
 
 
 class TestDirectedEdge(unittest.TestCase):

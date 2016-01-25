@@ -7,4 +7,3 @@ graphpy
    library
 
 * :ref:`search`
-
