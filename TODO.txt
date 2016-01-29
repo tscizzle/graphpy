@@ -1,4 +1,2 @@
-- doc the shit out of the project with explanations, args, returns, and modifies
-    - readthedocs
 - implement and test WeightedUndirectedEdge
 - implement and test WeightedDirectedEdge
