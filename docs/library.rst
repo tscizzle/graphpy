@@ -233,17 +233,17 @@ graph.graph
             - DirectedVertex[] if *goal* is specified, representing the path from *start* to *goal*
             - dict mapping DirectedVertex -> DirectedVertex[] if *goal* is not specified, each value representing the path from *start* to that value's key
 
-*exception* BadGraphInputException
+*exception* graph.graph.BadGraphInputException
     - Indicates there is something wrong with an input graph_dict
 
-*exception* VertexAlreadyExistsException
+*exception* graph.graph.VertexAlreadyExistsException (*v*)
     - Cannot add a vertex to a graph that already has that vertex
 
-*exception* VertexNameAlreadyExistsException
+*exception* graph.graph.VertexNameAlreadyExistsException (*name*)
     - Cannot add a vertex to a graph that already has a vertex with the same name
 
-*exception* EdgeAlreadyExistsException
+*exception* graph.graph.EdgeAlreadyExistsException (*e*)
     - Cannot add an edge to a graph that already has that edge
 
-*exception* VertexAlreadyHasEdgesException
+*exception* graph.graph.VertexAlreadyHasEdgesException (*v*)
     - Cannot add a vertex to a graph if that vertex already has edges
