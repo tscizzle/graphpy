@@ -112,7 +112,7 @@ class DirectedVertex(object):
         return self.out_degree + self.in_degree
 
     def add_edge(self, e):
-        """ Adds an edge """
+        """ Adds an edge to this vertex """
         if self != e.v_from and self != e.v_to:
             raise VertexNotPartOfEdgeException(self, e)
         if e in self:

@@ -28,13 +28,14 @@ class UndirectedGraph(object):
         edges_str = ", ".join(str(e) for e in self._edges)
         return "Vertices: %s\nEdges: %s" % (vertices_str, edges_str)
 
-    def __getitem__(self, key):
-        if not isinstance(key, basestring):
-            raise TypeError("Can't index with non-string key " + str(key) + ".")
-        if key not in self._names_to_vertices_map:
-            raise KeyError("No vertex with name " + key + ".")
+    def __getitem__(self, v_name):
+        if not isinstance(v_name, basestring):
+            raise TypeError("Can't index with non-string key " + str(v_name) +
+                            ".")
+        if v_name not in self._names_to_vertices_map:
+            raise KeyError("No vertex with name " + v_name + ".")
 
-        return self._names_to_vertices_map[key]
+        return self._names_to_vertices_map[v_name]
 
     @classmethod
     def from_dict(cls, graph_dict):
@@ -207,13 +208,14 @@ class DirectedGraph(object):
         edges_str = ", ".join(str(e) for e in self._edges)
         return "Vertices: %s\nEdges: %s" % (vertices_str, edges_str)
 
-    def __getitem__(self, key):
-        if not isinstance(key, basestring):
-            raise TypeError("Can't index with non-string key " + str(key) + ".")
-        if key not in self._names_to_vertices_map:
-            raise KeyError("No vertex with name " + key + ".")
+    def __getitem__(self, v_name):
+        if not isinstance(v_name, basestring):
+            raise TypeError("Can't index with non-string key " + str(v_name) +
+                            ".")
+        if v_name not in self._names_to_vertices_map:
+            raise KeyError("No vertex with name " + v_name + ".")
 
-        return self._names_to_vertices_map[key]
+        return self._names_to_vertices_map[v_name]
 
     @classmethod
     def from_dict(cls, graph_dict):
@@ -333,15 +335,15 @@ class DirectedGraph(object):
         self._vertices.add(v)
         self._names_to_vertices_map[v.name] = v
 
-    def add_edge(self, v0, v1):
+    def add_edge(self, v_from, v_to):
         """ Adds an edge from one vertex in this graph to another """
-        e = DirectedEdge(v0, v1)
+        e = DirectedEdge(v_from, v_to)
         if self.has_edge(e):
             raise EdgeAlreadyExistsException(e)
 
-        v0.add_edge(e)
-        if v0 != v1:
-            v1.add_edge(e)
+        v_from.add_edge(e)
+        if v_from != v_to:
+            v_to.add_edge(e)
         self._edges.add(e)
 
     def search(self, start, goal=None, method='breadth_first'):
