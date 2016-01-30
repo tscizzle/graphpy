@@ -51,6 +51,8 @@ Find the documentation at: http://graphpy.readthedocs.org/en/latest
 Installation
 ------------
 
+If you don't have pip, get pip at: https://pip.pypa.io/en/stable/installing
+
 Run the command ``pip install graphpy`` in your terminal.
 
 To test your installation, start a Python interpreter with the ``python`` command and make sure you can run ``import graphpy`` in it without getting an error.
