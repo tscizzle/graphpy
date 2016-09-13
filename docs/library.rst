@@ -42,6 +42,9 @@ graph.vertex
     - *method* **add_edge** (*e*)
         - **Parameters**
             - **e** <UndirectedEdge>
+    - *method* **remove_edge** (*e*)
+        - **Parameters**
+            - **e** <UndirectedEdge>
 
 *class* graph.vertex.DirectedVertex(*name* =None)
     - **Parameters**
@@ -63,6 +66,9 @@ graph.vertex
     - *method* **__contains__** (*e*)
         - Can do ``e in v`` to check if the DirectedVertex ``v`` has the DirectedEdge ``e``
     - *method* **add_edge** (*e*)
+        - **Parameters**
+            - **e** <DirectedEdge>
+    - *method* **remove_edge** (*e*)
         - **Parameters**
             - **e** <DirectedEdge>
 
@@ -134,6 +140,13 @@ graph.graph
         - **Parameters**
             - **v** <UndirectedVertex>
     - *method* **add_edge** (*v0*, *v1*)
+        - **Parameters**
+            - **v0** <UndirectedVertex>
+            - **v1** <UndirectedVertex>
+    - *method* **remove_vertex** (*v*)
+        - **Parameters**
+            - **v** <UndirectedVertex>
+    - *method* **remove_edge** (*v0*, *v1*)
         - **Parameters**
             - **v0** <UndirectedVertex>
             - **v1** <UndirectedVertex>
@@ -214,6 +227,13 @@ graph.graph
         - **Parameters**
             - **v** <DirectedVertex>
     - *method* **add_edge** (*v_from*, *v_to*)
+        - **Parameters**
+            - **v_from** <DirectedVertex>
+            - **v_to** <DirectedVertex>
+    - *method* **remove_vertex** (*v*)
+        - **Parameters**
+            - **v** <DirectedVertex>
+    - *method* **remove_edge** (*v_from*, *v_to*)
         - **Parameters**
             - **v_from** <DirectedVertex>
             - **v_to** <DirectedVertex>
