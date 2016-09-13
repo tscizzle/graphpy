@@ -151,6 +151,21 @@ class UndirectedGraph(object):
         v1.add_edge(e)
         self._edges.add(e)
 
+    def remove_vertex(self, v):
+        """ Removes a vertex from this graph """
+        for e in set(v.edges):
+            self.remove_edge(*e.vertices)
+        self._vertices.discard(v)
+        del self._names_to_vertices_map[v.name]
+
+    def remove_edge(self, v0, v1):
+        """ Removes an edge between two vertices in this graph """
+        e = UndirectedEdge(v0, v1)
+
+        v0.remove_edge(e)
+        v1.remove_edge(e)
+        self._edges.discard(e)
+
     def search(self, start, goal=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from
             some vertex """
@@ -197,8 +212,7 @@ class UndirectedGraph(object):
 
 class DirectedGraph(object):
 
-    def __init__(self, name=''):
-        self.name = name or id(self)
+    def __init__(self):
         self._vertices = set()
         self._edges = set()
         self._names_to_vertices_map = {}
@@ -345,6 +359,21 @@ class DirectedGraph(object):
         if v_from != v_to:
             v_to.add_edge(e)
         self._edges.add(e)
+
+    def remove_vertex(self, v):
+        """ Removes a vertex from this graph """
+        for e in set(v.edges):
+            self.remove_edge(e.v_from, e.v_to)
+        self._vertices.discard(v)
+        del self._names_to_vertices_map[v.name]
+
+    def remove_edge(self, v_from, v_to):
+        """ Removes an edge from one vertex in this graph to another """
+        e = DirectedEdge(v_from, v_to)
+
+        v_from.remove_edge(e)
+        v_to.remove_edge(e)
+        self._edges.discard(e)
 
     def search(self, start, goal=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from

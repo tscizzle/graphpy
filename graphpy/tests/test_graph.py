@@ -139,8 +139,21 @@ class TestUndirectedGraph(unittest.TestCase):
         with self.assertRaises(AttributeError):
             g_disconnected.is_connected = True
 
-    def test_undirected_graph_add_vertex_and_add_edge(self):
-        """ Add vertices and edges to an undirected graph """
+    def test_undirected_graph_add_vertex(self):
+        """ Add vertices to an undirected graph """
+        v0 = UndirectedVertex(name='v0')
+        v1 = UndirectedVertex(name='v1')
+        v2 = UndirectedVertex(name='v2')
+        g = UndirectedGraph()
+        g.add_vertex(v0)
+        g.add_vertex(v1)
+
+        self.assertTrue(g.has_vertex(v0))
+        self.assertTrue(g.has_vertex(v1))
+        self.assertFalse(g.has_vertex(v2))
+
+    def test_undirected_graph_add_edge(self):
+        """ Add edges to an undirected graph """
         v0 = UndirectedVertex(name='v0')
         v1 = UndirectedVertex(name='v1')
         v2 = UndirectedVertex(name='v2')
@@ -152,12 +165,73 @@ class TestUndirectedGraph(unittest.TestCase):
         g.add_vertex(v1)
         g.add_edge(v0, v1)
 
-        self.assertTrue(g.has_vertex(v0))
-        self.assertTrue(g.has_vertex(v1))
-        self.assertFalse(g.has_vertex(v2))
         self.assertTrue(g.has_edge(e01))
         self.assertFalse(g.has_edge(e02))
         self.assertTrue(g.has_edge(e10))
+
+    def test_undirected_graph_remove_vertex(self):
+        """ Remove vertices from an undirected graph """
+        v0 = UndirectedVertex(name='v0')
+        v1 = UndirectedVertex(name='v1')
+        v2 = UndirectedVertex(name='v2')
+        e01 = UndirectedEdge(v0, v1)
+        e12 = UndirectedEdge(v1, v2)
+        e10 = UndirectedEdge(v1, v0)
+        g = UndirectedGraph()
+        g.add_vertex(v0)
+        g.add_vertex(v1)
+        g.add_vertex(v2)
+        g.add_edge(v0, v1)
+        g.add_edge(v1, v2)
+
+        g.remove_vertex(v0)
+
+        self.assertFalse(g.has_vertex(v0))
+        self.assertTrue(g.has_vertex(v1))
+        self.assertTrue(g.has_vertex(v2))
+        with self.assertRaises(KeyError):
+            _ = g[v0.name]
+        self.assertFalse(g.has_edge(e01))
+        self.assertFalse(g.has_edge(e10))
+        self.assertTrue(g.has_edge(e12))
+
+        g.remove_vertex(v1)
+
+        self.assertFalse(g.has_vertex(v0))
+        self.assertFalse(g.has_vertex(v1))
+        self.assertTrue(g.has_vertex(v2))
+        with self.assertRaises(KeyError):
+            _ = g[v1.name]
+        self.assertFalse(g.has_edge(e01))
+        self.assertFalse(g.has_edge(e10))
+        self.assertFalse(g.has_edge(e12))
+
+    def test_undirected_graph_remove_edge(self):
+        """ Remove edges from an undirected graph """
+        v0 = UndirectedVertex(name='v0')
+        v1 = UndirectedVertex(name='v1')
+        v2 = UndirectedVertex(name='v2')
+        e01 = UndirectedEdge(v0, v1)
+        e02 = UndirectedEdge(v0, v2)
+        e10 = UndirectedEdge(v1, v0)
+        g = UndirectedGraph()
+        g.add_vertex(v0)
+        g.add_vertex(v1)
+        g.add_vertex(v2)
+        g.add_edge(v0, v1)
+        g.add_edge(v0, v2)
+
+        g.remove_edge(v0, v1)
+
+        self.assertFalse(g.has_edge(e01))
+        self.assertFalse(g.has_edge(e10))
+        self.assertTrue(g.has_edge(e02))
+
+        g.remove_edge(v0, v2)
+
+        self.assertFalse(g.has_edge(e01))
+        self.assertFalse(g.has_edge(e10))
+        self.assertFalse(g.has_edge(e02))
 
     def test_undirected_graph_search(self):
         """ Search for paths from an undirected vertex to all vertices reachable
@@ -414,8 +488,21 @@ class TestDirectedGraph(unittest.TestCase):
         with self.assertRaises(AttributeError):
             g_disconnected.is_strongly_connected = True
 
-    def test_directed_graph_add_vertex_and_add_edge(self):
-        """ Add vertices and edges to a directed graph """
+    def test_directed_graph_add_vertex(self):
+        """ Add vertices to a directed graph """
+        v0 = DirectedVertex(name='v0')
+        v1 = DirectedVertex(name='v1')
+        v2 = DirectedVertex(name='v2')
+        g = DirectedGraph()
+        g.add_vertex(v0)
+        g.add_vertex(v1)
+
+        self.assertTrue(g.has_vertex(v0))
+        self.assertTrue(g.has_vertex(v1))
+        self.assertFalse(g.has_vertex(v2))
+
+    def test_directed_graph_add_edge(self):
+        """ Add edges to a directed graph """
         v0 = DirectedVertex(name='v0')
         v1 = DirectedVertex(name='v1')
         v2 = DirectedVertex(name='v2')
@@ -427,12 +514,73 @@ class TestDirectedGraph(unittest.TestCase):
         g.add_vertex(v1)
         g.add_edge(v0, v1)
 
-        self.assertTrue(g.has_vertex(v0))
-        self.assertTrue(g.has_vertex(v1))
-        self.assertFalse(g.has_vertex(v2))
         self.assertTrue(g.has_edge(e01))
         self.assertFalse(g.has_edge(e02))
         self.assertFalse(g.has_edge(e10))
+
+    def test_directed_graph_remove_vertex(self):
+        """ Remove vertices from a directed graph """
+        v0 = DirectedVertex(name='v0')
+        v1 = DirectedVertex(name='v1')
+        v2 = DirectedVertex(name='v2')
+        e01 = DirectedEdge(v0, v1)
+        e12 = DirectedEdge(v1, v2)
+        e10 = DirectedEdge(v1, v0)
+        g = DirectedGraph()
+        g.add_vertex(v0)
+        g.add_vertex(v1)
+        g.add_vertex(v2)
+        g.add_edge(v0, v1)
+        g.add_edge(v1, v2)
+
+        g.remove_vertex(v0)
+
+        self.assertFalse(g.has_vertex(v0))
+        self.assertTrue(g.has_vertex(v1))
+        self.assertTrue(g.has_vertex(v2))
+        with self.assertRaises(KeyError):
+            _ = g[v0.name]
+        self.assertFalse(g.has_edge(e01))
+        self.assertFalse(g.has_edge(e10))
+        self.assertTrue(g.has_edge(e12))
+
+        g.remove_vertex(v1)
+
+        self.assertFalse(g.has_vertex(v0))
+        self.assertFalse(g.has_vertex(v1))
+        self.assertTrue(g.has_vertex(v2))
+        with self.assertRaises(KeyError):
+            _ = g[v1.name]
+        self.assertFalse(g.has_edge(e01))
+        self.assertFalse(g.has_edge(e10))
+        self.assertFalse(g.has_edge(e12))
+
+    def test_directed_graph_remove_edge(self):
+        """ Remove edges from a directed graph """
+        v0 = DirectedVertex(name='v0')
+        v1 = DirectedVertex(name='v1')
+        v2 = DirectedVertex(name='v2')
+        e01 = DirectedEdge(v0, v1)
+        e02 = DirectedEdge(v0, v2)
+        e10 = DirectedEdge(v1, v0)
+        g = DirectedGraph()
+        g.add_vertex(v0)
+        g.add_vertex(v1)
+        g.add_vertex(v2)
+        g.add_edge(v0, v1)
+        g.add_edge(v0, v2)
+
+        g.remove_edge(v0, v1)
+
+        self.assertFalse(g.has_edge(e01))
+        self.assertFalse(g.has_edge(e10))
+        self.assertTrue(g.has_edge(e02))
+
+        g.remove_edge(v0, v2)
+
+        self.assertFalse(g.has_edge(e01))
+        self.assertFalse(g.has_edge(e10))
+        self.assertFalse(g.has_edge(e02))
 
     def test_directed_graph_search(self):
         """ Search for paths from a directed vertex to all vertices reachable

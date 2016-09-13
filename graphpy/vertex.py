@@ -53,6 +53,10 @@ class UndirectedVertex(object):
 
         self._edges.add(e)
 
+    def remove_edge(self, e):
+        """ Removes an edge from this vertex """
+        self._edges.discard(e)
+
 
 ################################################################################
 #                                                                              #
@@ -119,6 +123,10 @@ class DirectedVertex(object):
             raise VertexAlreadyHasEdgeException(self, e)
 
         self._edges.add(e)
+
+    def remove_edge(self, e):
+        """ Removes an edge from this vertex """
+        self._edges.discard(e)
 
 
 ################################################################################

@@ -1,4 +1,26 @@
+BACKLOG
+=======
+
 - allow removal of vertices and edges
+    - UndirectedVertex remove edge
+        - remove edge
+            - doc
+    - DirectedVertex
+        - remove edge
+            - doc
+    - UndirectedGraph
+        - remove edge
+            - doc
+        - remove vertex
+            - doc
+    - DirectedGraph
+        - remove edge
+            - doc
+        - remove vertex
+            - doc
+- put build commands in REMEMBER.txt
+    - for building/uploading docs
+    - for building/uploading the code
 - as done in networkx, return components of the graph as iterators so consumers are not limited by memory
 - allow Undirected* objects to have self-edges
 - allow vertices to hold arbitrary objects

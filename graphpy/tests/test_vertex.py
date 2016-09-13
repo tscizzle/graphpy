@@ -58,6 +58,29 @@ class TestUndirectedVertex(unittest.TestCase):
         self.assertTrue(e10 in v0)
         self.assertFalse(e02 in v0)
 
+    def test_undirected_vertex_remove_edge(self):
+        """ Remove an edge from an undirected vertex """
+        v0 = UndirectedVertex(name='v0')
+        v1 = UndirectedVertex(name='v1')
+        v2 = UndirectedVertex(name='v2')
+        e01 = UndirectedEdge(v0, v1)
+        e10 = UndirectedEdge(v1, v0)
+        e02 = UndirectedEdge(v0, v2)
+        v0.add_edge(e01)
+        v0.add_edge(e02)
+
+        v0.remove_edge(e01)
+
+        self.assertFalse(e01 in v0)
+        self.assertFalse(e10 in v0)
+        self.assertTrue(e02 in v0)
+
+        v0.remove_edge(e02)
+
+        self.assertFalse(e01 in v0)
+        self.assertFalse(e10 in v0)
+        self.assertFalse(e02 in v0)
+
     def test_undirected_vertex_already_has_edge(self):
         """ An undirected vertex should not be able to add an edge that it
             already has """
@@ -135,6 +158,30 @@ class TestDirectedVertex(unittest.TestCase):
 
         self.assertTrue(e01 in v0)
         self.assertFalse(e10 in v0)
+        self.assertFalse(e02 in v0)
+
+    def test_directed_vertex_remove_edge(self):
+        """ Remove an edge from a directed vertex """
+        v0 = DirectedVertex(name='v0')
+        v1 = DirectedVertex(name='v1')
+        v2 = DirectedVertex(name='v2')
+        e01 = DirectedEdge(v0, v1)
+        e10 = DirectedEdge(v1, v0)
+        e02 = DirectedEdge(v0, v2)
+        v0.add_edge(e01)
+        v0.add_edge(e10)
+        v0.add_edge(e02)
+
+        v0.remove_edge(e01)
+
+        self.assertFalse(e01 in v0)
+        self.assertTrue(e10 in v0)
+        self.assertTrue(e02 in v0)
+
+        v0.remove_edge(e02)
+
+        self.assertFalse(e01 in v0)
+        self.assertTrue(e10 in v0)
         self.assertFalse(e02 in v0)
 
     def test_directed_vertex_already_has_edge(self):
