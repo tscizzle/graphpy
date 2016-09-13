@@ -63,6 +63,6 @@ target/
 
 *.DS_Store
 
-# Personl Files
+# Personal Files
 *TODO.txt
 *REMEMBER.txt
