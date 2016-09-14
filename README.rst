@@ -3,6 +3,9 @@ Graphpy
 
 A Python implementation of edges, vertices, and graphs
 
+.. image:: https://travis-ci.org/tscizzle/graphpy.svg?branch=master
+    :target: https://travis-ci.org/tscizzle/graphpy
+
 Use
 ---
 
