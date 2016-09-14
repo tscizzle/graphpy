@@ -6,6 +6,10 @@ A Python implementation of edges, vertices, and graphs
 .. image:: https://travis-ci.org/tscizzle/graphpy.svg?branch=master
     :target: https://travis-ci.org/tscizzle/graphpy
 
+.. image:: http://readthedocs.org/projects/graphpy/badge/?version=latest
+    :target: http://graphpy.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 Use
 ---
 
