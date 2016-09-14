@@ -10,5 +10,4 @@ python:
 # install dependencies
 install: "pip install -r requirements.txt"
 # run tests
-before_script: cd graphpy/
 script: nosetests

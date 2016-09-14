@@ -3,12 +3,14 @@ Tests for graph.py
 """
 
 
-from edge import UndirectedEdge, DirectedEdge
-from vertex import UndirectedVertex, DirectedVertex
-from graph import (UndirectedGraph, DirectedGraph, BadGraphInputException,
-                   VertexNameAlreadyExistsException,
-                   VertexAlreadyExistsException, EdgeAlreadyExistsException,
-                   VertexAlreadyHasEdgesException)
+from graphpy.edge import UndirectedEdge, DirectedEdge
+from graphpy.vertex import UndirectedVertex, DirectedVertex
+from graphpy.graph import (UndirectedGraph, DirectedGraph,
+                           BadGraphInputException,
+                           VertexNameAlreadyExistsException,
+                           VertexAlreadyExistsException,
+                           EdgeAlreadyExistsException,
+                           VertexAlreadyHasEdgesException)
 
 import unittest
 

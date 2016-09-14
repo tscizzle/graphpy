@@ -3,9 +3,10 @@ Tests for vertex.py
 """
 
 
-from edge import UndirectedEdge, DirectedEdge
-from vertex import (UndirectedVertex, DirectedVertex,
-                    VertexAlreadyHasEdgeException, VertexNotPartOfEdgeException)
+from graphpy.edge import UndirectedEdge, DirectedEdge
+from graphpy.vertex import (UndirectedVertex, DirectedVertex,
+                            VertexAlreadyHasEdgeException,
+                            VertexNotPartOfEdgeException)
 
 import unittest
 

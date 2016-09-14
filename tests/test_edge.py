@@ -3,8 +3,8 @@ Tests for edge.py
 """
 
 
-from edge import UndirectedEdge, DirectedEdge, NoSelfEdgeException
-from vertex import UndirectedVertex, DirectedVertex
+from graphpy.edge import UndirectedEdge, DirectedEdge, NoSelfEdgeException
+from graphpy.vertex import UndirectedVertex, DirectedVertex
 
 import unittest
 
