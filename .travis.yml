@@ -8,7 +8,7 @@ python:
   - "3.5"
   - "nightly"
 # install dependencies
-before_install: cd graphpy
 install: "pip install -r requirements.txt"
 # run tests
+before_script: cd graphpy/
 script: nosetests
