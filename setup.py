@@ -11,7 +11,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='graphpy',
-    version='0.0.6',
+    version='0.0.7',
     description='A Python implementation of a edges, vertices, and graphs',
     long_description=long_description,
     url='https://github.com/tscizzle/graphpy',
