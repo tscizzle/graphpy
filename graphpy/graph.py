@@ -91,11 +91,11 @@ class UndirectedGraph(object):
 
     @property
     def vertices(self):
-        return self._vertices
+        return iter(self._vertices)
 
     @property
     def edges(self):
-        return self._edges
+        return iter(self._edges)
 
     @property
     def num_vertices(self):
@@ -284,11 +284,11 @@ class DirectedGraph(object):
 
     @property
     def vertices(self):
-        return self._vertices
+        return iter(self._vertices)
 
     @property
     def edges(self):
-        return self._edges
+        return iter(self._edges)
 
     @property
     def num_vertices(self):

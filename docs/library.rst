@@ -113,9 +113,9 @@ graph.graph
         - **Returns**
             - UndirectedGraph object with edges between all pairs of vertices
     - *property* **vertices**
-        - Set of UndirectedVertex objects this graph has
+        - Iterator over UndirectedVertex objects this graph has
     - *property* **edges**
-        - Set of UndirectedEdge objects this graph has
+        - Iterator over UndirectedEdge objects this graph has
     - *property* **num_vertices**
         - Number of vertices this graph has
     - *property* **num_edges**
@@ -196,9 +196,9 @@ graph.graph
         - **Returns**
             - DirectedGraph object with edges between all pairs of vertices in both directions
     - *property* **vertices**
-        - Set of DirectedVertex objects this graph has
+        - Iterator over DirectedVertex objects this graph has
     - *property* **edges**
-        - Set of DirectedEdge objects this graph has
+        - Iterator over DirectedEdge objects this graph has
     - *property* **num_vertices**
         - Number of vertices this graph has
     - *property* **num_edges**

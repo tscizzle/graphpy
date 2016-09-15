@@ -95,8 +95,8 @@ class TestUndirectedGraph(unittest.TestCase):
         g.add_vertex(v1)
         g.add_edge(v0, v1)
 
-        self.assertEqual(g.vertices, set([v0, v1]))
-        self.assertEqual(g.edges, set([e01]))
+        self.assertEqual(set(g.vertices), set([v0, v1]))
+        self.assertEqual(set(g.edges), set([e01]))
         with self.assertRaises(AttributeError):
             g.vertices = set()
         with self.assertRaises(AttributeError):
@@ -427,8 +427,8 @@ class TestDirectedGraph(unittest.TestCase):
         g.add_vertex(v1)
         g.add_edge(v0, v1)
 
-        self.assertEqual(g.vertices, set([v0, v1]))
-        self.assertEqual(g.edges, set([e01]))
+        self.assertEqual(set(g.vertices), set([v0, v1]))
+        self.assertEqual(set(g.edges), set([e01]))
         with self.assertRaises(AttributeError):
             g.vertices = set()
         with self.assertRaises(AttributeError):
