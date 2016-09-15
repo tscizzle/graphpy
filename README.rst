@@ -10,6 +10,10 @@ A Python implementation of edges, vertices, and graphs
     :target: http://graphpy.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
+.. image:: https://coveralls.io/repos/github/tscizzle/graphpy/badge.svg?branch=master
+    :target: https://coveralls.io/github/tscizzle/graphpy?branch=master
+
+
 Use
 ---
 

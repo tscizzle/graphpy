@@ -2,8 +2,11 @@ language: python
 python:
   - "2.7"
 # install dependencies
-install: "pip install -r requirements.txt"
+install:
+  - "pip install -r requirements.txt"
+  - "pip install coveralls"
 # run tests
-script: nosetests
+script: coverage run --source=graphpy,nosetests
+after_success: coveralls
 notifications:
   email: false
