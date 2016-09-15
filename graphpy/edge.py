@@ -13,16 +13,17 @@ Implementation of an edge, as used in graphs
 class UndirectedEdge(object):
 
     def __init__(self, v0, v1):
-        if v0 == v1:
-            raise NoSelfEdgeException(v0, v1)
         self._vertices = frozenset([v0, v1])
+        self._is_self_edge = v0 == v1
 
     def __repr__(self):
-        vertices = tuple(self._vertices)
+        vertices = (tuple(self._vertices) if not self._is_self_edge else
+                    tuple(self._vertices) * 2)
         return "Edge(%s, %s)" % (vertices[0], vertices[1])
 
     def __str__(self):
-        vertices = tuple(self._vertices)
+        vertices = (tuple(self._vertices) if not self._is_self_edge else
+                    tuple(self._vertices) * 2)
         return "E(%s, %s)" % (str(vertices[0]), str(vertices[1]))
 
     def __eq__(self, other):
@@ -37,6 +38,10 @@ class UndirectedEdge(object):
     @property
     def vertices(self):
         return self._vertices
+
+    @property
+    def is_self_edge(self):
+        return self._is_self_edge
 
 
 ################################################################################
@@ -74,17 +79,3 @@ class DirectedEdge(object):
     @property
     def v_to(self):
         return self._v_to
-
-
-################################################################################
-#                                                                              #
-#                                  Exceptions                                  #
-#                                                                              #
-################################################################################
-
-
-class NoSelfEdgeException(Exception):
-    def __init__(self, v0, v1):
-        m = ("Cannot make an edge from a vertex (" + str(v0) + ") to itself (" +
-             str(v1) + ").")
-        super(NoSelfEdgeException, self).__init__(m)

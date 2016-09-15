@@ -3,7 +3,7 @@ Tests for edge.py
 """
 
 
-from graphpy.edge import UndirectedEdge, DirectedEdge, NoSelfEdgeException
+from graphpy.edge import UndirectedEdge, DirectedEdge
 from graphpy.vertex import UndirectedVertex, DirectedVertex
 
 import unittest
@@ -15,9 +15,11 @@ class TestUndirectedEdge(unittest.TestCase):
         """ Create an undirected edge """
         v0 = UndirectedVertex(name='v0')
         v1 = UndirectedVertex(name='v1')
+        e00 = UndirectedEdge(v0, v0)
         e01 = UndirectedEdge(v0, v1)
 
-        self.assertEqual(e01.vertices, set([v0, v1]))
+        self.assertEqual(e00.vertices, frozenset([v0]))
+        self.assertEqual(e01.vertices, frozenset([v0, v1]))
 
     def test_undirected_edge_equality(self):
         """ Compare undirected edges for equality """
@@ -63,13 +65,17 @@ class TestUndirectedEdge(unittest.TestCase):
         with self.assertRaises(AttributeError):
             e01.vertices = frozenset()
 
-    def test_no_self_undirected_edge(self):
-        """ An undirected edge should not be able to connect a vertex to
-            itself """
+    def test_undirected_edge_is_self_edge(self):
+        """ Get an undirected edge's is_self_edge property """
         v0 = UndirectedVertex(name='v0')
+        v1 = UndirectedVertex(name='v1')
+        e00 = UndirectedEdge(v0, v0)
+        e01 = UndirectedEdge(v0, v1)
 
-        with self.assertRaises(NoSelfEdgeException):
-            UndirectedEdge(v0, v0)
+        self.assertTrue(e00.is_self_edge)
+        self.assertFalse(e01.is_self_edge)
+        with self.assertRaises(AttributeError):
+            e00.is_self_edge = False
 
 
 class TestDirectedEdge(unittest.TestCase):

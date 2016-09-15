@@ -28,11 +28,60 @@ class TestUndirectedVertex(unittest.TestCase):
         with self.assertRaises(AttributeError):
             v0.name = ''
 
+    def test_undirected_vertex_edges(self):
+        """ Get an undirected vertex's edges property """
+        v0 = UndirectedVertex(name='v0')
+        v1 = UndirectedVertex(name='v1')
+        v2 = UndirectedVertex(name='v2')
+        e00 = UndirectedEdge(v0, v0)
+        e01 = UndirectedEdge(v0, v1)
+        e02 = UndirectedEdge(v0, v2)
+        v0.add_edge(e00)
+        v0.add_edge(e01)
+        v1.add_edge(e01)
+        v0.add_edge(e02)
+        v2.add_edge(e02)
+
+        self.assertEqual(set(v0.edges), set([e00, e01, e02]))
+        self.assertEqual(set(v1.edges), set([e01]))
+        self.assertEqual(set(v2.edges), set([e02]))
+        with self.assertRaises(AttributeError):
+            v0.edges = set()
+
+    def test_undirected_vertex_has_self_edge(self):
+        """ Get an undirected vertex's has_self_edge property """
+        v0 = UndirectedVertex(name='v0')
+        v1 = UndirectedVertex(name='v1')
+        v2 = UndirectedVertex(name='v2')
+        e00 = UndirectedEdge(v0, v0)
+        e01 = UndirectedEdge(v0, v1)
+        e11 = UndirectedEdge(v1, v1)
+        e02 = UndirectedEdge(v0, v2)
+        v0.add_edge(e00)
+        v0.add_edge(e01)
+        v1.add_edge(e01)
+        v0.add_edge(e02)
+        v2.add_edge(e02)
+
+        self.assertTrue(v0.has_self_edge)
+        self.assertFalse(v1.has_self_edge)
+        self.assertFalse(v2.has_self_edge)
+        with self.assertRaises(AttributeError):
+            v0.has_self_edge = True
+
+        v1.add_edge(e11)
+        v0.remove_edge(e00)
+
+        self.assertFalse(v0.has_self_edge)
+        self.assertTrue(v1.has_self_edge)
+        self.assertFalse(v2.has_self_edge)
+
     def test_undirected_vertex_neighbors_and_degree(self):
         """ Get undirected vertices' neighbors and degree properties """
         v0 = UndirectedVertex(name='v0')
         v1 = UndirectedVertex(name='v1')
         v2 = UndirectedVertex(name='v2')
+        e00 = UndirectedEdge(v0, v0)
         e01 = UndirectedEdge(v0, v1)
         e02 = UndirectedEdge(v0, v2)
         v0.add_edge(e01)
@@ -45,16 +94,24 @@ class TestUndirectedVertex(unittest.TestCase):
         with self.assertRaises(AttributeError):
             v0.degree = 0
 
+        v0.add_edge(e00)
+
+        self.assertEqual(set(v0.neighbors), set([v0, v1, v2]))
+        self.assertEqual(v0.degree, 4)
+
     def test_undirected_vertex_add_edge(self):
         """ Add an edge to an undirected vertex """
         v0 = UndirectedVertex(name='v0')
         v1 = UndirectedVertex(name='v1')
         v2 = UndirectedVertex(name='v2')
+        e00 = UndirectedEdge(v0, v0)
         e01 = UndirectedEdge(v0, v1)
         e10 = UndirectedEdge(v1, v0)
         e02 = UndirectedEdge(v0, v2)
+        v0.add_edge(e00)
         v0.add_edge(e01)
 
+        self.assertTrue(e00 in v0)
         self.assertTrue(e01 in v0)
         self.assertTrue(e10 in v0)
         self.assertFalse(e02 in v0)
@@ -126,6 +183,26 @@ class TestDirectedVertex(unittest.TestCase):
         self.assertEqual(v0.name, 'v0')
         with self.assertRaises(AttributeError):
             v0.name = ''
+
+    def test_directed_vertex_edges(self):
+        """ Get a directed vertex's edges property """
+        v0 = DirectedVertex(name='v0')
+        v1 = DirectedVertex(name='v1')
+        v2 = DirectedVertex(name='v2')
+        e00 = DirectedEdge(v0, v0)
+        e01 = DirectedEdge(v0, v1)
+        e20 = DirectedEdge(v2, v0)
+        v0.add_edge(e00)
+        v0.add_edge(e01)
+        v1.add_edge(e01)
+        v0.add_edge(e20)
+        v2.add_edge(e20)
+
+        self.assertEqual(set(v0.edges), set([e00, e01, e20]))
+        self.assertEqual(set(v1.edges), set([e01]))
+        self.assertEqual(set(v2.edges), set([e20]))
+        with self.assertRaises(AttributeError):
+            v0.edges = set()
 
     def test_directed_vertex_outs_and_ins_and_degrees(self):
         """ Get directed vertices' outs, ins, out_degree, and in_degree

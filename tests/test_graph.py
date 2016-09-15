@@ -48,7 +48,7 @@ class TestUndirectedGraph(unittest.TestCase):
 
     def test_create_undirected_graph_from_directed_graph(self):
         """ Create an undirected graph from a directed graph """
-        graph_dict = {'v0': ['v1', 'v2'],
+        graph_dict = {'v0': ['v0', 'v1', 'v2'],
                       'v1': ['v0', 'v3'],
                       'v2': [],
                       'v3': ['v1'],
@@ -57,7 +57,7 @@ class TestUndirectedGraph(unittest.TestCase):
         g = UndirectedGraph.from_directed_graph(dg)
 
         self.assertEqual(g.num_vertices, 5)
-        self.assertEqual(g.num_edges, 3)
+        self.assertEqual(g.num_edges, 4)
 
     def test_create_random_undirected_graph(self):
         """ Create an undirected graph with edges between random nodes """
@@ -159,14 +159,17 @@ class TestUndirectedGraph(unittest.TestCase):
         v0 = UndirectedVertex(name='v0')
         v1 = UndirectedVertex(name='v1')
         v2 = UndirectedVertex(name='v2')
+        e00 = UndirectedEdge(v0, v0)
         e01 = UndirectedEdge(v0, v1)
         e02 = UndirectedEdge(v0, v2)
         e10 = UndirectedEdge(v1, v0)
         g = UndirectedGraph()
         g.add_vertex(v0)
         g.add_vertex(v1)
+        g.add_edge(v0, v0)
         g.add_edge(v0, v1)
 
+        self.assertTrue(g.has_edge(e00))
         self.assertTrue(g.has_edge(e01))
         self.assertFalse(g.has_edge(e02))
         self.assertTrue(g.has_edge(e10))
@@ -249,6 +252,7 @@ class TestUndirectedGraph(unittest.TestCase):
         g.add_vertex(v2)
         g.add_vertex(v3)
         g.add_vertex(v4)
+        g.add_edge(v0, v0)
         g.add_edge(v0, v1)
         g.add_edge(v0, v2)
         g.add_edge(v1, v3)

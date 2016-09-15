@@ -10,6 +10,8 @@ graph.edge
         - **v1** <UndirectedVertex>
     - *property* **vertices**
         - frozenset of the two UndirectedVertex objects this edge connects
+    - *property* **is_self_edge**
+        - bool for whether or not this edge connects a vertex to itself
 
 *class* graph.edge.DirectedEdge(*v_from*, *v_to*)
     - **Parameters**
@@ -19,9 +21,6 @@ graph.edge
         - DirectedVertex object from which this edge points (the tail)
     - *property* **v_from**
         - DirectedVertex object to which this edge points (the head)
-
-*exception* graph.edge.NoSelfEdgeException(*v0*, *v1*)
-    - UndirectedEdge objects are not allowed to connect a vertex to itself
 
 graph.vertex
 ------------
@@ -33,10 +32,12 @@ graph.vertex
         - String name of this vertex
     - *property* **edges**
         - Iterator over UndirectedEdge objects this vertex has
+    - *property* **has_self_edge**
+        - bool for whether or not this vertex has an edge connecting it to itself
     - *property* **neighbors**
         - Iterator over UndirectedVertex objects which share an edge with this vertex
     - *property* **degree**
-        - Number of neighbors this vertex has
+        - Number of neighbors this vertex has (+1 if it has a self edge)
     - *method* **__contains__** (*e*)
         - Can do ``e in v`` to check if the UndirectedVertex ``v`` has the UndirectedEdge ``e``
     - *method* **add_edge** (*e*)
@@ -96,7 +97,6 @@ graph.graph
         - **Returns**
             - UndirectedGraph object version of *directed_graph*
                 - duplicate edges are treated as a single edge
-                - self edges disappear
     - *classmethod* **random_graph** (*vertex_names*, *p* =0.5)
         - **Parameters**
             - **vertex_names** <String[]>
@@ -121,7 +121,7 @@ graph.graph
     - *property* **num_edges**
         - Number of edges this graph has
     - *property* **average_degree**
-        - Average number of neighbors each vertex in this graph has
+        - Average degree each vertex in this graph has
     - *property* **is_connected**
         - Whether or not there exists a path between every pair of vertices this graph has
     - *method* **__getitem__** (*v_name*)

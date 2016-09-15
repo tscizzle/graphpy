@@ -3,7 +3,7 @@ Implementation of a graph
 """
 
 
-from edge import UndirectedEdge, DirectedEdge, NoSelfEdgeException
+from edge import UndirectedEdge, DirectedEdge
 from vertex import UndirectedVertex, DirectedVertex
 
 import random
@@ -59,15 +59,14 @@ class UndirectedGraph(object):
     @classmethod
     def from_directed_graph(cls, directed_graph):
         """ Generate an undirected graph by turning a directed graph's edges
-            into undirected edges and removing duplicate edges and
-            self-edges """
+            into undirected edges and removing duplicate edges """
         g = cls()
         for v in directed_graph.vertices:
             g.add_vertex(UndirectedVertex(name=v.name))
         for e in directed_graph.edges:
             try:
                 g.add_edge(g[e.v_from.name], g[e.v_to.name])
-            except (EdgeAlreadyExistsException, NoSelfEdgeException):
+            except EdgeAlreadyExistsException:
                 pass
         return g
 
@@ -148,7 +147,8 @@ class UndirectedGraph(object):
             raise EdgeAlreadyExistsException(e)
 
         v0.add_edge(e)
-        v1.add_edge(e)
+        if not e.is_self_edge:
+            v1.add_edge(e)
         self._edges.add(e)
 
     def remove_vertex(self, v):
@@ -163,7 +163,8 @@ class UndirectedGraph(object):
         e = UndirectedEdge(v0, v1)
 
         v0.remove_edge(e)
-        v1.remove_edge(e)
+        if not e.is_self_edge:
+            v1.remove_edge(e)
         self._edges.discard(e)
 
     def search(self, start, goal=None, method='breadth_first'):

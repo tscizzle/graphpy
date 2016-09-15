@@ -15,6 +15,7 @@ class UndirectedVertex(object):
     def __init__(self, name=''):
         self._name = name or id(self)
         self._edges = set()
+        self._has_self_edge = False
 
     def __repr__(self):
         display = (self.name, id(self))
@@ -35,15 +36,20 @@ class UndirectedVertex(object):
         return iter(self._edges)
 
     @property
+    def has_self_edge(self):
+        return self._has_self_edge
+
+    @property
     def neighbors(self):
         """ Iterator over vertices adjacent to this vertex """
         return iter(set(v for e in self._edges for v in e.vertices
-                        if v != self))
+                        if v != self) |
+                    (set([self]) if self._has_self_edge else set()))
 
     @property
     def degree(self):
-        """ Number of neighbors this vertex has """
-        return sum(1 for _ in self.neighbors)
+        """ Number of neighbors this vertex has (+1 if it has a self edge) """
+        return sum(1 for _ in self._edges) + (1 if self._has_self_edge else 0)
 
     def add_edge(self, e):
         """ Adds an edge to this vertex """
@@ -54,9 +60,15 @@ class UndirectedVertex(object):
 
         self._edges.add(e)
 
+        if e.is_self_edge:
+            self._has_self_edge = True
+
     def remove_edge(self, e):
         """ Removes an edge from this vertex """
         self._edges.discard(e)
+
+        if e.is_self_edge:
+            self._has_self_edge = False
 
 
 ################################################################################
@@ -103,12 +115,12 @@ class DirectedVertex(object):
     @property
     def out_degree(self):
         """ Number of vertices into which this vertex has an edge """
-        return sum(1 for _ in self.outs)
+        return sum(1 for e in self._edges if e.v_from == self)
 
     @property
     def in_degree(self):
         """ Number of vertices which have an edge into this vertex """
-        return sum(1 for _ in self.ins)
+        return sum(1 for e in self._edges if e.v_to == self)
 
     @property
     def degree(self):
