@@ -18,7 +18,7 @@ class TestUndirectedVertex(unittest.TestCase):
         v0 = UndirectedVertex(name='v0')
 
         self.assertEqual(v0.name, 'v0')
-        self.assertEqual(v0.edges, set())
+        self.assertEqual(set(v0.edges), set())
 
     def test_undirected_vertex_name(self):
         """ Get an undirected vertex's name property """
@@ -38,7 +38,7 @@ class TestUndirectedVertex(unittest.TestCase):
         v0.add_edge(e01)
         v0.add_edge(e02)
 
-        self.assertEqual(v0.neighbors, set([v1, v2]))
+        self.assertEqual(set(v0.neighbors), set([v1, v2]))
         with self.assertRaises(AttributeError):
             v0.neighbors = set()
         self.assertEqual(v0.degree, 2)
@@ -117,7 +117,7 @@ class TestDirectedVertex(unittest.TestCase):
         v0 = DirectedVertex(name='v0')
 
         self.assertEqual(v0.name, 'v0')
-        self.assertEqual(v0.edges, set())
+        self.assertEqual(set(v0.edges), set())
 
     def test_directed_vertex_name(self):
         """ Get a directed vertex's name property """
@@ -142,8 +142,8 @@ class TestDirectedVertex(unittest.TestCase):
         v0.add_edge(e02)
         v0.add_edge(e10)
 
-        self.assertEqual(v0.outs, set([v0, v1, v2]))
-        self.assertEqual(v0.ins, set([v0, v1]))
+        self.assertEqual(set(v0.outs), set([v0, v1, v2]))
+        self.assertEqual(set(v0.ins), set([v0, v1]))
         self.assertEqual(v0.out_degree, 3)
         self.assertEqual(v0.in_degree, 2)
 

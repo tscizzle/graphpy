@@ -40,11 +40,11 @@ class TestUndirectedGraph(unittest.TestCase):
 
         self.assertEqual(g.num_vertices, 5)
         self.assertEqual(g.num_edges, 3)
-        self.assertEqual(g['v0'].neighbors, set([g['v1'], g['v2']]))
-        self.assertEqual(g['v1'].neighbors, set([g['v0'], g['v3']]))
-        self.assertEqual(g['v2'].neighbors, set([g['v0']]))
-        self.assertEqual(g['v3'].neighbors, set([g['v1']]))
-        self.assertEqual(g['v4'].neighbors, set())
+        self.assertEqual(set(g['v0'].neighbors), set([g['v1'], g['v2']]))
+        self.assertEqual(set(g['v1'].neighbors), set([g['v0'], g['v3']]))
+        self.assertEqual(set(g['v2'].neighbors), set([g['v0']]))
+        self.assertEqual(set(g['v3'].neighbors), set([g['v1']]))
+        self.assertEqual(set(g['v4'].neighbors), set())
 
     def test_create_undirected_graph_from_directed_graph(self):
         """ Create an undirected graph from a directed graph """
@@ -353,16 +353,16 @@ class TestDirectedGraph(unittest.TestCase):
 
         self.assertEqual(g.num_vertices, 5)
         self.assertEqual(g.num_edges, 4)
-        self.assertEqual(g['v0'].outs, set([g['v1'], g['v2']]))
-        self.assertEqual(g['v1'].outs, set([g['v0'], g['v3']]))
-        self.assertEqual(g['v2'].outs, set())
-        self.assertEqual(g['v3'].outs, set())
-        self.assertEqual(g['v4'].outs, set())
-        self.assertEqual(g['v0'].ins, set([g['v1']]))
-        self.assertEqual(g['v1'].ins, set([g['v0']]))
-        self.assertEqual(g['v2'].ins, set([g['v0']]))
-        self.assertEqual(g['v3'].ins, set([g['v1']]))
-        self.assertEqual(g['v4'].ins, set())
+        self.assertEqual(set(g['v0'].outs), set([g['v1'], g['v2']]))
+        self.assertEqual(set(g['v1'].outs), set([g['v0'], g['v3']]))
+        self.assertEqual(set(g['v2'].outs), set())
+        self.assertEqual(set(g['v3'].outs), set())
+        self.assertEqual(set(g['v4'].outs), set())
+        self.assertEqual(set(g['v0'].ins), set([g['v1']]))
+        self.assertEqual(set(g['v1'].ins), set([g['v0']]))
+        self.assertEqual(set(g['v2'].ins), set([g['v0']]))
+        self.assertEqual(set(g['v3'].ins), set([g['v1']]))
+        self.assertEqual(set(g['v4'].ins), set())
 
     def test_create_directed_graph_from_transpose(self):
         """ Create a directed graph by reversing the edges of an input graph """
@@ -376,16 +376,16 @@ class TestDirectedGraph(unittest.TestCase):
 
         self.assertEqual(g.num_vertices, 5)
         self.assertEqual(g.num_edges, 4)
-        self.assertEqual(g['v0'].outs, set([g['v1']]))
-        self.assertEqual(g['v1'].outs, set([g['v0']]))
-        self.assertEqual(g['v2'].outs, set([g['v0']]))
-        self.assertEqual(g['v3'].outs, set([g['v1']]))
-        self.assertEqual(g['v4'].outs, set())
-        self.assertEqual(g['v0'].ins, set([g['v1'], g['v2']]))
-        self.assertEqual(g['v1'].ins, set([g['v0'], g['v3']]))
-        self.assertEqual(g['v2'].ins, set())
-        self.assertEqual(g['v3'].ins, set())
-        self.assertEqual(g['v4'].ins, set())
+        self.assertEqual(set(g['v0'].outs), set([g['v1']]))
+        self.assertEqual(set(g['v1'].outs), set([g['v0']]))
+        self.assertEqual(set(g['v2'].outs), set([g['v0']]))
+        self.assertEqual(set(g['v3'].outs), set([g['v1']]))
+        self.assertEqual(set(g['v4'].outs), set())
+        self.assertEqual(set(g['v0'].ins), set([g['v1'], g['v2']]))
+        self.assertEqual(set(g['v1'].ins), set([g['v0'], g['v3']]))
+        self.assertEqual(set(g['v2'].ins), set())
+        self.assertEqual(set(g['v3'].ins), set())
+        self.assertEqual(set(g['v4'].ins), set())
 
     def test_create_random_directed_graph(self):
         """ Create a directed graph with edges between random nodes """

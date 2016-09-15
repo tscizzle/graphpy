@@ -32,9 +32,9 @@ graph.vertex
     - *property* **name**
         - String name of this vertex
     - *property* **edges**
-        - List of UndirectedEdge objects this vertex has
+        - Iterator over UndirectedEdge objects this vertex has
     - *property* **neighbors**
-        - List of UndirectedVertex objects which share an edge with this vertex
+        - Iterator over UndirectedVertex objects which share an edge with this vertex
     - *property* **degree**
         - Number of neighbors this vertex has
     - *method* **__contains__** (*e*)
@@ -52,11 +52,11 @@ graph.vertex
     - *property* **name**
         - String name of this vertex
     - *property* **edges**
-        - List of DirectedEdge objects this vertex has
+        - Iterator over DirectedEdge objects this vertex has
     - *property* **outs**
-        - List of DirectedVertex objects into which this vertex has an edge
+        - Iterator over DirectedVertex objects into which this vertex has an edge
     - *property* **ins**
-        - List of DirectedVertex objects which have an edge into this vertex
+        - Iterator over DirectedVertex objects which have an edge into this vertex
     - *property* **out_degree**
         - Number of outs this vertex has
     - *property* **in_degree**

@@ -32,17 +32,18 @@ class UndirectedVertex(object):
 
     @property
     def edges(self):
-        return self._edges
+        return iter(self._edges)
 
     @property
     def neighbors(self):
-        """ List of vertices adjacent to this vertex """
-        return set(v for e in self._edges for v in e.vertices if v != self)
+        """ Iterator over vertices adjacent to this vertex """
+        return iter(set(v for e in self._edges for v in e.vertices
+                        if v != self))
 
     @property
     def degree(self):
         """ Number of neighbors this vertex has """
-        return len(self.neighbors)
+        return sum(1 for _ in self.neighbors)
 
     def add_edge(self, e):
         """ Adds an edge to this vertex """
@@ -87,27 +88,27 @@ class DirectedVertex(object):
 
     @property
     def edges(self):
-        return self._edges
+        return iter(self._edges)
 
     @property
     def outs(self):
-        """ List of vertices into which this vertex has an edge """
-        return set(e.v_to for e in self._edges if e.v_from == self)
+        """ Iterator over vertices into which this vertex has an edge """
+        return iter(set(e.v_to for e in self._edges if e.v_from == self))
 
     @property
     def ins(self):
-        """ List of vertices which have an edge into this vertex """
-        return set(e.v_from for e in self._edges if e.v_to == self)
+        """ Iterator over vertices which have an edge into this vertex """
+        return iter(set(e.v_from for e in self._edges if e.v_to == self))
 
     @property
     def out_degree(self):
         """ Number of vertices into which this vertex has an edge """
-        return len(self.outs)
+        return sum(1 for _ in self.outs)
 
     @property
     def in_degree(self):
         """ Number of vertices which have an edge into this vertex """
-        return len(self.ins)
+        return sum(1 for _ in self.ins)
 
     @property
     def degree(self):
