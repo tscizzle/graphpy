@@ -1,8 +1,6 @@
 Graphpy
 =======
 
-A Python implementation of edges, vertices, and graphs
-
 .. image:: https://travis-ci.org/tscizzle/graphpy.svg?branch=master
     :target: https://travis-ci.org/tscizzle/graphpy
 
@@ -12,6 +10,11 @@ A Python implementation of edges, vertices, and graphs
 
 .. image:: https://coveralls.io/repos/github/tscizzle/graphpy/badge.svg?branch=master
     :target: https://coveralls.io/github/tscizzle/graphpy?branch=master
+
+.. image:: https://badge.fury.io/py/graphpy.svg
+    :target: https://badge.fury.io/py/graphpy
+
+A Python implementation of edges, vertices, and graphs
 
 
 Use
