@@ -22,20 +22,47 @@ class UndirectedGraph(object):
         self._vertices = set()
         self._edges = set()
         self._names_to_vertices_map = {}
+        self._names_to_edges_map = {}
 
     def __str__(self):
         vertices_str = ", ".join(str(v) for v in self._vertices)
         edges_str = ", ".join(str(e) for e in self._edges)
         return "Vertices: %s\nEdges: %s" % (vertices_str, edges_str)
 
-    def __getitem__(self, v_name):
-        if not isinstance(v_name, basestring):
-            raise TypeError("Can't index with non-string key " + str(v_name) +
-                            ".")
-        if v_name not in self._names_to_vertices_map:
-            raise KeyError("No vertex with name " + v_name + ".")
+    def __len__(self):
+        return self.num_vertices
 
-        return self._names_to_vertices_map[v_name]
+    def __getitem__(self, key):
+        if isinstance(key, basestring):
+            if key not in self._names_to_vertices_map:
+                raise KeyError("No vertex with name " + key + ".")
+            else:
+                return self._names_to_vertices_map[key]
+        elif (isinstance(key, tuple) and len(key) == 2 and
+                         all(isinstance(v_name, basestring) for v_name in key)):
+            if key not in self._names_to_edges_map:
+                raise KeyError("No edge between vertices with names " +
+                               key[0] + " and " + key[1] + ".")
+            else:
+                return self._names_to_edges_map[key]
+        else:
+            raise TypeError("Can't get key " + str(key) + ". Must be either a "
+                            "string or tuple of length 2 of strings.")
+
+    def __delitem__(self, key):
+        if isinstance(key, basestring):
+            self.remove_vertex(self[key])
+        elif isinstance(key, tuple) and len(key) == 2:
+            self.remove_edge(*(self[v_name] for v_name in key))
+        else:
+            raise TypeError("Can't del with key " + str(key) + ". Must be "
+                            "either a string or tuple of length 2 of strings.")
+
+    def __iter__(self):
+        return iter(self._vertices)
+
+    def __contains__(self, item):
+        return self.has_vertex(item) or self.has_edge(item)
 
     @classmethod
     def from_dict(cls, graph_dict):
@@ -150,6 +177,8 @@ class UndirectedGraph(object):
         if not e.is_self_edge:
             v1.add_edge(e)
         self._edges.add(e)
+        self._names_to_edges_map[(v0.name, v1.name)] = e
+        self._names_to_edges_map[(v1.name, v0.name)] = e
 
     def remove_vertex(self, v):
         """ Removes a vertex from this graph """
@@ -166,6 +195,9 @@ class UndirectedGraph(object):
         if not e.is_self_edge:
             v1.remove_edge(e)
         self._edges.discard(e)
+        del self._names_to_edges_map[(v0.name, v1.name)]
+        if not e.is_self_edge:
+            del self._names_to_edges_map[(v1.name, v0.name)]
 
     def search(self, start, goal=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from
@@ -217,20 +249,47 @@ class DirectedGraph(object):
         self._vertices = set()
         self._edges = set()
         self._names_to_vertices_map = {}
+        self._names_to_edges_map = {}
 
     def __str__(self):
         vertices_str = ", ".join(str(v) for v in self._vertices)
         edges_str = ", ".join(str(e) for e in self._edges)
         return "Vertices: %s\nEdges: %s" % (vertices_str, edges_str)
 
-    def __getitem__(self, v_name):
-        if not isinstance(v_name, basestring):
-            raise TypeError("Can't index with non-string key " + str(v_name) +
-                            ".")
-        if v_name not in self._names_to_vertices_map:
-            raise KeyError("No vertex with name " + v_name + ".")
+    def __len__(self):
+        return self.num_vertices
 
-        return self._names_to_vertices_map[v_name]
+    def __getitem__(self, key):
+        if isinstance(key, basestring):
+            if key not in self._names_to_vertices_map:
+                raise KeyError("No vertex with name " + key + ".")
+            else:
+                return self._names_to_vertices_map[key]
+        elif (isinstance(key, tuple) and len(key) == 2 and
+                         all(isinstance(v_name, basestring) for v_name in key)):
+            if key not in self._names_to_edges_map:
+                raise KeyError("No edge between vertices with names " +
+                               key[0] + " and " + key[1] + ".")
+            else:
+                return self._names_to_edges_map[key]
+        else:
+            raise TypeError("Can't get key " + str(key) + ". Must be either a "
+                            "string or tuple of length 2 of strings.")
+
+    def __delitem__(self, key):
+        if isinstance(key, basestring):
+            self.remove_vertex(self[key])
+        elif isinstance(key, tuple) and len(key) == 2:
+            self.remove_edge(*(self[v_name] for v_name in key))
+        else:
+            raise TypeError("Can't del with key " + str(key) + ". Must be "
+                            "either a string or tuple of length 2 of strings.")
+
+    def __iter__(self):
+        return iter(self._vertices)
+
+    def __contains__(self, item):
+        return self.has_vertex(item) or self.has_edge(item)
 
     @classmethod
     def from_dict(cls, graph_dict):
@@ -360,6 +419,7 @@ class DirectedGraph(object):
         if v_from != v_to:
             v_to.add_edge(e)
         self._edges.add(e)
+        self._names_to_edges_map[(v_from.name, v_to.name)] = e
 
     def remove_vertex(self, v):
         """ Removes a vertex from this graph """
@@ -375,6 +435,7 @@ class DirectedGraph(object):
         v_from.remove_edge(e)
         v_to.remove_edge(e)
         self._edges.discard(e)
+        del self._names_to_edges_map[(v_from.name, v_to.name)]
 
     def search(self, start, goal=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from

@@ -46,7 +46,12 @@ You can also initialize a graph, then add vertices and edges::
 Index into a graph using the name of a vertex to retrieve a vertex object::
 
     v = g['v0']
-    print v.degree
+    print v
+
+Iterate through a graph's vertices::
+
+    for v in g:
+        print v
 
 Perform graph algorithms, such as search::
 

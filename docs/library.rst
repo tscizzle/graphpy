@@ -124,8 +124,19 @@ graph.graph
         - Average degree each vertex in this graph has
     - *property* **is_connected**
         - Whether or not there exists a path between every pair of vertices this graph has
+    - *method* **__len__**
+        - Can do ``len(g)`` to get the number of vertices in UndirectedGraph ``g``
     - *method* **__getitem__** (*v_name*)
         - Can do ``g[v_name]`` to check if UndirectedGraph ``g`` has an UndirectedVertex with name ``v_name``
+        - Can do ``g[(v0_name, v1_name)]`` to check if UndirectedGraph ``g`` has an UndirectedEdge connecting UndirectedVertex objects with names ``v0_name`` and ``v1_name``
+    - *method* **__delitem__** (*v_name*)
+        - Can do ``del g[v_name]`` to remove an UndirectedVertex with name ``v_name`` from UndirectedGraph ``g``
+        - Can do ``del g[(v0_name, v1_name)]`` to remove an UndirectedEdge connecting UndirectedVertex objects with names ``v0_name`` and ``v1_name`` from UndirectedGraph ``g``
+    - *method* **__iter__**
+        - Can do ``for v in g`` to iterate through the vertices of UndirectedGraph ``g``
+    - *method* **__contains__** (*item*)
+        - Can do ``v in g`` to check whether or not UndirectedVertex ``v`` is a vertex in UndirectedGraph ``g``
+        - Can do ``e in g`` to check whether or not UndirectedEdge ``e`` is an edge in UndirectedGraph ``g``
     - *method* **has_vertex** (*v*)
         - **Parameters**
             - **v** <UndirectedVertex>
@@ -211,8 +222,19 @@ graph.graph
         - Whether or not there exists a path between every pair of vertices in the undirected version of this graph
     - *property* **is_strongly_connected**
         - Whether or not there exists a path from each vertex in this graph to each other vertex
+    - *method* **__len__**
+        - Can do ``len(g)`` to get the number of vertices in DirectedGraph ``g``
     - *method* **__getitem__** (*v_name*)
         - Can do ``g[v_name]`` to check if DirectedGraph ``g`` has a DirectedVertex with name ``v_name``
+        - Can do ``g[(v0_name, v1_name)]`` to check if DirectedGraph ``g`` has a DirectedEdge connecting DirectedVertex objects with names ``v0_name`` and ``v1_name``
+    - *method* **__delitem__** (*v_name*)
+        - Can do ``del g[v_name]`` to remove a DirectedVertex with name ``v_name`` from DirectedGraph ``g``
+        - Can do ``del g[(v0_name, v1_name)]`` to remove a DirectedEdge connecting DirectedVertex objects with names ``v0_name`` and ``v1_name`` from DirectedGraph ``g``
+    - *method* **__iter__**
+        - Can do ``for v in g`` to iterate through the vertices of DirectedGraph ``g``
+    - *method* **__contains__** (*item*)
+        - Can do ``v in g`` to check whether or not DirectedVertex ``v`` is a vertex in DirectedGraph ``g``
+        - Can do ``e in g`` to check whether or not DirectedEdge ``e`` is an edge in DirectedGraph ``g``
     - *method* **has_vertex** (*v*)
         - **Parameters**
             - **v** <DirectedVertex>

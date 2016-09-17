@@ -223,6 +223,7 @@ class TestDirectedVertex(unittest.TestCase):
         self.assertEqual(set(v0.ins), set([v0, v1]))
         self.assertEqual(v0.out_degree, 3)
         self.assertEqual(v0.in_degree, 2)
+        self.assertEqual(v0.degree, 5)
 
     def test_directed_vertex_add_edge(self):
         """ Add an edge to a directed vertex """

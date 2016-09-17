@@ -124,8 +124,7 @@ class DirectedVertex(object):
 
     @property
     def degree(self):
-        """ Number of vertices which have an edge with this vertex (out or
-            in) """
+        """ Sum of out degree and in degree """
         return self.out_degree + self.in_degree
 
     def add_edge(self, e):
