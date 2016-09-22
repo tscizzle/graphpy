@@ -19,7 +19,7 @@ graph.edge
         - **v_to** <DirectedVertex>
     - *property* **v_from**
         - DirectedVertex object from which this edge points (the tail)
-    - *property* **v_from**
+    - *property* **v_to**
         - DirectedVertex object to which this edge points (the head)
 
 graph.vertex
