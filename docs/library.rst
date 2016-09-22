@@ -4,23 +4,63 @@ graphpy
 graph.edge
 ----------
 
-*class* graph.edge.UndirectedEdge(*v0*, *v1*)
+*class* graph.edge.UndirectedEdge(*v0*, *v1*, *attrs* =None)
     - **Parameters**
         - **v0** <UndirectedVertex>
         - **v1** <UndirectedVertex>
+        - **attrs** <dict>
     - *property* **vertices**
         - frozenset of the two UndirectedVertex objects this edge connects
+    - *property* **attrs**
+        - dict of attributes this edge has
     - *property* **is_self_edge**
         - bool for whether or not this edge connects a vertex to itself
+    - *method* **get** (*attr*)
+        - **Parameters**
+            - **attr** <hashable object>
+                - key in this edge's *attrs* dict
+        - **Returns**
+            - any object, whatever value the key *attr* points to in this edge's *attrs* dict
+            - None, if this edge does not have the attribute
+    - *method* **set** (**attr**, **value**)
+        - **Parameters**
+            - **attr** <hashable object>
+                - to be a key in this edge's *attrs* dict
+            - **value** <any object>
+                - to be the value pointed to by *attr* in this edge's *attrs* dict
+    - *method* **del_attr** (*attr*)
+        - **Parameters**
+            - **attr** <hashable object>
+                - key in this edge's *attrs* dict
 
-*class* graph.edge.DirectedEdge(*v_from*, *v_to*)
+*class* graph.edge.DirectedEdge(*v_from*, *v_to*, *attrs* =None)
     - **Parameters**
         - **v_from** <DirectedVertex>
         - **v_to** <DirectedVertex>
+        - **attrs** <dict>
     - *property* **v_from**
         - DirectedVertex object from which this edge points (the tail)
     - *property* **v_to**
         - DirectedVertex object to which this edge points (the head)
+    - *property* **attrs**
+        - dict of attributes this edge has
+    - *method* **get** (*attr*)
+        - **Parameters**
+            - **attr** <hashable object>
+                - key in this edge's *attrs* dict
+        - **Returns**
+            - any object, whatever value the key *attr* points to in this edge's *attrs* dict
+            - None, if this edge does not have the attribute
+    - *method* **set** (**attr**, **value**)
+        - **Parameters**
+            - **attr** <hashable object>
+                - to be a key in this edge's *attrs* dict
+            - **value** <any object>
+                - to be the value pointed to by *attr* in this edge's *attrs* dict
+    - *method* **del_attr** (*attr*)
+        - **Parameters**
+            - **attr** <hashable object>
+                - key in this edge's *attrs* dict
 
 graph.vertex
 ------------

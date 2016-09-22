@@ -173,10 +173,12 @@ class TestUndirectedGraph(unittest.TestCase):
         g = UndirectedGraph.from_dict({'v0': ['v1'],
                                        'v1': [],
                                        'v2': []})
+        empty_g = UndirectedGraph()
 
         self.assertEqual(g.average_degree, 2.0 / 3.0)
         with self.assertRaises(AttributeError):
             g.average_degree = 0
+        self.assertEqual(empty_g.average_degree, 0)
 
     def test_undirected_graph_is_connected(self):
         """ Get whether a path exists for every pair of vertices in an

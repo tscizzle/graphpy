@@ -12,8 +12,9 @@ Implementation of an edge, as used in graphs
 
 class UndirectedEdge(object):
 
-    def __init__(self, v0, v1):
+    def __init__(self, v0, v1, attrs=None):
         self._vertices = frozenset([v0, v1])
+        self._attrs = attrs or {}
         self._is_self_edge = v0 == v1
 
     def __repr__(self):
@@ -40,8 +41,21 @@ class UndirectedEdge(object):
         return self._vertices
 
     @property
+    def attrs(self):
+        return self._attrs
+
+    @property
     def is_self_edge(self):
         return self._is_self_edge
+
+    def get(self, attr):
+        return self._attrs.get(attr)
+
+    def set(self, attr, value):
+        self._attrs[attr] = value
+
+    def del_attr(self, attr):
+        del self._attrs[attr]
 
 
 ################################################################################
@@ -53,9 +67,10 @@ class UndirectedEdge(object):
 
 class DirectedEdge(object):
 
-    def __init__(self, v_from, v_to):
+    def __init__(self, v_from, v_to, attrs=None):
         self._v_from = v_from
         self._v_to = v_to
+        self._attrs = attrs or {}
 
     def __repr__(self):
         return "Edge(%s, %s)" % (self._v_from, self._v_to)
@@ -79,3 +94,16 @@ class DirectedEdge(object):
     @property
     def v_to(self):
         return self._v_to
+
+    @property
+    def attrs(self):
+        return self._attrs
+
+    def get(self, attr):
+        return self._attrs.get(attr)
+
+    def set(self, attr, value):
+        self._attrs[attr] = value
+
+    def del_attr(self, attr):
+        del self._attrs[attr]
