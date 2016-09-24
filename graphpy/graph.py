@@ -65,6 +65,15 @@ class UndirectedGraph(object):
         return self.has_vertex(item) or self.has_edge(item)
 
     @classmethod
+    def from_lists(cls, vertices, edges):
+        g = cls()
+        for v in vertices:
+            g.add_vertex(v)
+        for e in edges:
+            g.add_edge(*e.vertices, attrs=e.attrs)
+        return g
+
+    @classmethod
     def from_dict(cls, graph_dict):
         """ Generate a graph by passing in a dictionary of vertex names each
             mapped to a set of names of vertices to which there is an edge """
@@ -167,9 +176,9 @@ class UndirectedGraph(object):
         self._vertices.add(v)
         self._names_to_vertices_map[v.name] = v
 
-    def add_edge(self, v0, v1):
+    def add_edge(self, v0, v1, attrs=None):
         """ Adds an edge between two vertices in this graph """
-        e = UndirectedEdge(v0, v1)
+        e = UndirectedEdge(v0, v1, attrs=attrs)
         if self.has_edge(e):
             raise EdgeAlreadyExistsException(e)
 
@@ -292,6 +301,15 @@ class DirectedGraph(object):
         return self.has_vertex(item) or self.has_edge(item)
 
     @classmethod
+    def from_lists(cls, vertices, edges):
+        g = cls()
+        for v in vertices:
+            g.add_vertex(v)
+        for e in edges:
+            g.add_edge(e.v_from, e.v_to, attrs=e.attrs)
+        return g
+
+    @classmethod
     def from_dict(cls, graph_dict):
         """ Generate a graph by passing in a dictionary of vertex names each
             mapped to a set of names of vertices to which there is an edge """
@@ -409,9 +427,9 @@ class DirectedGraph(object):
         self._vertices.add(v)
         self._names_to_vertices_map[v.name] = v
 
-    def add_edge(self, v_from, v_to):
+    def add_edge(self, v_from, v_to, attrs=None):
         """ Adds an edge from one vertex in this graph to another """
-        e = DirectedEdge(v_from, v_to)
+        e = DirectedEdge(v_from, v_to, attrs=attrs)
         if self.has_edge(e):
             raise EdgeAlreadyExistsException(e)
 

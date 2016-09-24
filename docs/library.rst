@@ -123,6 +123,12 @@ graph.graph
 -----------
 
 *class* graph.vertex.UndirectedGraph()
+    - *classmethod* **from_lists** (*vertices*, *edges*)
+        - **Parameters**
+            - **vertices** <UndirectedVertex[]>
+            - **edges** <UndirectedEdge[]>
+        - **Returns**
+            - UndirectedGraph object defined by *vertices* and *edges*
     - *classmethod* **from_dict** (*graph_dict*)
         - **Parameters**
             - **graph_dict** <dict>
@@ -190,10 +196,11 @@ graph.graph
     - *method* **add_vertex** (*v*)
         - **Parameters**
             - **v** <UndirectedVertex>
-    - *method* **add_edge** (*v0*, *v1*)
+    - *method* **add_edge** (*v0*, *v1*, *attrs* =None)
         - **Parameters**
             - **v0** <UndirectedVertex>
             - **v1** <UndirectedVertex>
+            - **attrs** <dict>
     - *method* **remove_vertex** (*v*)
         - **Parameters**
             - **v** <UndirectedVertex>
@@ -218,6 +225,12 @@ graph.graph
             - dict mapping UndirectedVertex -> UndirectedVertex[] if *goal* is not specified, each value representing the path from *start* to that value's key
 
 *class* graph.vertex.DirectedGraph()
+    - *classmethod* **from_lists** (*vertices*, *edges*)
+        - **Parameters**
+            - **vertices** <DirectedVertex[]>
+            - **edges** <DirectedEdge[]>
+        - **Returns**
+            - DirectedGraph object defined by *vertices* and *edges*
     - *classmethod* **from_dict** (*graph_dict*)
         - **Parameters**
             - **graph_dict** <dict>
@@ -288,10 +301,11 @@ graph.graph
     - *method* **add_vertex** (*v*)
         - **Parameters**
             - **v** <DirectedVertex>
-    - *method* **add_edge** (*v_from*, *v_to*)
+    - *method* **add_edge** (*v_from*, *v_to*, *attrs* =None)
         - **Parameters**
             - **v_from** <DirectedVertex>
             - **v_to** <DirectedVertex>
+            - **attrs** <dict>
     - *method* **remove_vertex** (*v*)
         - **Parameters**
             - **v** <DirectedVertex>
