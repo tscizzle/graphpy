@@ -12,8 +12,8 @@ Implementation of a vertex, as used in graphs
 
 class UndirectedVertex(object):
 
-    def __init__(self, name=''):
-        self._name = name or id(self)
+    def __init__(self, name=None):
+        self._name = name or str(id(self))
         self._edges = set()
         self._has_self_edge = False
 
@@ -80,8 +80,8 @@ class UndirectedVertex(object):
 
 class DirectedVertex(object):
 
-    def __init__(self, name=''):
-        self._name = name
+    def __init__(self, name=None):
+        self._name = name or str(id(self))
         self._edges = set()
 
     def __repr__(self):

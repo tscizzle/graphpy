@@ -80,15 +80,28 @@ class UndirectedGraph(object):
         g = cls()
         for v_name in graph_dict:
             g.add_vertex(UndirectedVertex(name=v_name))
-        for v_name, n_name_list in graph_dict.items():
-            for n_name in n_name_list:
+        for v_name, neighbor_edge_list in graph_dict.items():
+            for neighbor_edge in neighbor_edge_list:
+                if isinstance(neighbor_edge, basestring):
+                    neighbor_name = neighbor_edge
+                    neighbor_attrs = None
+                elif (isinstance(neighbor_edge, tuple) and
+                      len(neighbor_edge) == 2 and
+                      isinstance(neighbor_edge[0], basestring) and
+                      isinstance(neighbor_edge[1], dict)):
+                    neighbor_name, neighbor_attrs = neighbor_edge
+                else:
+                    m = (str(neighbor_edge) + " must be either a string or a "
+                         "tuple of a string and a dict.")
+                    raise BadGraphInputException(m)
                 try:
-                    g.add_edge(g[v_name], g[n_name])
+                    g.add_edge(g[v_name], g[neighbor_name],
+                               attrs=neighbor_attrs)
                 except EdgeAlreadyExistsException:
                     pass
                 except KeyError:
-                    m = (str(n_name) + " is in a neighbor list but is not a "
-                         "vertex key.")
+                    m = (str(neighbor_name) + " is in a neighbor list but is "
+                         "not a vertex key.")
                     raise BadGraphInputException(m)
         return g
 
@@ -316,14 +329,25 @@ class DirectedGraph(object):
         g = cls()
         for v_name in graph_dict:
             g.add_vertex(DirectedVertex(name=v_name))
-        for v_name, o_name_list in graph_dict.items():
-            for o_name in o_name_list:
+        for v_name, out_edge_list in graph_dict.items():
+            for out_edge in out_edge_list:
+                if isinstance(out_edge, basestring):
+                    out_name = out_edge
+                    out_attrs = None
+                elif (isinstance(out_edge, tuple) and len(out_edge) == 2 and
+                      isinstance(out_edge[0], basestring) and
+                      isinstance(out_edge[1], dict)):
+                    out_name, out_attrs = out_edge
+                else:
+                    m = (str(out_edge) + " must be either a string or a tuple "
+                         "of a string and a dict.")
+                    raise BadGraphInputException(m)
                 try:
-                    g.add_edge(g[v_name], g[o_name])
+                    g.add_edge(g[v_name], g[out_name], attrs=out_attrs)
                 except EdgeAlreadyExistsException:
                     pass
                 except KeyError:
-                    m = (str(o_name) + " in a neighbor list but not in the "
+                    m = (str(out_edge) + " in a neighbor list but not in the "
                          "vertex list.")
                     raise BadGraphInputException(m)
         return g

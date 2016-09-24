@@ -132,8 +132,12 @@ graph.graph
     - *classmethod* **from_dict** (*graph_dict*)
         - **Parameters**
             - **graph_dict** <dict>
-                - String -> String[]
-                - each vertex's name maps to a list of the names of the vertices to which that vertex has an edge
+                - String -> (String | tuple)[]
+                - each vertex's name maps to a list of elements which each represent an edge from that vertex
+                - each element (i.e. edge) in the mapped-to list is in one of two forms
+                    - String>, name of the vertex to which the edge points
+                    - (String, dict), (name of the vertex to which the edge points, the edge's attributes)
+                - if there are duplicate declarations of an edge (like v1 appearing in v0's list and v0 appearing in v1's list) with differnet attributes, the choice of which to keep is made arbitrarily
         - **Returns**
             - UndirectedGraph object defined by *graph_dict*
     - *classmethod* **from_directed_graph** (*directed_graph*)
@@ -193,9 +197,9 @@ graph.graph
             - **e** <UndirectedEdge>
         - **Returns**
             - bool for whether or not *e* is an edge in this graph
-    - *method* **add_vertex** (*v*)
+    - *method* **add_vertex** (*name*)
         - **Parameters**
-            - **v** <UndirectedVertex>
+            - **name** <String>
     - *method* **add_edge** (*v0*, *v1*, *attrs* =None)
         - **Parameters**
             - **v0** <UndirectedVertex>
@@ -234,8 +238,12 @@ graph.graph
     - *classmethod* **from_dict** (*graph_dict*)
         - **Parameters**
             - **graph_dict** <dict>
-                - String -> String[]
-                - each vertex's name maps to a list of the names of the vertices to which that vertex has an edge
+                - String -> (String | tuple)[]
+                - each vertex's name maps to a list of elements which each represent an edge from that vertex
+                - each element (i.e. edge) in the mapped-to list is in one of two forms
+                    - String>, name of the vertex to which the edge points
+                    - (String, dict), (name of the vertex to which the edge points, the edge's attributes)
+                - if there are duplicate declarations of an edge (like v1 appearing in v0's list and v0 appearing in v1's list) with differnet attributes, the choice of which to keep is made arbitrarily
         - **Returns**
             - DirectedGraph object defined by *graph_dict*
     - *classmethod* **from_transpose** (*transpose_graph*)
@@ -298,9 +306,9 @@ graph.graph
             - **e** <DirectedEdge>
         - **Returns**
             - bool for whether or not *e* is an edge in this graph
-    - *method* **add_vertex** (*v*)
+    - *method* **add_vertex** (*name*)
         - **Parameters**
-            - **v** <DirectedVertex>
+            - **name** <String>
     - *method* **add_edge** (*v_from*, *v_to*, *attrs* =None)
         - **Parameters**
             - **v_from** <DirectedVertex>

@@ -124,7 +124,7 @@ class TestUndirectedGraph(unittest.TestCase):
 
     def test_create_undirected_graph_from_dict(self):
         """ Create an undirected graph from an adjacency dictionary """
-        graph_dict = {'v0': ['v1', 'v1', 'v2'],
+        graph_dict = {'v0': ['v1', 'v1', ('v2', {'weight': 5})],
                       'v1': ['v0', 'v3'],
                       'v2': [],
                       'v3': [],
@@ -138,6 +138,10 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertEqual(set(g['v2'].neighbors), set([g['v0']]))
         self.assertEqual(set(g['v3'].neighbors), set([g['v1']]))
         self.assertEqual(set(g['v4'].neighbors), set())
+        self.assertIsNone(g[('v0', 'v1')].get('weight'))
+        self.assertEqual(g[('v0', 'v2')].get('weight'), 5)
+        with self.assertRaises(BadGraphInputException):
+            _ = UndirectedGraph.from_dict({'v0': [('v0', 'shuold_be_dict')]})
 
     def test_create_undirected_graph_from_directed_graph(self):
         """ Create an undirected graph from a directed graph """
@@ -566,7 +570,7 @@ class TestDirectedGraph(unittest.TestCase):
 
     def test_create_directed_graph_from_dict(self):
         """ Create a directed graph from an adjacency dictionary """
-        graph_dict = {'v0': ['v1', 'v1', 'v2'],
+        graph_dict = {'v0': ['v1', 'v1', ('v2', {'weight': 5})],
                       'v1': ['v0', 'v3'],
                       'v2': [],
                       'v3': [],
@@ -585,6 +589,10 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertEqual(set(g['v2'].ins), set([g['v0']]))
         self.assertEqual(set(g['v3'].ins), set([g['v1']]))
         self.assertEqual(set(g['v4'].ins), set())
+        self.assertIsNone(g[('v0', 'v1')].get('weight'))
+        self.assertEqual(g[('v0', 'v2')].get('weight'), 5)
+        with self.assertRaises(BadGraphInputException):
+            _ = DirectedGraph.from_dict({'v0': [('v0', 'should_be_dict')]})
 
     def test_create_directed_graph_from_transpose(self):
         """ Create a directed graph by reversing the edges of an input graph """
