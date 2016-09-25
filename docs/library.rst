@@ -1,10 +1,10 @@
 graphpy
 =======
 
-graph.edge
+graphpy.edge
 ----------
 
-*class* graph.edge.UndirectedEdge(*v0*, *v1*, *attrs* =None)
+*class* graphpy.edge.UndirectedEdge(*v0*, *v1*, *attrs* =None)
     - **Parameters**
         - **v0** <UndirectedVertex>
         - **v1** <UndirectedVertex>
@@ -33,7 +33,7 @@ graph.edge
             - **attr** <hashable object>
                 - key in this edge's *attrs* dict
 
-*class* graph.edge.DirectedEdge(*v_from*, *v_to*, *attrs* =None)
+*class* graphpy.edge.DirectedEdge(*v_from*, *v_to*, *attrs* =None)
     - **Parameters**
         - **v_from** <DirectedVertex>
         - **v_to** <DirectedVertex>
@@ -62,10 +62,10 @@ graph.edge
             - **attr** <hashable object>
                 - key in this edge's *attrs* dict
 
-graph.vertex
+graphpy.vertex
 ------------
 
-*class* graph.vertex.UndirectedVertex(*name* =None)
+*class* graphpy.vertex.UndirectedVertex(*name* =None)
     - **Parameters**
         - **name** <String>
     - *property* **name**
@@ -87,7 +87,7 @@ graph.vertex
         - **Parameters**
             - **e** <UndirectedEdge>
 
-*class* graph.vertex.DirectedVertex(*name* =None)
+*class* graphpy.vertex.DirectedVertex(*name* =None)
     - **Parameters**
         - **name** <String>
     - *property* **name**
@@ -113,16 +113,16 @@ graph.vertex
         - **Parameters**
             - **e** <DirectedEdge>
 
-*exception* graph.vertex.VertexNotPartOfEdgeException(*v*, *e*)
+*exception* graphpy.vertex.VertexNotPartOfEdgeException(*v*, *e*)
     - Cannot add an edge to a vertex which is not one of that edge's endpoints
 
-*exception* graph.vertex.VertexAlreadyHasEdgeException(*v*, *e*)
+*exception* graphpy.vertex.VertexAlreadyHasEdgeException(*v*, *e*)
     - Cannot add an edge to a vertex that already has that edge
 
-graph.graph
+graphpy.graph
 -----------
 
-*class* graph.vertex.UndirectedGraph()
+*class* graphpy.graph.UndirectedGraph()
     - *classmethod* **from_lists** (*vertices*, *edges*)
         - **Parameters**
             - **vertices** <UndirectedVertex[]>
@@ -185,33 +185,33 @@ graph.graph
     - *method* **__iter__**
         - Can do ``for v in g`` to iterate through the vertices of UndirectedGraph ``g``
     - *method* **__contains__** (*item*)
-        - Can do ``v in g`` to check whether or not UndirectedVertex ``v`` is a vertex in UndirectedGraph ``g``
-        - Can do ``e in g`` to check whether or not UndirectedEdge ``e`` is an edge in UndirectedGraph ``g``
-    - *method* **has_vertex** (*v*)
+        - Can do ``v_name in g`` to check whether or not a vertex with name ``v_name`` exists in UndirectedGraph ``g``
+        - Can do ``(v0_name, v1_name) in g`` to check whether or not an edge between vertices with names ``v0_name`` and ``v1_name`` exists in UndirectedGraph ``g``
+    - *method* **has_vertex** (*v_name*)
         - **Parameters**
-            - **v** <UndirectedVertex>
+            - **v_name** <String>
         - **Returns**
-            - bool for whether or not *v* is a vertex in this graph
-    - *method* **has_edge** (*e*)
+            - bool for whether or not *v_name* is a vertex in this graph
+    - *method* **has_edge** (*v_names*)
         - **Parameters**
-            - **e** <UndirectedEdge>
+            - **v_names** <tuple>
         - **Returns**
-            - bool for whether or not *e* is an edge in this graph
+            - bool for whether or not there is an edge in this graph between *v_names*[0] and *v_names*[1]
     - *method* **add_vertex** (*name*)
         - **Parameters**
             - **name** <String>
-    - *method* **add_edge** (*v0*, *v1*, *attrs* =None)
+    - *method* **add_edge** (*v0_name*, *v1_name*, *attrs* =None)
         - **Parameters**
-            - **v0** <UndirectedVertex>
-            - **v1** <UndirectedVertex>
+            - **v0_name** <String>
+            - **v1_name** <String>
             - **attrs** <dict>
-    - *method* **remove_vertex** (*v*)
+    - *method* **remove_vertex** (*name*)
         - **Parameters**
-            - **v** <UndirectedVertex>
-    - *method* **remove_edge** (*v0*, *v1*)
+            - **name** <String>
+    - *method* **remove_edge** (*v0_name*, *v1_name*)
         - **Parameters**
-            - **v0** <UndirectedVertex>
-            - **v1** <UndirectedVertex>
+            - **v0_name** <String>
+            - **v1_name** <String>
     - *method* **search** (*start*, *goal* =None, *method* ='breadth_first')
         - **Parameters**
             - **start** <UndirectedVertex>
@@ -228,7 +228,7 @@ graph.graph
             - UndirectedVertex[] if *goal* is specified, representing the path from *start* to *goal*
             - dict mapping UndirectedVertex -> UndirectedVertex[] if *goal* is not specified, each value representing the path from *start* to that value's key
 
-*class* graph.vertex.DirectedGraph()
+*class* graphpy.graph.DirectedGraph()
     - *classmethod* **from_lists** (*vertices*, *edges*)
         - **Parameters**
             - **vertices** <DirectedVertex[]>
@@ -294,33 +294,33 @@ graph.graph
     - *method* **__iter__**
         - Can do ``for v in g`` to iterate through the vertices of DirectedGraph ``g``
     - *method* **__contains__** (*item*)
-        - Can do ``v in g`` to check whether or not DirectedVertex ``v`` is a vertex in DirectedGraph ``g``
-        - Can do ``e in g`` to check whether or not DirectedEdge ``e`` is an edge in DirectedGraph ``g``
-    - *method* **has_vertex** (*v*)
+        - Can do ``v_name in g`` to check whether or not a vertex with name ``v_name`` exists in DirectedGraph ``g``
+        - Can do ``(v_from_name, v_to_name) in g`` to check whether or not an edge from a vertex with name ``v_from_name`` to a vertex with name ``v_to_name`` exists in DirectedGraph ``g``
+    - *method* **has_vertex** (*v_name*)
         - **Parameters**
-            - **v** <DirectedVertex>
+            - **v_name** <String>
         - **Returns**
-            - bool for whether or not *v* is a vertex in this graph
-    - *method* **has_edge** (*e*)
+            - bool for whether or not *v_name* is a vertex in this graph
+    - *method* **has_edge** (*v_names*)
         - **Parameters**
-            - **e** <DirectedEdge>
+            - **v_names** <tuple>
         - **Returns**
-            - bool for whether or not *e* is an edge in this graph
+            - bool for whether or not there is an edge in this graph from *v_names*[0] to *v_names*[1]
     - *method* **add_vertex** (*name*)
         - **Parameters**
             - **name** <String>
-    - *method* **add_edge** (*v_from*, *v_to*, *attrs* =None)
+    - *method* **add_edge** (*v_from_name*, *v_to_name*, *attrs* =None)
         - **Parameters**
-            - **v_from** <DirectedVertex>
-            - **v_to** <DirectedVertex>
+            - **v_from_name** <String>
+            - **v_to_name** <String>
             - **attrs** <dict>
-    - *method* **remove_vertex** (*v*)
+    - *method* **remove_vertex** (*name*)
         - **Parameters**
-            - **v** <DirectedVertex>
-    - *method* **remove_edge** (*v_from*, *v_to*)
+            - **name** <String>
+    - *method* **remove_edge** (*v_from_name*, *v_to_name*)
         - **Parameters**
-            - **v_from** <DirectedVertex>
-            - **v_to** <DirectedVertex>
+            - **v_from_name** <String>
+            - **v_to_name** <String>
     - *method* **search** (*start*, *goal* =None, *method* ='breadth_first')
         - **Parameters**
             - **start** <DirectedVertex>
@@ -337,17 +337,11 @@ graph.graph
             - DirectedVertex[] if *goal* is specified, representing the path from *start* to *goal*
             - dict mapping DirectedVertex -> DirectedVertex[] if *goal* is not specified, each value representing the path from *start* to that value's key
 
-*exception* graph.graph.BadGraphInputException
+*exception* graphpy.graph.BadGraphInputException
     - Indicates there is something wrong with an input graph_dict
 
-*exception* graph.graph.VertexAlreadyExistsException (*v*)
+*exception* graphpy.graph.VertexAlreadyExistsException (*v*)
     - Cannot add a vertex to a graph that already has that vertex
 
-*exception* graph.graph.VertexNameAlreadyExistsException (*name*)
-    - Cannot add a vertex to a graph that already has a vertex with the same name
-
-*exception* graph.graph.EdgeAlreadyExistsException (*e*)
+*exception* graphpy.graph.EdgeAlreadyExistsException (*e*)
     - Cannot add an edge to a graph that already has that edge
-
-*exception* graph.graph.VertexAlreadyHasEdgesException (*v*)
-    - Cannot add a vertex to a graph if that vertex already has edges
