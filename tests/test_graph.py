@@ -258,14 +258,15 @@ class TestUndirectedGraph(unittest.TestCase):
     def test_undirected_graph_add_vertex(self):
         """ Add vertices to an undirected graph """
         g = UndirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
+        v0_name = g.add_vertex('v0')
+        v1_name = g.add_vertex('v1')
 
+        self.assertEqual(v0_name, 'v0')
+        self.assertEqual(v1_name, 'v1')
         self.assertTrue(g.has_vertex('v0'))
         self.assertTrue(g.has_vertex('v1'))
         with self.assertRaises(KeyError):
             _ = g['v2']
-
 
     def test_undirected_graph_add_edge(self):
         """ Add edges to an undirected graph """
@@ -697,9 +698,11 @@ class TestDirectedGraph(unittest.TestCase):
     def test_directed_graph_add_vertex(self):
         """ Add vertices to a directed graph """
         g = DirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
+        v0_name = g.add_vertex('v0')
+        v1_name = g.add_vertex('v1')
 
+        self.assertEqual(v0_name, 'v0')
+        self.assertEqual(v1_name, 'v1')
         self.assertTrue(g.has_vertex('v0'))
         self.assertTrue(g.has_vertex('v1'))
         with self.assertRaises(KeyError):

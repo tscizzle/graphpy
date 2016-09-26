@@ -196,6 +196,8 @@ class UndirectedGraph(object):
         self._vertices.add(v)
         self._names_to_vertices_map[v_name] = v
 
+        return v.name
+
     def add_edge(self, v0_name, v1_name, attrs=None):
         """ Adds an edge between two vertices in this graph """
         v0 = self[v0_name]
@@ -473,6 +475,8 @@ class DirectedGraph(object):
 
         self._vertices.add(v)
         self._names_to_vertices_map[v_name] = v
+
+        return v.name
 
     def add_edge(self, v_from_name, v_to_name, attrs=None):
         """ Adds an edge from one vertex in this graph to another """

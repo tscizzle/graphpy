@@ -200,6 +200,8 @@ graphpy.graph
     - *method* **add_vertex** (*name*)
         - **Parameters**
             - **name** <String>
+        - **Returns**
+            - the new vertex's name, which is an arbitrary id if *name* is None
     - *method* **add_edge** (*v0_name*, *v1_name*, *attrs* =None)
         - **Parameters**
             - **v0_name** <String>
@@ -309,6 +311,8 @@ graphpy.graph
     - *method* **add_vertex** (*name*)
         - **Parameters**
             - **name** <String>
+        - **Returns**
+            - the new vertex's name, which is an arbitrary id if *name* is None
     - *method* **add_edge** (*v_from_name*, *v_to_name*, *attrs* =None)
         - **Parameters**
             - **v_from_name** <String>
