@@ -74,6 +74,33 @@ class TestUndirectedGraph(unittest.TestCase):
             self.assertTrue(g.has_vertex(v.name))
         self.assertEqual(counter, 2)
 
+    def test_undirected_graph_contains(self):
+        """ Check if an undirected graph contains certain vertices and edges """
+        graph_dict = {'v0': ['v1', 'v1', ('v2', {'weight': 5})],
+                      'v1': ['v0', 'v3'],
+                      'v2': [],
+                      'v3': [],
+                      'v4': []}
+        g = UndirectedGraph.from_dict(graph_dict)
+
+        self.assertTrue('v0' in g)
+        self.assertTrue('v1' in g)
+        self.assertTrue('v2' in g)
+        self.assertTrue('v3' in g)
+        self.assertTrue('v4' in g)
+        self.assertFalse('v5' in g)
+        self.assertTrue(('v0', 'v1') in g)
+        self.assertTrue(('v0', 'v2') in g)
+        self.assertTrue(('v1', 'v3') in g)
+        self.assertTrue(('v1', 'v0') in g)
+        self.assertFalse(('v0', 'v3') in g)
+        with self.assertRaises(TypeError):
+            _ = UndirectedVertex(name='v0') in g
+        with self.assertRaises(TypeError):
+            _ = (UndirectedVertex(name='v0'), UndirectedVertex(name='v1')) in g
+        with self.assertRaises(TypeError):
+            _ = ('v0', 'v1', 'v2') in g
+
     def test_create_undirected_graph_from_lists(self):
         """ Create an undirected graph from lists of vertices and edges """
         v0 = UndirectedVertex(name='v0')
@@ -334,31 +361,30 @@ class TestUndirectedGraph(unittest.TestCase):
         g.add_edge('v0', 'v2')
         g.add_edge('v1', 'v3')
 
-        self.assertEqual(g.search(g['v0'], goal=g['v0']), [g['v0']])
-        self.assertEqual(g.search(g['v0'], goal=g['v1']), [g['v0'], g['v1']])
-        self.assertEqual(g.search(g['v0'], goal=g['v2']), [g['v0'], g['v2']])
-        self.assertEqual(g.search(g['v0'], goal=g['v3']),
-                         [g['v0'], g['v1'], g['v3']])
-        self.assertIsNone(g.search(g['v0'], goal=g['v4']))
-        self.assertEqual(g.search(g['v0']),
-                         {g['v0']: [g['v0']],
-                          g['v1']: [g['v0'], g['v1']],
-                          g['v2']: [g['v0'], g['v2']],
-                          g['v3']: [g['v0'], g['v1'], g['v3']]})
-        self.assertEqual(g.search(g['v0'], goal=g['v0'], method='depth_first'),
-                         [g['v0']])
-        self.assertEqual(g.search(g['v0'], goal=g['v1'], method='depth_first'),
-                         [g['v0'], g['v1']])
-        self.assertEqual(g.search(g['v0'], goal=g['v2'], method='depth_first'),
-                         [g['v0'], g['v2']])
-        self.assertEqual(g.search(g['v0'], goal=g['v3'], method='depth_first'),
-                         [g['v0'], g['v1'], g['v3']])
-        self.assertIsNone(g.search(g['v0'], goal=g['v4'], method='depth_first'))
-        self.assertEqual(g.search(g['v0'], method='depth_first'),
-                         {g['v0']: [g['v0']],
-                          g['v1']: [g['v0'], g['v1']],
-                          g['v2']: [g['v0'], g['v2']],
-                          g['v3']: [g['v0'], g['v1'], g['v3']]})
+        self.assertEqual(g.search('v0', goal_name='v0'), ['v0'])
+        self.assertEqual(g.search('v0', goal_name='v1'), ['v0', 'v1'])
+        self.assertEqual(g.search('v0', goal_name='v2'), ['v0', 'v2'])
+        self.assertEqual(g.search('v0', goal_name='v3'),
+                         ['v0', 'v1', 'v3'])
+        self.assertIsNone(g.search('v0', goal_name='v4'))
+        self.assertEqual(g.search('v0'), {'v0': ['v0'],
+                                          'v1': ['v0', 'v1'],
+                                          'v2': ['v0', 'v2'],
+                                          'v3': ['v0', 'v1', 'v3']})
+        self.assertEqual(g.search('v0', goal_name='v0', method='depth_first'),
+                         ['v0'])
+        self.assertEqual(g.search('v0', goal_name='v1', method='depth_first'),
+                         ['v0', 'v1'])
+        self.assertEqual(g.search('v0', goal_name='v2', method='depth_first'),
+                         ['v0', 'v2'])
+        self.assertEqual(g.search('v0', goal_name='v3', method='depth_first'),
+                         ['v0', 'v1', 'v3'])
+        self.assertIsNone(g.search('v0', goal_name='v4', method='depth_first'))
+        self.assertEqual(g.search('v0', method='depth_first'),
+                         {'v0': ['v0'],
+                          'v1': ['v0', 'v1'],
+                          'v2': ['v0', 'v2'],
+                          'v3': ['v0', 'v1', 'v3']})
 
     def test_bad_undirected_graph_input(self):
         """ An undirected graph should not be able to be created from a
@@ -419,7 +445,7 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertEqual(g[('v0', 'v1')].v_from, g['v0'])
         self.assertEqual(g[('v0', 'v1')].v_to, g['v1'])
         with self.assertRaises(TypeError):
-            _ = g[(UndirectedVertex(name='v0'), UndirectedVertex(name='v1'))]
+            _ = g[(DirectedVertex(name='v0'), DirectedVertex(name='v1'))]
         with self.assertRaises(TypeError):
             _ = g[('v0', 'v1', 'v2')]
         with self.assertRaises(KeyError):
@@ -442,6 +468,33 @@ class TestDirectedGraph(unittest.TestCase):
             counter += 1
             self.assertTrue(g.has_vertex(v.name))
         self.assertEqual(counter, 2)
+
+    def test_directed_graph_contains(self):
+        """ Check if a directed graph contains certain vertices and edges """
+        graph_dict = {'v0': ['v1', 'v1', ('v2', {'weight': 5})],
+                      'v1': ['v0', 'v3'],
+                      'v2': [],
+                      'v3': [],
+                      'v4': []}
+        g = DirectedGraph.from_dict(graph_dict)
+
+        self.assertTrue('v0' in g)
+        self.assertTrue('v1' in g)
+        self.assertTrue('v2' in g)
+        self.assertTrue('v3' in g)
+        self.assertTrue('v4' in g)
+        self.assertFalse('v5' in g)
+        self.assertTrue(('v0', 'v1') in g)
+        self.assertTrue(('v0', 'v2') in g)
+        self.assertTrue(('v1', 'v3') in g)
+        self.assertTrue(('v1', 'v0') in g)
+        self.assertFalse(('v2', 'v0') in g)
+        with self.assertRaises(TypeError):
+            _ = DirectedVertex(name='v0') in g
+        with self.assertRaises(TypeError):
+            _ = (DirectedVertex(name='v0'), DirectedVertex(name='v1')) in g
+        with self.assertRaises(TypeError):
+            _ = ('v0', 'v1', 'v2') in g
 
     def test_create_directed_graph_from_lists(self):
         """ Create a directed graph from lists of vertices and edges """
@@ -579,7 +632,7 @@ class TestDirectedGraph(unittest.TestCase):
             g.edges = set()
 
     def test_directed_graph_num_vertices_and_num_edges(self):
-        """ Get the number of an undirected graph's vertices and edges """
+        """ Get the number of a directed graph's vertices and edges """
         g = DirectedGraph.from_dict({'v0': ['v1'],
                                      'v1': []})
 
@@ -747,28 +800,26 @@ class TestDirectedGraph(unittest.TestCase):
         g.add_edge('v2', 'v0')
         g.add_edge('v1', 'v3')
 
-        self.assertEqual(g.search(g['v0'], goal=g['v0']), [g['v0']])
-        self.assertEqual(g.search(g['v0'], goal=g['v1']), [g['v0'], g['v1']])
-        self.assertIsNone(g.search(g['v0'], goal=g['v2']))
-        self.assertEqual(g.search(g['v0'], goal=g['v3']),
-                         [g['v0'], g['v1'], g['v3']])
-        self.assertIsNone(g.search(g['v0'], goal=g['v4']))
-        self.assertEqual(g.search(g['v0']),
-                         {g['v0']: [g['v0']],
-                          g['v1']: [g['v0'], g['v1']],
-                          g['v3']: [g['v0'], g['v1'], g['v3']]})
-        self.assertEqual(g.search(g['v0'], goal=g['v0'], method='depth_first'),
-                         [g['v0']])
-        self.assertEqual(g.search(g['v0'], goal=g['v1'], method='depth_first'),
-                         [g['v0'], g['v1']])
-        self.assertIsNone(g.search(g['v0'], goal=g['v2'], method='depth_first'))
-        self.assertEqual(g.search(g['v0'], goal=g['v3'], method='depth_first'),
-                         [g['v0'], g['v1'], g['v3']])
-        self.assertIsNone(g.search(g['v0'], goal=g['v4'], method='depth_first'))
-        self.assertEqual(g.search(g['v0'], method='depth_first'),
-                         {g['v0']: [g['v0']],
-                          g['v1']: [g['v0'], g['v1']],
-                          g['v3']: [g['v0'], g['v1'], g['v3']]})
+        self.assertEqual(g.search('v0', goal_name='v0'), ['v0'])
+        self.assertEqual(g.search('v0', goal_name='v1'), ['v0', 'v1'])
+        self.assertIsNone(g.search('v0', goal_name='v2'))
+        self.assertEqual(g.search('v0', goal_name='v3'), ['v0', 'v1', 'v3'])
+        self.assertIsNone(g.search('v0', goal_name='v4'))
+        self.assertEqual(g.search('v0'), {'v0': ['v0'],
+                                          'v1': ['v0', 'v1'],
+                                          'v3': ['v0', 'v1', 'v3']})
+        self.assertEqual(g.search('v0', goal_name='v0', method='depth_first'),
+                         ['v0'])
+        self.assertEqual(g.search('v0', goal_name='v1', method='depth_first'),
+                         ['v0', 'v1'])
+        self.assertIsNone(g.search('v0', goal_name='v2', method='depth_first'))
+        self.assertEqual(g.search('v0', goal_name='v3', method='depth_first'),
+                         ['v0', 'v1', 'v3'])
+        self.assertIsNone(g.search('v0', goal_name='v4', method='depth_first'))
+        self.assertEqual(g.search('v0', method='depth_first'),
+                         {'v0': ['v0'],
+                          'v1': ['v0', 'v1'],
+                          'v3': ['v0', 'v1', 'v3']})
 
     def test_directed_graph_vertex_already_exists(self):
         """ A directed graph should not be able to add a vertex that already

@@ -174,7 +174,8 @@ class UndirectedGraph(object):
     def is_connected(self):
         """ Checks if this graph has paths from each vertex to each other
             vertex """
-        return len(self.search(tuple(self._vertices)[0])) == self.num_vertices
+        return (len(self.search(tuple(self._vertices)[0].name)) ==
+                self.num_vertices)
 
     def has_vertex(self, v_name):
         """ Checks if a certain vertex already exists in this graph """
@@ -232,16 +233,21 @@ class UndirectedGraph(object):
         if not e.is_self_edge:
             del self._names_to_edges_map[(v1.name, v0.name)]
 
-    def search(self, start, goal=None, method='breadth_first'):
+    def search(self, start_name, goal_name=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from
             some vertex """
-        assert self.has_vertex(start.name)
+        assert start_name in self
+        assert goal_name is None or goal_name in self
         assert method in set(['breadth_first', 'depth_first'])
+        start = self[start_name]
+        goal = self[goal_name] if goal_name is not None else None
         pop_idx = 0 if method == 'breadth_first' else -1
 
         vertex_queue = [(start, [start])]
         seen_so_far = set([start])
         paths = {}
+
+        namify_path = lambda path: [v.name for v in path]
 
         # handle each vertex until there are no vertices left to check
         while vertex_queue:
@@ -249,11 +255,11 @@ class UndirectedGraph(object):
 
             # if searching for a specific vertex, check if this is it
             if current_vertex == goal:
-                return current_path
+                return namify_path(current_path)
 
             # if this is the first visit to this vertex, store its path
             if current_vertex not in paths:
-                paths[current_vertex] = current_path
+                paths[current_vertex.name] = namify_path(current_path)
 
             # put this vertex's neighbors onto the back of the queue
             for neighbor in current_vertex.neighbors:
@@ -446,7 +452,7 @@ class DirectedGraph(object):
         v_self = tuple(self._vertices)[0]
         t = self.from_transpose(self)
         v_t = tuple(t.vertices)[0]
-        return (len(self.search(v_self)) == len(t.search(v_t)) ==
+        return (len(self.search(v_self.name)) == len(t.search(v_t.name)) ==
                 self.num_vertices)
 
     def has_vertex(self, v_name):
@@ -501,16 +507,21 @@ class DirectedGraph(object):
         self._edges.discard(e)
         del self._names_to_edges_map[(v_from.name, v_to.name)]
 
-    def search(self, start, goal=None, method='breadth_first'):
+    def search(self, start_name, goal_name=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from
             some vertex """
-        assert self.has_vertex(start.name)
+        assert start_name in self
+        assert goal_name is None or goal_name in self
         assert method in set(['breadth_first', 'depth_first'])
+        start = self[start_name]
+        goal = self[goal_name] if goal_name is not None else None
         pop_idx = 0 if method == 'breadth_first' else -1
 
         vertex_queue = [(start, [start])]
         seen_so_far = set([start])
         paths = {}
+
+        namify_path = lambda path: [v.name for v in path]
 
         # handle each vertex until there are no vertices left to check
         while vertex_queue:
@@ -518,11 +529,11 @@ class DirectedGraph(object):
 
             # if searching for a specific vertex, check if this is it
             if current_vertex == goal:
-                return current_path
+                return namify_path(current_path)
 
             # if this is the first visit to this vertex, store its path
             if current_vertex not in paths:
-                paths[current_vertex] = current_path
+                paths[current_vertex.name] = namify_path(current_path)
 
             # put the vertices this vertex points to onto the back of the queue
             for out in current_vertex.outs:

@@ -212,11 +212,11 @@ graphpy.graph
         - **Parameters**
             - **v0_name** <String>
             - **v1_name** <String>
-    - *method* **search** (*start*, *goal* =None, *method* ='breadth_first')
+    - *method* **search** (*start_name*, *goal_name* =None, *method* ='breadth_first')
         - **Parameters**
-            - **start** <UndirectedVertex>
+            - **start_name** <String>
                 - vertex to act as the root of the search algorithm
-            - **goal** <UndirectedVertex>
+            - **goal_name** <String>
                 - optional
                 - if specified, the search algorithm terminates when this vertex is found
                 - if not specified, the search algorithm goes through the entire graph
@@ -225,8 +225,8 @@ graphpy.graph
                 - one of ['breadth_first', 'depth_first']
                 - specifies which search algorithm is used
         - **Returns**
-            - UndirectedVertex[] if *goal* is specified, representing the path from *start* to *goal*
-            - dict mapping UndirectedVertex -> UndirectedVertex[] if *goal* is not specified, each value representing the path from *start* to that value's key
+            - String[] if *goal_name* is specified, representing the path from *start_name* to *goal_name*
+            - dict mapping String -> String[] if *goal_name* is not specified, each value representing the path from *start_name* to that value's key
 
 *class* graphpy.graph.DirectedGraph()
     - *classmethod* **from_lists** (*vertices*, *edges*)
@@ -321,11 +321,11 @@ graphpy.graph
         - **Parameters**
             - **v_from_name** <String>
             - **v_to_name** <String>
-    - *method* **search** (*start*, *goal* =None, *method* ='breadth_first')
+    - *method* **search** (*start_name*, *goal_name* =None, *method* ='breadth_first')
         - **Parameters**
-            - **start** <DirectedVertex>
+            - **start_name** <String>
                 - vertex to act as the root of the search algorithm
-            - **goal** <DirectedVertex>
+            - **goal_name** <String>
                 - optional
                 - if specified, the search algorithm terminates when this vertex is found
                 - if not specified, the search algorithm goes through the entire graph
@@ -334,8 +334,8 @@ graphpy.graph
                 - one of ['breadth_first', 'depth_first']
                 - specifies which search algorithm is used
         - **Returns**
-            - DirectedVertex[] if *goal* is specified, representing the path from *start* to *goal*
-            - dict mapping DirectedVertex -> DirectedVertex[] if *goal* is not specified, each value representing the path from *start* to that value's key
+            - String[] if *goal_name* is specified, representing the path from *start_name* to *goal_name*
+            - dict mapping String -> String[] if *goal_name* is not specified, each value representing the path from *start_name* to that value's key
 
 *exception* graphpy.graph.BadGraphInputException
     - Indicates there is something wrong with an input graph_dict
