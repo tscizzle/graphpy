@@ -74,11 +74,16 @@ class UndirectedGraph(object):
 
     @classmethod
     def from_lists(cls, vertices, edges):
+        """ Generate a graph by passing in a list of vertex names and a list of
+            edges between those vertices """
         g = cls()
-        for v in vertices:
-            g.add_vertex(v.name)
+        for v_name in vertices:
+            g.add_vertex(v_name)
         for e in edges:
-            g.add_edge(*[v.name for v in e.vertices], attrs=e.attrs)
+            v0_name = e[0]
+            v1_name = e[1]
+            attrs = e[2] if len(e) == 3 else None
+            g.add_edge(v0_name, v1_name, attrs=attrs)
         return g
 
     @classmethod
@@ -341,11 +346,16 @@ class DirectedGraph(object):
 
     @classmethod
     def from_lists(cls, vertices, edges):
+        """ Generate a graph by passing in a list of vertex names and a list of
+            edges between those vertices """
         g = cls()
-        for v in vertices:
-            g.add_vertex(v.name)
+        for v_name in vertices:
+            g.add_vertex(v_name)
         for e in edges:
-            g.add_edge(e.v_from.name, e.v_to.name, attrs=e.attrs)
+            v_from_name = e[0]
+            v_to_name = e[1]
+            attrs = e[2] if len(e) == 3 else None
+            g.add_edge(v_from_name, v_to_name, attrs=attrs)
         return g
 
     @classmethod

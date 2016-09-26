@@ -125,8 +125,9 @@ graphpy.graph
 *class* graphpy.graph.UndirectedGraph()
     - *classmethod* **from_lists** (*vertices*, *edges*)
         - **Parameters**
-            - **vertices** <UndirectedVertex[]>
-            - **edges** <UndirectedEdge[]>
+            - **vertices** <String[]>
+            - **edges** <tuple[]>
+                - each tuple is of the form (String, String) representing (v0_name, v1_name), or (String, String, dict) representing (v0_name, v1_name, attrs)
         - **Returns**
             - UndirectedGraph object defined by *vertices* and *edges*
     - *classmethod* **from_dict** (*graph_dict*)
@@ -233,8 +234,9 @@ graphpy.graph
 *class* graphpy.graph.DirectedGraph()
     - *classmethod* **from_lists** (*vertices*, *edges*)
         - **Parameters**
-            - **vertices** <DirectedVertex[]>
-            - **edges** <DirectedEdge[]>
+            - **vertices** <String[]>
+            - **edges** <tuple[]>
+                - each tuple is of the form (String, String) representing (v_from_name, v_to_name), or (String, String, dict) representing (v_from_name, v_to_name, attrs)
         - **Returns**
             - DirectedGraph object defined by *vertices* and *edges*
     - *classmethod* **from_dict** (*graph_dict*)
