@@ -34,22 +34,22 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertEqual(len(g), 1)
 
     def test_undirected_graph_get_item(self):
-        """ Get a vertex from an undirected graph by vertex name """
+        """ Get a vertex from an undirected graph by vertex val """
         g = UndirectedGraph()
         g.add_vertex('v0')
         g.add_vertex('v1')
         g.add_vertex('v2')
         g.add_edge('v0', 'v1')
 
-        self.assertEqual(g['v0'].name, 'v0')
+        self.assertEqual(g['v0'].val, 'v0')
         with self.assertRaises(TypeError):
-            _ = g[UndirectedVertex(name='v0')]
+            _ = g[UndirectedVertex(val='v0')]
         with self.assertRaises(KeyError):
             _ = g['v3']
         self.assertEqual(g[('v0', 'v1')].vertices,
                          frozenset([g['v0'], g['v1']]))
         with self.assertRaises(TypeError):
-            _ = g[(UndirectedVertex(name='v0'), UndirectedVertex(name='v1'))]
+            _ = g[(UndirectedVertex(val='v0'), UndirectedVertex(val='v1'))]
         with self.assertRaises(TypeError):
             _ = g[('v0', 'v1', 'v2')]
         with self.assertRaises(KeyError):
@@ -70,7 +70,7 @@ class TestUndirectedGraph(unittest.TestCase):
 
         for v in g:
             counter += 1
-            self.assertTrue(g.has_vertex(v.name))
+            self.assertTrue(g.has_vertex(v.val))
         self.assertEqual(counter, 2)
 
     def test_undirected_graph_contains(self):
@@ -94,9 +94,9 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertTrue(('v1', 'v0') in g)
         self.assertFalse(('v0', 'v3') in g)
         with self.assertRaises(TypeError):
-            _ = UndirectedVertex(name='v0') in g
+            _ = UndirectedVertex(val='v0') in g
         with self.assertRaises(TypeError):
-            _ = (UndirectedVertex(name='v0'), UndirectedVertex(name='v1')) in g
+            _ = (UndirectedVertex(val='v0'), UndirectedVertex(val='v1')) in g
         with self.assertRaises(TypeError):
             _ = ('v0', 'v1', 'v2') in g
 
@@ -166,10 +166,10 @@ class TestUndirectedGraph(unittest.TestCase):
     def test_create_random_undirected_graph(self):
         """ Create an undirected graph with edges between random nodes """
         num_vertices = 10
-        v_names = ['v' + str(i) for i in xrange(num_vertices)]
-        g_half = UndirectedGraph.random_graph(v_names, 0.5)
-        g_zero = UndirectedGraph.random_graph(v_names, 0.0)
-        g_one = UndirectedGraph.random_graph(v_names, 1.0)
+        v_vals = ['v' + str(i) for i in xrange(num_vertices)]
+        g_half = UndirectedGraph.random_graph(v_vals, 0.5)
+        g_zero = UndirectedGraph.random_graph(v_vals, 0.0)
+        g_one = UndirectedGraph.random_graph(v_vals, 1.0)
 
         max_edges = n_choose_2(num_vertices)
         self.assertEqual(g_half.num_vertices, num_vertices)
@@ -182,8 +182,8 @@ class TestUndirectedGraph(unittest.TestCase):
     def test_create_complete_undirected_graph(self):
         """ Create an undirected graph with edges between all nodes """
         num_vertices = 10
-        v_names = ['v' + str(i) for i in xrange(num_vertices)]
-        g = UndirectedGraph.complete_graph(v_names)
+        v_vals = ['v' + str(i) for i in xrange(num_vertices)]
+        g = UndirectedGraph.complete_graph(v_vals)
 
         max_edges = n_choose_2(num_vertices)
         self.assertEqual(g.num_vertices, num_vertices)
@@ -247,11 +247,11 @@ class TestUndirectedGraph(unittest.TestCase):
     def test_undirected_graph_add_vertex(self):
         """ Add vertices to an undirected graph """
         g = UndirectedGraph()
-        v0_name = g.add_vertex('v0')
-        v1_name = g.add_vertex('v1')
+        v0_val = g.add_vertex('v0')
+        v1_val = g.add_vertex('v1')
 
-        self.assertEqual(v0_name, 'v0')
-        self.assertEqual(v1_name, 'v1')
+        self.assertEqual(v0_val, 'v0')
+        self.assertEqual(v1_val, 'v1')
         self.assertTrue(g.has_vertex('v0'))
         self.assertTrue(g.has_vertex('v1'))
         with self.assertRaises(KeyError):
@@ -305,7 +305,7 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertFalse(g.has_edge(('v1', 'v2')))
 
         with self.assertRaises(TypeError):
-            del g[UndirectedVertex(name='v2')]
+            del g[UndirectedVertex(val='v2')]
         with self.assertRaises(KeyError):
             del g['v3']
 
@@ -331,7 +331,7 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertFalse(g.has_edge(('v0', 'v2')))
 
         with self.assertRaises(TypeError):
-            del g[(UndirectedVertex(name='v0'), UndirectedVertex(name='v1'))]
+            del g[(UndirectedVertex(val='v0'), UndirectedVertex(val='v1'))]
         with self.assertRaises(TypeError):
             del g[('v0', 'v1', 'v2')]
         with self.assertRaises(KeyError):
@@ -351,25 +351,25 @@ class TestUndirectedGraph(unittest.TestCase):
         g.add_edge('v0', 'v2')
         g.add_edge('v1', 'v3')
 
-        self.assertEqual(g.search('v0', goal_name='v0'), ['v0'])
-        self.assertEqual(g.search('v0', goal_name='v1'), ['v0', 'v1'])
-        self.assertEqual(g.search('v0', goal_name='v2'), ['v0', 'v2'])
-        self.assertEqual(g.search('v0', goal_name='v3'),
+        self.assertEqual(g.search('v0', goal_val='v0'), ['v0'])
+        self.assertEqual(g.search('v0', goal_val='v1'), ['v0', 'v1'])
+        self.assertEqual(g.search('v0', goal_val='v2'), ['v0', 'v2'])
+        self.assertEqual(g.search('v0', goal_val='v3'),
                          ['v0', 'v1', 'v3'])
-        self.assertIsNone(g.search('v0', goal_name='v4'))
+        self.assertIsNone(g.search('v0', goal_val='v4'))
         self.assertEqual(g.search('v0'), {'v0': ['v0'],
                                           'v1': ['v0', 'v1'],
                                           'v2': ['v0', 'v2'],
                                           'v3': ['v0', 'v1', 'v3']})
-        self.assertEqual(g.search('v0', goal_name='v0', method='depth_first'),
+        self.assertEqual(g.search('v0', goal_val='v0', method='depth_first'),
                          ['v0'])
-        self.assertEqual(g.search('v0', goal_name='v1', method='depth_first'),
+        self.assertEqual(g.search('v0', goal_val='v1', method='depth_first'),
                          ['v0', 'v1'])
-        self.assertEqual(g.search('v0', goal_name='v2', method='depth_first'),
+        self.assertEqual(g.search('v0', goal_val='v2', method='depth_first'),
                          ['v0', 'v2'])
-        self.assertEqual(g.search('v0', goal_name='v3', method='depth_first'),
+        self.assertEqual(g.search('v0', goal_val='v3', method='depth_first'),
                          ['v0', 'v1', 'v3'])
-        self.assertIsNone(g.search('v0', goal_name='v4', method='depth_first'))
+        self.assertIsNone(g.search('v0', goal_val='v4', method='depth_first'))
         self.assertEqual(g.search('v0', method='depth_first'),
                          {'v0': ['v0'],
                           'v1': ['v0', 'v1'],
@@ -420,22 +420,22 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertEqual(len(g), 1)
 
     def test_directed_graph_get_item(self):
-        """ Get a vertex from a directed graph by vertex name """
+        """ Get a vertex from a directed graph by vertex val """
         g = DirectedGraph()
         g.add_vertex('v0')
         g.add_vertex('v1')
         g.add_vertex('v2')
         g.add_edge('v0', 'v1')
 
-        self.assertEqual(g['v0'].name, 'v0')
+        self.assertEqual(g['v0'].val, 'v0')
         with self.assertRaises(TypeError):
-            _ = g[DirectedVertex(name='v0')]
+            _ = g[DirectedVertex(val='v0')]
         with self.assertRaises(KeyError):
             _ = g['v3']
         self.assertEqual(g[('v0', 'v1')].v_from, g['v0'])
         self.assertEqual(g[('v0', 'v1')].v_to, g['v1'])
         with self.assertRaises(TypeError):
-            _ = g[(DirectedVertex(name='v0'), DirectedVertex(name='v1'))]
+            _ = g[(DirectedVertex(val='v0'), DirectedVertex(val='v1'))]
         with self.assertRaises(TypeError):
             _ = g[('v0', 'v1', 'v2')]
         with self.assertRaises(KeyError):
@@ -456,7 +456,7 @@ class TestDirectedGraph(unittest.TestCase):
 
         for v in g:
             counter += 1
-            self.assertTrue(g.has_vertex(v.name))
+            self.assertTrue(g.has_vertex(v.val))
         self.assertEqual(counter, 2)
 
     def test_directed_graph_contains(self):
@@ -480,9 +480,9 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertTrue(('v1', 'v0') in g)
         self.assertFalse(('v2', 'v0') in g)
         with self.assertRaises(TypeError):
-            _ = DirectedVertex(name='v0') in g
+            _ = DirectedVertex(val='v0') in g
         with self.assertRaises(TypeError):
-            _ = (DirectedVertex(name='v0'), DirectedVertex(name='v1')) in g
+            _ = (DirectedVertex(val='v0'), DirectedVertex(val='v1')) in g
         with self.assertRaises(TypeError):
             _ = ('v0', 'v1', 'v2') in g
 
@@ -574,10 +574,10 @@ class TestDirectedGraph(unittest.TestCase):
     def test_create_random_directed_graph(self):
         """ Create a directed graph with edges between random nodes """
         num_vertices = 10
-        v_names = ['v' + str(i) for i in xrange(num_vertices)]
-        g_half = DirectedGraph.random_graph(v_names, 0.5)
-        g_zero = DirectedGraph.random_graph(v_names, 0.0)
-        g_one = DirectedGraph.random_graph(v_names, 1.0)
+        v_vals = ['v' + str(i) for i in xrange(num_vertices)]
+        g_half = DirectedGraph.random_graph(v_vals, 0.5)
+        g_zero = DirectedGraph.random_graph(v_vals, 0.0)
+        g_one = DirectedGraph.random_graph(v_vals, 1.0)
 
         max_edges = num_vertices ** 2
         self.assertEqual(g_half.num_vertices, num_vertices)
@@ -590,8 +590,8 @@ class TestDirectedGraph(unittest.TestCase):
     def test_create_complete_directed_graph(self):
         """ Create a directed graph with edges between all nodes """
         num_vertices = 10
-        v_names = ['v' + str(i) for i in xrange(num_vertices)]
-        g = DirectedGraph.complete_graph(v_names)
+        v_vals = ['v' + str(i) for i in xrange(num_vertices)]
+        g = DirectedGraph.complete_graph(v_vals)
 
         max_edges = num_vertices ** 2
         self.assertEqual(g.num_vertices, num_vertices)
@@ -677,11 +677,11 @@ class TestDirectedGraph(unittest.TestCase):
     def test_directed_graph_add_vertex(self):
         """ Add vertices to a directed graph """
         g = DirectedGraph()
-        v0_name = g.add_vertex('v0')
-        v1_name = g.add_vertex('v1')
+        v0_val = g.add_vertex('v0')
+        v1_val = g.add_vertex('v1')
 
-        self.assertEqual(v0_name, 'v0')
-        self.assertEqual(v1_name, 'v1')
+        self.assertEqual(v0_val, 'v0')
+        self.assertEqual(v1_val, 'v1')
         self.assertTrue(g.has_vertex('v0'))
         self.assertTrue(g.has_vertex('v1'))
         with self.assertRaises(KeyError):
@@ -736,7 +736,7 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertFalse(g.has_edge(('v1', 'v2')))
 
         with self.assertRaises(TypeError):
-            del g[DirectedVertex(name='v2')]
+            del g[DirectedVertex(val='v2')]
         with self.assertRaises(KeyError):
             del g['v3']
 
@@ -762,7 +762,7 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertFalse(g.has_edge(('v0', 'v2')))
 
         with self.assertRaises(TypeError):
-            del g[(DirectedVertex(name='v0'), DirectedVertex(name='v1'))]
+            del g[(DirectedVertex(val='v0'), DirectedVertex(val='v1'))]
         with self.assertRaises(TypeError):
             del g[('v0', 'v1', 'v2')]
         with self.assertRaises(KeyError):
@@ -782,22 +782,22 @@ class TestDirectedGraph(unittest.TestCase):
         g.add_edge('v2', 'v0')
         g.add_edge('v1', 'v3')
 
-        self.assertEqual(g.search('v0', goal_name='v0'), ['v0'])
-        self.assertEqual(g.search('v0', goal_name='v1'), ['v0', 'v1'])
-        self.assertIsNone(g.search('v0', goal_name='v2'))
-        self.assertEqual(g.search('v0', goal_name='v3'), ['v0', 'v1', 'v3'])
-        self.assertIsNone(g.search('v0', goal_name='v4'))
+        self.assertEqual(g.search('v0', goal_val='v0'), ['v0'])
+        self.assertEqual(g.search('v0', goal_val='v1'), ['v0', 'v1'])
+        self.assertIsNone(g.search('v0', goal_val='v2'))
+        self.assertEqual(g.search('v0', goal_val='v3'), ['v0', 'v1', 'v3'])
+        self.assertIsNone(g.search('v0', goal_val='v4'))
         self.assertEqual(g.search('v0'), {'v0': ['v0'],
                                           'v1': ['v0', 'v1'],
                                           'v3': ['v0', 'v1', 'v3']})
-        self.assertEqual(g.search('v0', goal_name='v0', method='depth_first'),
+        self.assertEqual(g.search('v0', goal_val='v0', method='depth_first'),
                          ['v0'])
-        self.assertEqual(g.search('v0', goal_name='v1', method='depth_first'),
+        self.assertEqual(g.search('v0', goal_val='v1', method='depth_first'),
                          ['v0', 'v1'])
-        self.assertIsNone(g.search('v0', goal_name='v2', method='depth_first'))
-        self.assertEqual(g.search('v0', goal_name='v3', method='depth_first'),
+        self.assertIsNone(g.search('v0', goal_val='v2', method='depth_first'))
+        self.assertEqual(g.search('v0', goal_val='v3', method='depth_first'),
                          ['v0', 'v1', 'v3'])
-        self.assertIsNone(g.search('v0', goal_name='v4', method='depth_first'))
+        self.assertIsNone(g.search('v0', goal_val='v4', method='depth_first'))
         self.assertEqual(g.search('v0', method='depth_first'),
                          {'v0': ['v0'],
                           'v1': ['v0', 'v1'],

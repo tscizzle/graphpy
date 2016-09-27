@@ -15,24 +15,24 @@ class TestUndirectedVertex(unittest.TestCase):
 
     def test_create_undirected_vertex(self):
         """ Create an undirected vertex """
-        v0 = UndirectedVertex(name='v0')
+        v0 = UndirectedVertex(val='v0')
 
-        self.assertEqual(v0.name, 'v0')
+        self.assertEqual(v0.val, 'v0')
         self.assertEqual(set(v0.edges), set())
 
-    def test_undirected_vertex_name(self):
-        """ Get an undirected vertex's name property """
-        v0 = UndirectedVertex(name='v0')
+    def test_undirected_vertex_val(self):
+        """ Get an undirected vertex's val property """
+        v0 = UndirectedVertex(val='v0')
 
-        self.assertEqual(v0.name, 'v0')
+        self.assertEqual(v0.val, 'v0')
         with self.assertRaises(AttributeError):
-            v0.name = ''
+            v0.val = ''
 
     def test_undirected_vertex_edges(self):
         """ Get an undirected vertex's edges property """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
-        v2 = UndirectedVertex(name='v2')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
+        v2 = UndirectedVertex(val='v2')
         e00 = UndirectedEdge(v0, v0)
         e01 = UndirectedEdge(v0, v1)
         e02 = UndirectedEdge(v0, v2)
@@ -50,9 +50,9 @@ class TestUndirectedVertex(unittest.TestCase):
 
     def test_undirected_vertex_has_self_edge(self):
         """ Get an undirected vertex's has_self_edge property """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
-        v2 = UndirectedVertex(name='v2')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
+        v2 = UndirectedVertex(val='v2')
         e00 = UndirectedEdge(v0, v0)
         e01 = UndirectedEdge(v0, v1)
         e11 = UndirectedEdge(v1, v1)
@@ -78,9 +78,9 @@ class TestUndirectedVertex(unittest.TestCase):
 
     def test_undirected_vertex_neighbors_and_degree(self):
         """ Get undirected vertices' neighbors and degree properties """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
-        v2 = UndirectedVertex(name='v2')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
+        v2 = UndirectedVertex(val='v2')
         e00 = UndirectedEdge(v0, v0)
         e01 = UndirectedEdge(v0, v1)
         e02 = UndirectedEdge(v0, v2)
@@ -101,9 +101,9 @@ class TestUndirectedVertex(unittest.TestCase):
 
     def test_undirected_vertex_add_edge(self):
         """ Add an edge to an undirected vertex """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
-        v2 = UndirectedVertex(name='v2')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
+        v2 = UndirectedVertex(val='v2')
         e00 = UndirectedEdge(v0, v0)
         e01 = UndirectedEdge(v0, v1)
         e10 = UndirectedEdge(v1, v0)
@@ -118,9 +118,9 @@ class TestUndirectedVertex(unittest.TestCase):
 
     def test_undirected_vertex_remove_edge(self):
         """ Remove an edge from an undirected vertex """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
-        v2 = UndirectedVertex(name='v2')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
+        v2 = UndirectedVertex(val='v2')
         e01 = UndirectedEdge(v0, v1)
         e10 = UndirectedEdge(v1, v0)
         e02 = UndirectedEdge(v0, v2)
@@ -142,8 +142,8 @@ class TestUndirectedVertex(unittest.TestCase):
     def test_undirected_vertex_already_has_edge(self):
         """ An undirected vertex should not be able to add an edge that it
             already has """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
         e01 = UndirectedEdge(v0, v1)
         v0.add_edge(e01)
 
@@ -158,9 +158,9 @@ class TestUndirectedVertex(unittest.TestCase):
     def test_undirected_vertex_not_part_of_edge(self):
         """ An undirected vertex should not be able add an edge which doesn't
             have it as a vertex """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
-        v2 = UndirectedVertex(name='v2')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
+        v2 = UndirectedVertex(val='v2')
         e12 = UndirectedEdge(v1, v2)
 
         with self.assertRaises(VertexNotPartOfEdgeException):
@@ -171,24 +171,24 @@ class TestDirectedVertex(unittest.TestCase):
 
     def test_create_directed_vertex(self):
         """ Create a directed vertex """
-        v0 = DirectedVertex(name='v0')
+        v0 = DirectedVertex(val='v0')
 
-        self.assertEqual(v0.name, 'v0')
+        self.assertEqual(v0.val, 'v0')
         self.assertEqual(set(v0.edges), set())
 
-    def test_directed_vertex_name(self):
-        """ Get a directed vertex's name property """
-        v0 = DirectedVertex(name='v0')
+    def test_directed_vertex_val(self):
+        """ Get a directed vertex's val property """
+        v0 = DirectedVertex(val='v0')
 
-        self.assertEqual(v0.name, 'v0')
+        self.assertEqual(v0.val, 'v0')
         with self.assertRaises(AttributeError):
-            v0.name = ''
+            v0.val = ''
 
     def test_directed_vertex_edges(self):
         """ Get a directed vertex's edges property """
-        v0 = DirectedVertex(name='v0')
-        v1 = DirectedVertex(name='v1')
-        v2 = DirectedVertex(name='v2')
+        v0 = DirectedVertex(val='v0')
+        v1 = DirectedVertex(val='v1')
+        v2 = DirectedVertex(val='v2')
         e00 = DirectedEdge(v0, v0)
         e01 = DirectedEdge(v0, v1)
         e20 = DirectedEdge(v2, v0)
@@ -207,9 +207,9 @@ class TestDirectedVertex(unittest.TestCase):
     def test_directed_vertex_outs_and_ins_and_degrees(self):
         """ Get directed vertices' outs, ins, out_degree, and in_degree
             properties """
-        v0 = DirectedVertex(name='v0')
-        v1 = DirectedVertex(name='v1')
-        v2 = DirectedVertex(name='v2')
+        v0 = DirectedVertex(val='v0')
+        v1 = DirectedVertex(val='v1')
+        v2 = DirectedVertex(val='v2')
         e00 = DirectedEdge(v0, v0)
         e01 = DirectedEdge(v0, v1)
         e02 = DirectedEdge(v0, v2)
@@ -227,9 +227,9 @@ class TestDirectedVertex(unittest.TestCase):
 
     def test_directed_vertex_add_edge(self):
         """ Add an edge to a directed vertex """
-        v0 = DirectedVertex(name='v0')
-        v1 = DirectedVertex(name='v1')
-        v2 = DirectedVertex(name='v2')
+        v0 = DirectedVertex(val='v0')
+        v1 = DirectedVertex(val='v1')
+        v2 = DirectedVertex(val='v2')
         e01 = DirectedEdge(v0, v1)
         e10 = DirectedEdge(v1, v0)
         e02 = DirectedEdge(v0, v2)
@@ -241,9 +241,9 @@ class TestDirectedVertex(unittest.TestCase):
 
     def test_directed_vertex_remove_edge(self):
         """ Remove an edge from a directed vertex """
-        v0 = DirectedVertex(name='v0')
-        v1 = DirectedVertex(name='v1')
-        v2 = DirectedVertex(name='v2')
+        v0 = DirectedVertex(val='v0')
+        v1 = DirectedVertex(val='v1')
+        v2 = DirectedVertex(val='v2')
         e01 = DirectedEdge(v0, v1)
         e10 = DirectedEdge(v1, v0)
         e02 = DirectedEdge(v0, v2)
@@ -266,8 +266,8 @@ class TestDirectedVertex(unittest.TestCase):
     def test_directed_vertex_already_has_edge(self):
         """ A directed vertex should not be able to add an edge that it already
             has """
-        v0 = DirectedVertex(name='v0')
-        v1 = DirectedVertex(name='v1')
+        v0 = DirectedVertex(val='v0')
+        v1 = DirectedVertex(val='v1')
         e01 = DirectedEdge(v0, v1)
         e10 = DirectedEdge(v1, v0)
         v0.add_edge(e01)
@@ -283,9 +283,9 @@ class TestDirectedVertex(unittest.TestCase):
     def test_directed_vertex_not_part_of_edge(self):
         """ A directed vertex should not be able add an edge which doesn't have
             it as a vertex """
-        v0 = DirectedVertex(name='v0')
-        v1 = DirectedVertex(name='v1')
-        v2 = DirectedVertex(name='v2')
+        v0 = DirectedVertex(val='v0')
+        v1 = DirectedVertex(val='v1')
+        v2 = DirectedVertex(val='v2')
         e12 = DirectedEdge(v1, v2)
 
         with self.assertRaises(VertexNotPartOfEdgeException):

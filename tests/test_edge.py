@@ -13,8 +13,8 @@ class TestUndirectedEdge(unittest.TestCase):
 
     def test_create_undirected_edge(self):
         """ Create an undirected edge """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
         e00 = UndirectedEdge(v0, v0, attrs={'weight': 5, 0: 1})
         e01 = UndirectedEdge(v0, v1)
 
@@ -25,9 +25,9 @@ class TestUndirectedEdge(unittest.TestCase):
 
     def test_undirected_edge_equality(self):
         """ Compare undirected edges for equality """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
-        v2 = UndirectedVertex(name='v2')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
+        v2 = UndirectedVertex(val='v2')
         e01 = UndirectedEdge(v0, v1)
         e02 = UndirectedEdge(v0, v2)
         e12 = UndirectedEdge(v1, v2)
@@ -45,9 +45,9 @@ class TestUndirectedEdge(unittest.TestCase):
 
     def test_undirected_edge_hashing(self):
         """ Hash an undirected edge """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
-        v2 = UndirectedVertex(name='v2')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
+        v2 = UndirectedVertex(val='v2')
         e01 = UndirectedEdge(v0, v1)
         e02 = UndirectedEdge(v0, v2)
         e10 = UndirectedEdge(v1, v0)
@@ -59,8 +59,8 @@ class TestUndirectedEdge(unittest.TestCase):
 
     def test_undirected_edge_vertices(self):
         """ Get an undirected edge's vertices property """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
         e01 = UndirectedEdge(v0, v1)
 
         self.assertEqual(e01.vertices, frozenset([v0, v1]))
@@ -69,8 +69,8 @@ class TestUndirectedEdge(unittest.TestCase):
 
     def test_undirected_edge_attrs(self):
         """ Get an undirected edge's attrs property """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
         e01 = UndirectedEdge(v0, v1, {'weight': 5})
 
         self.assertEqual(e01.attrs, {'weight': 5})
@@ -79,8 +79,8 @@ class TestUndirectedEdge(unittest.TestCase):
 
     def test_undirected_edge_is_self_edge(self):
         """ Get an undirected edge's is_self_edge property """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
         e00 = UndirectedEdge(v0, v0)
         e01 = UndirectedEdge(v0, v1)
 
@@ -91,8 +91,8 @@ class TestUndirectedEdge(unittest.TestCase):
 
     def test_undirected_edge_get(self):
         """ Get an attribute of an undirected edge """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
         e01 = UndirectedEdge(v0, v1, {'weight': 5})
 
         self.assertEqual(e01.get('weight'), 5)
@@ -100,8 +100,8 @@ class TestUndirectedEdge(unittest.TestCase):
 
     def test_undirected_edge_set(self):
         """ Set an attribute of an undirected edge """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
         e01 = UndirectedEdge(v0, v1)
 
         e01.set('weight', 5)
@@ -114,8 +114,8 @@ class TestUndirectedEdge(unittest.TestCase):
 
     def test_undirected_edge_del_attr(self):
         """ Delete an attribute of an undirected edge """
-        v0 = UndirectedVertex(name='v0')
-        v1 = UndirectedVertex(name='v1')
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
         e01 = UndirectedEdge(v0, v1, {'weight': 5, 0: 1})
 
         e01.del_attr('weight')
@@ -165,9 +165,9 @@ class TestDirectedEdge(unittest.TestCase):
 
     def test_directed_edge_hashing(self):
         """ Hash a directed edge """
-        v0 = DirectedVertex(name='v0')
-        v1 = DirectedVertex(name='v1')
-        v2 = DirectedVertex(name='v2')
+        v0 = DirectedVertex(val='v0')
+        v1 = DirectedVertex(val='v1')
+        v2 = DirectedVertex(val='v2')
         e01 = DirectedEdge(v0, v1)
         e02 = DirectedEdge(v0, v2)
         e10 = DirectedEdge(v1, v0)
@@ -181,10 +181,10 @@ class TestDirectedEdge(unittest.TestCase):
 
     def test_directed_edge_v_from_and_v_to(self):
         """ Get a directed edge's v_from and v_to properties """
-        v0 = DirectedVertex(name='v0')
-        v1 = DirectedVertex(name='v1')
-        v2 = DirectedVertex(name='v2')
-        v3 = DirectedVertex(name='v3')
+        v0 = DirectedVertex(val='v0')
+        v1 = DirectedVertex(val='v1')
+        v2 = DirectedVertex(val='v2')
+        v3 = DirectedVertex(val='v3')
         e01 = DirectedEdge(v0, v1)
 
         self.assertEqual(e01.v_from, v0)
@@ -196,8 +196,8 @@ class TestDirectedEdge(unittest.TestCase):
 
     def test_directed_edge_attrs(self):
         """ Get an directed edge's attrs property """
-        v0 = DirectedVertex(name='v0')
-        v1 = DirectedVertex(name='v1')
+        v0 = DirectedVertex(val='v0')
+        v1 = DirectedVertex(val='v1')
         e01 = DirectedEdge(v0, v1, {'weight': 5})
 
         self.assertEqual(e01.attrs, {'weight': 5})
@@ -206,8 +206,8 @@ class TestDirectedEdge(unittest.TestCase):
 
     def test_directed_edge_get(self):
         """ Get an attribute of a directed edge """
-        v0 = DirectedVertex(name='v0')
-        v1 = DirectedVertex(name='v1')
+        v0 = DirectedVertex(val='v0')
+        v1 = DirectedVertex(val='v1')
         e01 = DirectedEdge(v0, v1, {'weight': 5})
 
         self.assertEqual(e01.get('weight'), 5)
@@ -215,8 +215,8 @@ class TestDirectedEdge(unittest.TestCase):
 
     def test_directed_edge_set(self):
         """ Set an attribute of a directed edge """
-        v0 = DirectedVertex(name='v0')
-        v1 = DirectedVertex(name='v1')
+        v0 = DirectedVertex(val='v0')
+        v1 = DirectedVertex(val='v1')
         e01 = DirectedEdge(v0, v1)
 
         e01.set('weight', 5)
@@ -229,8 +229,8 @@ class TestDirectedEdge(unittest.TestCase):
 
     def test_directed_edge_del_attr(self):
         """ Delete an attribute of a directed edge """
-        v0 = DirectedVertex(name='v0')
-        v1 = DirectedVertex(name='v1')
+        v0 = DirectedVertex(val='v0')
+        v1 = DirectedVertex(val='v1')
         e01 = DirectedEdge(v0, v1, {'weight': 5, 0: 1})
 
         e01.del_attr('weight')

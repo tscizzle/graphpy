@@ -17,20 +17,20 @@ graphpy.edge
         - bool for whether or not this edge connects a vertex to itself
     - *method* **get** (*attr*)
         - **Parameters**
-            - **attr** <hashable object>
+            - **attr** <hashable>
                 - key in this edge's *attrs* dict
         - **Returns**
             - any object, whatever value the key *attr* points to in this edge's *attrs* dict
             - None, if this edge does not have the attribute
     - *method* **set** (**attr**, **value**)
         - **Parameters**
-            - **attr** <hashable object>
+            - **attr** <hashable>
                 - to be a key in this edge's *attrs* dict
             - **value** <any object>
                 - to be the value pointed to by *attr* in this edge's *attrs* dict
     - *method* **del_attr** (*attr*)
         - **Parameters**
-            - **attr** <hashable object>
+            - **attr** <hashable>
                 - key in this edge's *attrs* dict
 
 *class* graphpy.edge.DirectedEdge(*v_from*, *v_to*, *attrs* =None)
@@ -46,30 +46,30 @@ graphpy.edge
         - dict of attributes this edge has
     - *method* **get** (*attr*)
         - **Parameters**
-            - **attr** <hashable object>
+            - **attr** <hashable>
                 - key in this edge's *attrs* dict
         - **Returns**
             - any object, whatever value the key *attr* points to in this edge's *attrs* dict
             - None, if this edge does not have the attribute
     - *method* **set** (**attr**, **value**)
         - **Parameters**
-            - **attr** <hashable object>
+            - **attr** <hashable>
                 - to be a key in this edge's *attrs* dict
             - **value** <any object>
                 - to be the value pointed to by *attr* in this edge's *attrs* dict
     - *method* **del_attr** (*attr*)
         - **Parameters**
-            - **attr** <hashable object>
+            - **attr** <hashable>
                 - key in this edge's *attrs* dict
 
 graphpy.vertex
 ------------
 
-*class* graphpy.vertex.UndirectedVertex(*name* =None)
+*class* graphpy.vertex.UndirectedVertex(*val* =None)
     - **Parameters**
-        - **name** <String>
-    - *property* **name**
-        - String name of this vertex
+        - **val** <hashable>
+    - *property* **val**
+        - hashable val of this vertex
     - *property* **edges**
         - Iterator over UndirectedEdge objects this vertex has
     - *property* **has_self_edge**
@@ -87,11 +87,11 @@ graphpy.vertex
         - **Parameters**
             - **e** <UndirectedEdge>
 
-*class* graphpy.vertex.DirectedVertex(*name* =None)
+*class* graphpy.vertex.DirectedVertex(*val* =None)
     - **Parameters**
-        - **name** <String>
-    - *property* **name**
-        - String name of this vertex
+        - **val** <hashable>
+    - *property* **val**
+        - hashable val of this vertex
     - *property* **edges**
         - Iterator over DirectedEdge objects this vertex has
     - *property* **outs**
@@ -125,19 +125,19 @@ graphpy.graph
 *class* graphpy.graph.UndirectedGraph()
     - *classmethod* **from_lists** (*vertices*, *edges*)
         - **Parameters**
-            - **vertices** <String[]>
+            - **vertices** <hashable[]>
             - **edges** <tuple[]>
-                - each tuple is of the form (String, String) representing (v0_name, v1_name), or (String, String, dict) representing (v0_name, v1_name, attrs)
+                - each tuple is of the form (hashable, hashable) representing (v0_val, v1_val), or (hashable, hashable, dict) representing (v0_val, v1_val, attrs)
         - **Returns**
             - UndirectedGraph object defined by *vertices* and *edges*
     - *classmethod* **from_dict** (*graph_dict*)
         - **Parameters**
             - **graph_dict** <dict>
-                - String -> (String | tuple)[]
-                - each vertex's name maps to a list of elements which each represent an edge from that vertex
+                - hashable -> (hashable | tuple)[]
+                - each vertex's val maps to a list of elements which each represent an edge from that vertex
                 - each element (i.e. edge) in the mapped-to list is in one of two forms
-                    - String>, name of the vertex to which the edge points
-                    - (String, dict), (name of the vertex to which the edge points, the edge's attributes)
+                    - hashable, val of the vertex to which the edge points
+                    - (hashable, dict), (val of the vertex to which the edge points, the edge's attributes)
                 - if there are duplicate declarations of an edge (like v1 appearing in v0's list and v0 appearing in v1's list) with differnet attributes, the choice of which to keep is made arbitrarily
         - **Returns**
             - UndirectedGraph object defined by *graph_dict*
@@ -148,19 +148,19 @@ graphpy.graph
         - **Returns**
             - UndirectedGraph object version of *directed_graph*
                 - duplicate edges are treated as a single edge
-    - *classmethod* **random_graph** (*vertex_names*, *p* =0.5)
+    - *classmethod* **random_graph** (*vertex_vals*, *p* =0.5)
         - **Parameters**
-            - **vertex_names** <String[]>
-                - List of names of the vertices to include
+            - **vertex_vals** <hashable[]>
+                - List of vals of the vertices to include
             - **p** <float>
                 - float between 0 and 1
                 - represents the probability each pair of vertices has of having an edge between them
         - **Returns**
             - UndirectedGraph object with edges between random pairs of vertices
-    - *classmethod* **complete_graph** (*vertex_names*)
+    - *classmethod* **complete_graph** (*vertex_vals*)
         - **Parameters**
-            - **vertex_names** <String[]>
-                - List of names of the vertices to include
+            - **vertex_vals** <hashable[]>
+                - List of vals of the vertices to include
         - **Returns**
             - UndirectedGraph object with edges between all pairs of vertices
     - *property* **vertices**
@@ -177,49 +177,49 @@ graphpy.graph
         - Whether or not there exists a path between every pair of vertices this graph has
     - *method* **__len__**
         - Can do ``len(g)`` to get the number of vertices in UndirectedGraph ``g``
-    - *method* **__getitem__** (*v_name*)
-        - Can do ``g[v_name]`` to check if UndirectedGraph ``g`` has an UndirectedVertex with name ``v_name``
-        - Can do ``g[(v0_name, v1_name)]`` to check if UndirectedGraph ``g`` has an UndirectedEdge connecting UndirectedVertex objects with names ``v0_name`` and ``v1_name``
-    - *method* **__delitem__** (*v_name*)
-        - Can do ``del g[v_name]`` to remove an UndirectedVertex with name ``v_name`` from UndirectedGraph ``g``
-        - Can do ``del g[(v0_name, v1_name)]`` to remove an UndirectedEdge connecting UndirectedVertex objects with names ``v0_name`` and ``v1_name`` from UndirectedGraph ``g``
+    - *method* **__getitem__** (*v_val*)
+        - Can do ``g[v_val]`` to check if UndirectedGraph ``g`` has an UndirectedVertex with val ``v_val``
+        - Can do ``g[(v0_val, v1_val)]`` to check if UndirectedGraph ``g`` has an UndirectedEdge connecting UndirectedVertex objects with vals ``v0_val`` and ``v1_val``
+    - *method* **__delitem__** (*v_val*)
+        - Can do ``del g[v_val]`` to remove an UndirectedVertex with val ``v_val`` from UndirectedGraph ``g``
+        - Can do ``del g[(v0_val, v1_val)]`` to remove an UndirectedEdge connecting UndirectedVertex objects with vals ``v0_val`` and ``v1_val`` from UndirectedGraph ``g``
     - *method* **__iter__**
         - Can do ``for v in g`` to iterate through the vertices of UndirectedGraph ``g``
     - *method* **__contains__** (*item*)
-        - Can do ``v_name in g`` to check whether or not a vertex with name ``v_name`` exists in UndirectedGraph ``g``
-        - Can do ``(v0_name, v1_name) in g`` to check whether or not an edge between vertices with names ``v0_name`` and ``v1_name`` exists in UndirectedGraph ``g``
-    - *method* **has_vertex** (*v_name*)
+        - Can do ``v_val in g`` to check whether or not a vertex with val ``v_val`` exists in UndirectedGraph ``g``
+        - Can do ``(v0_val, v1_val) in g`` to check whether or not an edge between vertices with vals ``v0_val`` and ``v1_val`` exists in UndirectedGraph ``g``
+    - *method* **has_vertex** (*v_val*)
         - **Parameters**
-            - **v_name** <String>
+            - **v_val** <hashable>
         - **Returns**
-            - bool for whether or not *v_name* is a vertex in this graph
-    - *method* **has_edge** (*v_names*)
+            - bool for whether or not *v_val* is a vertex in this graph
+    - *method* **has_edge** (*v_vals*)
         - **Parameters**
-            - **v_names** <tuple>
+            - **v_vals** <tuple>
         - **Returns**
-            - bool for whether or not there is an edge in this graph between *v_names*[0] and *v_names*[1]
-    - *method* **add_vertex** (*name*)
+            - bool for whether or not there is an edge in this graph between *v_vals*[0] and *v_vals*[1]
+    - *method* **add_vertex** (*val*)
         - **Parameters**
-            - **name** <String>
+            - **val** <hashable>
         - **Returns**
-            - the new vertex's name, which is an arbitrary id if *name* is None
-    - *method* **add_edge** (*v0_name*, *v1_name*, *attrs* =None)
+            - the new vertex's val, which is an arbitrary id if *val* is None
+    - *method* **add_edge** (*v0_val*, *v1_val*, *attrs* =None)
         - **Parameters**
-            - **v0_name** <String>
-            - **v1_name** <String>
+            - **v0_val** <hashable>
+            - **v1_val** <hashable>
             - **attrs** <dict>
-    - *method* **remove_vertex** (*name*)
+    - *method* **remove_vertex** (*val*)
         - **Parameters**
-            - **name** <String>
-    - *method* **remove_edge** (*v0_name*, *v1_name*)
+            - **val** <hashable>
+    - *method* **remove_edge** (*v0_val*, *v1_val*)
         - **Parameters**
-            - **v0_name** <String>
-            - **v1_name** <String>
-    - *method* **search** (*start_name*, *goal_name* =None, *method* ='breadth_first')
+            - **v0_val** <hashable>
+            - **v1_val** <hashable>
+    - *method* **search** (*start_val*, *goal_val* =None, *method* ='breadth_first')
         - **Parameters**
-            - **start_name** <String>
+            - **start_val** <hashable>
                 - vertex to act as the root of the search algorithm
-            - **goal_name** <String>
+            - **goal_val** <hashable>
                 - optional
                 - if specified, the search algorithm terminates when this vertex is found
                 - if not specified, the search algorithm goes through the entire graph
@@ -228,25 +228,25 @@ graphpy.graph
                 - one of ['breadth_first', 'depth_first']
                 - specifies which search algorithm is used
         - **Returns**
-            - String[] if *goal_name* is specified, representing the path from *start_name* to *goal_name*
-            - dict mapping String -> String[] if *goal_name* is not specified, each value representing the path from *start_name* to that value's key
+            - hashable[] if *goal_val* is specified, representing the path from *start_val* to *goal_val*
+            - dict mapping hashable -> hashable[] if *goal_val* is not specified, each value representing the path from *start_val* to that value's key
 
 *class* graphpy.graph.DirectedGraph()
     - *classmethod* **from_lists** (*vertices*, *edges*)
         - **Parameters**
-            - **vertices** <String[]>
+            - **vertices** <hashable[]>
             - **edges** <tuple[]>
-                - each tuple is of the form (String, String) representing (v_from_name, v_to_name), or (String, String, dict) representing (v_from_name, v_to_name, attrs)
+                - each tuple is of the form (hashable, hashable) representing (v_from_val, v_to_val), or (hashable, hashable, dict) representing (v_from_val, v_to_val, attrs)
         - **Returns**
             - DirectedGraph object defined by *vertices* and *edges*
     - *classmethod* **from_dict** (*graph_dict*)
         - **Parameters**
             - **graph_dict** <dict>
-                - String -> (String | tuple)[]
-                - each vertex's name maps to a list of elements which each represent an edge from that vertex
+                - hashable -> (hashable | tuple)[]
+                - each vertex's val maps to a list of elements which each represent an edge from that vertex
                 - each element (i.e. edge) in the mapped-to list is in one of two forms
-                    - String>, name of the vertex to which the edge points
-                    - (String, dict), (name of the vertex to which the edge points, the edge's attributes)
+                    - hashable, val of the vertex to which the edge points
+                    - (hashable, dict), (val of the vertex to which the edge points, the edge's attributes)
                 - if there are duplicate declarations of an edge (like v1 appearing in v0's list and v0 appearing in v1's list) with differnet attributes, the choice of which to keep is made arbitrarily
         - **Returns**
             - DirectedGraph object defined by *graph_dict*
@@ -256,19 +256,19 @@ graphpy.graph
                 - a directed graph with the opposite orientation of the desired graph
         - **Returns**
             - DirectedGraph object with all edges of *transpose_graph* reversed
-    - *classmethod* **random_graph** (*vertex_names*, *p* =0.5)
+    - *classmethod* **random_graph** (*vertex_vals*, *p* =0.5)
         - **Parameters**
-            - **vertex_names** <String[]>
-                - List of names of the vertices to include
+            - **vertex_vals** <hashable[]>
+                - List of vals of the vertices to include
             - **p** <float>
                 - float between 0 and 1
                 - represents the probability each pair of vertices has of having an edge between them in a certain direction (so for any pair (v0, v1) there is *p* probability this graph has the edge (v0 -> v1), and this is separate and independent of whether this graph has (v1 -> v0))
         - **Returns**
             - DirectedGraph object with edges between random pairs of vertices
-    - *classmethod* **complete_graph** (*vertex_names*)
+    - *classmethod* **complete_graph** (*vertex_vals*)
         - **Parameters**
-            - **vertex_names** <String[]>
-                - List of names of the vertices to include
+            - **vertex_vals** <hashable[]>
+                - List of vals of the vertices to include
         - **Returns**
             - DirectedGraph object with edges between all pairs of vertices in both directions
     - *property* **vertices**
@@ -289,49 +289,49 @@ graphpy.graph
         - Whether or not there exists a path from each vertex in this graph to each other vertex
     - *method* **__len__**
         - Can do ``len(g)`` to get the number of vertices in DirectedGraph ``g``
-    - *method* **__getitem__** (*v_name*)
-        - Can do ``g[v_name]`` to check if DirectedGraph ``g`` has a DirectedVertex with name ``v_name``
-        - Can do ``g[(v0_name, v1_name)]`` to check if DirectedGraph ``g`` has a DirectedEdge connecting DirectedVertex objects with names ``v0_name`` and ``v1_name``
-    - *method* **__delitem__** (*v_name*)
-        - Can do ``del g[v_name]`` to remove a DirectedVertex with name ``v_name`` from DirectedGraph ``g``
-        - Can do ``del g[(v0_name, v1_name)]`` to remove a DirectedEdge connecting DirectedVertex objects with names ``v0_name`` and ``v1_name`` from DirectedGraph ``g``
+    - *method* **__getitem__** (*v_val*)
+        - Can do ``g[v_val]`` to check if DirectedGraph ``g`` has a DirectedVertex with val ``v_val``
+        - Can do ``g[(v0_val, v1_val)]`` to check if DirectedGraph ``g`` has a DirectedEdge connecting DirectedVertex objects with vals ``v0_val`` and ``v1_val``
+    - *method* **__delitem__** (*v_val*)
+        - Can do ``del g[v_val]`` to remove a DirectedVertex with val ``v_val`` from DirectedGraph ``g``
+        - Can do ``del g[(v0_val, v1_val)]`` to remove a DirectedEdge connecting DirectedVertex objects with vals ``v0_val`` and ``v1_val`` from DirectedGraph ``g``
     - *method* **__iter__**
         - Can do ``for v in g`` to iterate through the vertices of DirectedGraph ``g``
     - *method* **__contains__** (*item*)
-        - Can do ``v_name in g`` to check whether or not a vertex with name ``v_name`` exists in DirectedGraph ``g``
-        - Can do ``(v_from_name, v_to_name) in g`` to check whether or not an edge from a vertex with name ``v_from_name`` to a vertex with name ``v_to_name`` exists in DirectedGraph ``g``
-    - *method* **has_vertex** (*v_name*)
+        - Can do ``v_val in g`` to check whether or not a vertex with val ``v_val`` exists in DirectedGraph ``g``
+        - Can do ``(v_from_val, v_to_val) in g`` to check whether or not an edge from a vertex with val ``v_from_val`` to a vertex with val ``v_to_val`` exists in DirectedGraph ``g``
+    - *method* **has_vertex** (*v_val*)
         - **Parameters**
-            - **v_name** <String>
+            - **v_val** <hashable>
         - **Returns**
-            - bool for whether or not *v_name* is a vertex in this graph
-    - *method* **has_edge** (*v_names*)
+            - bool for whether or not *v_val* is a vertex in this graph
+    - *method* **has_edge** (*v_vals*)
         - **Parameters**
-            - **v_names** <tuple>
+            - **v_vals** <tuple>
         - **Returns**
-            - bool for whether or not there is an edge in this graph from *v_names*[0] to *v_names*[1]
-    - *method* **add_vertex** (*name*)
+            - bool for whether or not there is an edge in this graph from *v_vals*[0] to *v_vals*[1]
+    - *method* **add_vertex** (*val*)
         - **Parameters**
-            - **name** <String>
+            - **val** <hashable>
         - **Returns**
-            - the new vertex's name, which is an arbitrary id if *name* is None
-    - *method* **add_edge** (*v_from_name*, *v_to_name*, *attrs* =None)
+            - the new vertex's val, which is an arbitrary id if *val* is None
+    - *method* **add_edge** (*v_from_val*, *v_to_val*, *attrs* =None)
         - **Parameters**
-            - **v_from_name** <String>
-            - **v_to_name** <String>
+            - **v_from_val** <hashable>
+            - **v_to_val** <hashable>
             - **attrs** <dict>
-    - *method* **remove_vertex** (*name*)
+    - *method* **remove_vertex** (*val*)
         - **Parameters**
-            - **name** <String>
-    - *method* **remove_edge** (*v_from_name*, *v_to_name*)
+            - **val** <hashable>
+    - *method* **remove_edge** (*v_from_val*, *v_to_val*)
         - **Parameters**
-            - **v_from_name** <String>
-            - **v_to_name** <String>
-    - *method* **search** (*start_name*, *goal_name* =None, *method* ='breadth_first')
+            - **v_from_val** <hashable>
+            - **v_to_val** <hashable>
+    - *method* **search** (*start_val*, *goal_val* =None, *method* ='breadth_first')
         - **Parameters**
-            - **start_name** <String>
+            - **start_val** <hashable>
                 - vertex to act as the root of the search algorithm
-            - **goal_name** <String>
+            - **goal_val** <hashable>
                 - optional
                 - if specified, the search algorithm terminates when this vertex is found
                 - if not specified, the search algorithm goes through the entire graph
@@ -340,8 +340,8 @@ graphpy.graph
                 - one of ['breadth_first', 'depth_first']
                 - specifies which search algorithm is used
         - **Returns**
-            - String[] if *goal_name* is specified, representing the path from *start_name* to *goal_name*
-            - dict mapping String -> String[] if *goal_name* is not specified, each value representing the path from *start_name* to that value's key
+            - hashable[] if *goal_val* is specified, representing the path from *start_val* to *goal_val*
+            - dict mapping hashable -> hashable[] if *goal_val* is not specified, each value representing the path from *start_val* to that value's key
 
 *exception* graphpy.graph.BadGraphInputException
     - Indicates there is something wrong with an input graph_dict

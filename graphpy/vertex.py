@@ -12,24 +12,24 @@ Implementation of a vertex, as used in graphs
 
 class UndirectedVertex(object):
 
-    def __init__(self, name=None):
-        self._name = name or str(id(self))
+    def __init__(self, val=None):
+        self._val = val or id(self)
         self._edges = set()
         self._has_self_edge = False
 
     def __repr__(self):
-        display = (self.name, id(self))
-        return "Vertex(name=%s, id=%s)" % display
+        display = (self.val, id(self))
+        return "Vertex(val=%s, id=%s)" % display
 
     def __str__(self):
-        return "V(%s)" % self.name
+        return "V(%s)" % self.val
 
     def __contains__(self, e):
         return e in self._edges
 
     @property
-    def name(self):
-        return self._name
+    def val(self):
+        return self._val
 
     @property
     def edges(self):
@@ -80,23 +80,23 @@ class UndirectedVertex(object):
 
 class DirectedVertex(object):
 
-    def __init__(self, name=None):
-        self._name = name or str(id(self))
+    def __init__(self, val=None):
+        self._val = val or id(self)
         self._edges = set()
 
     def __repr__(self):
-        display = (self.name, id(self))
-        return "Vertex(name=%s, id=%s)" % display
+        display = (self.val, id(self))
+        return "Vertex(val=%s, id=%s)" % display
 
     def __str__(self):
-        return "V(%s)" % self.name
+        return "V(%s)" % self.val
 
     def __contains__(self, e):
         return e in self._edges
 
     @property
-    def name(self):
-        return self._name
+    def val(self):
+        return self._val
 
     @property
     def edges(self):
