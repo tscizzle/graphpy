@@ -9,6 +9,13 @@ from graphpy.vertex import UndirectedVertex, DirectedVertex
 import unittest
 
 
+################################################################################
+#                                                                              #
+#                                  Undirected                                  #
+#                                                                              #
+################################################################################
+
+
 class TestUndirectedEdge(unittest.TestCase):
 
     def test_create_undirected_edge(self):
@@ -125,6 +132,13 @@ class TestUndirectedEdge(unittest.TestCase):
         e01.del_attr(0)
 
         self.assertEqual(e01.attrs, {})
+
+
+################################################################################
+#                                                                              #
+#                                   Directed                                   #
+#                                                                              #
+################################################################################
 
 
 class TestDirectedEdge(unittest.TestCase):

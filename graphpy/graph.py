@@ -5,6 +5,7 @@ Implementation of a graph
 
 from edge import UndirectedEdge, DirectedEdge
 from vertex import UndirectedVertex, DirectedVertex
+from helpers import is_hashable
 
 import random
 
@@ -32,45 +33,8 @@ class UndirectedGraph(object):
     def __len__(self):
         return self.num_vertices
 
-    def __getitem__(self, key):
-        if isinstance(key, basestring):
-            if key not in self._vals_to_vertices_map:
-                raise KeyError("No vertex with val " + key + ".")
-            else:
-                return self._vals_to_vertices_map[key]
-        elif (isinstance(key, tuple) and len(key) == 2 and
-                         all(isinstance(v_val, basestring) for v_val in key)):
-            if key not in self._vals_to_edges_map:
-                raise KeyError("No edge between vertices with vals " + key[0] +
-                               " and " + key[1] + ".")
-            else:
-                return self._vals_to_edges_map[key]
-        else:
-            raise TypeError("Can't get key " + str(key) + ". Must be either a "
-                            "string or tuple of length 2 of strings.")
-
-    def __delitem__(self, key):
-        if isinstance(key, basestring):
-            self.remove_vertex(key)
-        elif (isinstance(key, tuple) and len(key) == 2 and
-                         all(isinstance(v_val, basestring) for v_val in key)):
-            self.remove_edge(*key)
-        else:
-            raise TypeError("Can't del with key " + str(key) + ". Must be "
-                            "either a string or tuple of length 2 of strings.")
-
     def __iter__(self):
         return iter(self._vertices)
-
-    def __contains__(self, item):
-        if isinstance(item, basestring):
-            return self.has_vertex(item)
-        elif (isinstance(item, tuple) and len(item) == 2 and
-                        all(isinstance(v_val, basestring) for v_val in item)):
-            return self.has_edge(item)
-        else:
-            raise TypeError("Can't get key " + str(item) + ". Must be either a "
-                            "string or tuple of length 2 of strings.")
 
     @classmethod
     def from_lists(cls, vertices, edges):
@@ -95,26 +59,24 @@ class UndirectedGraph(object):
             g.add_vertex(v_val)
         for v_val, neighbor_edge_list in graph_dict.items():
             for neighbor_edge in neighbor_edge_list:
-                if isinstance(neighbor_edge, basestring):
+                if is_hashable(neighbor_edge):
                     neighbor_val = neighbor_edge
                     neighbor_attrs = None
                 elif (isinstance(neighbor_edge, tuple) and
                       len(neighbor_edge) == 2 and
-                      isinstance(neighbor_edge[0], basestring) and
+                      is_hashable(neighbor_edge[0]) and
                       isinstance(neighbor_edge[1], dict)):
                     neighbor_val, neighbor_attrs = neighbor_edge
                 else:
                     m = (str(neighbor_edge) + " must be either a string or a "
-                         "tuple of a string and a dict.")
+                         "tuple of a string and a dict")
                     raise BadGraphInputException(m)
+                if not g.has_vertex(neighbor_val):
+                    g.add_vertex(neighbor_val)
                 try:
                     g.add_edge(v_val, neighbor_val, attrs=neighbor_attrs)
                 except EdgeAlreadyExistsException:
                     pass
-                except KeyError:
-                    m = (str(neighbor_val) + " is in a neighbor list but is "
-                         "not a vertex key.")
-                    raise BadGraphInputException(m)
         return g
 
     @classmethod
@@ -190,13 +152,21 @@ class UndirectedGraph(object):
         """ Checks if a certain edge already exists in this graph """
         return v_vals in self._vals_to_edges_map
 
+    def get_vertex(self, v_val):
+        """ Gets a vertex in this graph """
+        return self._vals_to_vertices_map.get(v_val)
+
+    def get_edge(self, v_vals):
+        """ Gets an edge between two vertices in this graph """
+        return self._vals_to_edges_map.get(v_vals)
+
     def add_vertex(self, v_val):
         """ Adds a vertex to this graph """
+        if not is_hashable(v_val):
+            raise TypeError(str(v_val) + " must be hashable")
         v = UndirectedVertex(val=v_val)
-        if self.has_vertex(v):
+        if self.has_vertex(v_val):
             raise VertexAlreadyExistsException(v)
-        if v_val in self._vals_to_vertices_map:
-            raise VertexAlreadyExistsException(v_val)
 
         self._vertices.add(v)
         self._vals_to_vertices_map[v_val] = v
@@ -205,8 +175,8 @@ class UndirectedGraph(object):
 
     def add_edge(self, v0_val, v1_val, attrs=None):
         """ Adds an edge between two vertices in this graph """
-        v0 = self[v0_val]
-        v1 = self[v1_val]
+        v0 = self.get_vertex(v0_val)
+        v1 = self.get_vertex(v1_val)
         e = UndirectedEdge(v0, v1, attrs=attrs)
         if self.has_edge((v0_val, v1_val)):
             raise EdgeAlreadyExistsException(e)
@@ -220,7 +190,7 @@ class UndirectedGraph(object):
 
     def remove_vertex(self, v_val):
         """ Removes a vertex from this graph """
-        v = self[v_val]
+        v = self.get_vertex(v_val)
         for e in set(v.edges):
             self.remove_edge(*[v.val for v in e.vertices])
         self._vertices.discard(v)
@@ -228,8 +198,8 @@ class UndirectedGraph(object):
 
     def remove_edge(self, v0_val, v1_val):
         """ Removes an edge between two vertices in this graph """
-        v0 = self[v0_val]
-        v1 = self[v1_val]
+        v0 = self.get_vertex(v0_val)
+        v1 = self.get_vertex(v1_val)
         e = UndirectedEdge(v0, v1)
 
         v0.remove_edge(e)
@@ -243,11 +213,11 @@ class UndirectedGraph(object):
     def search(self, start_val, goal_val=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from
             some vertex """
-        assert start_val in self
-        assert goal_val is None or goal_val in self
+        assert self.has_vertex(start_val)
+        assert goal_val is None or self.has_vertex(goal_val)
         assert method in set(['breadth_first', 'depth_first'])
-        start = self[start_val]
-        goal = self[goal_val] if goal_val is not None else None
+        start = self.get_vertex(start_val)
+        goal = self.get_vertex(goal_val)
         pop_idx = 0 if method == 'breadth_first' else -1
 
         vertex_queue = [(start, [start])]
@@ -305,44 +275,8 @@ class DirectedGraph(object):
     def __len__(self):
         return self.num_vertices
 
-    def __getitem__(self, key):
-        if isinstance(key, basestring):
-            if key not in self._vals_to_vertices_map:
-                raise KeyError("No vertex with val " + key + ".")
-            else:
-                return self._vals_to_vertices_map[key]
-        elif (isinstance(key, tuple) and len(key) == 2 and
-                         all(isinstance(v_val, basestring) for v_val in key)):
-            if key not in self._vals_to_edges_map:
-                raise KeyError("No edge between vertices with vals " + key[0] +
-                               " and " + key[1] + ".")
-            else:
-                return self._vals_to_edges_map[key]
-        else:
-            raise TypeError("Can't get key " + str(key) + ". Must be either a "
-                            "string or tuple of length 2 of strings.")
-
-    def __delitem__(self, key):
-        if isinstance(key, basestring):
-            self.remove_vertex(key)
-        elif isinstance(key, tuple) and len(key) == 2:
-            self.remove_edge(*key)
-        else:
-            raise TypeError("Can't del with key " + str(key) + ". Must be "
-                            "either a string or tuple of length 2 of strings.")
-
     def __iter__(self):
         return iter(self._vertices)
-
-    def __contains__(self, item):
-        if isinstance(item, basestring):
-            return self.has_vertex(item)
-        elif (isinstance(item, tuple) and len(item) == 2 and
-                        all(isinstance(v_val, basestring) for v_val in item)):
-            return self.has_edge(item)
-        else:
-            raise TypeError("Can't get key " + str(item) + ". Must be either a "
-                            "string or tuple of length 2 of strings.")
 
     @classmethod
     def from_lists(cls, vertices, edges):
@@ -367,25 +301,23 @@ class DirectedGraph(object):
             g.add_vertex(v_val)
         for v_val, out_edge_list in graph_dict.items():
             for out_edge in out_edge_list:
-                if isinstance(out_edge, basestring):
+                if is_hashable(out_edge):
                     out_val = out_edge
                     out_attrs = None
                 elif (isinstance(out_edge, tuple) and len(out_edge) == 2 and
-                      isinstance(out_edge[0], basestring) and
+                      is_hashable(out_edge[0]) and
                       isinstance(out_edge[1], dict)):
                     out_val, out_attrs = out_edge
                 else:
                     m = (str(out_edge) + " must be either a string or a tuple "
-                         "of a string and a dict.")
+                         "of a string and a dict")
                     raise BadGraphInputException(m)
+                if not g.has_vertex(out_val):
+                    g.add_vertex(out_val)
                 try:
                     g.add_edge(v_val, out_val, attrs=out_attrs)
                 except EdgeAlreadyExistsException:
                     pass
-                except KeyError:
-                    m = (str(out_edge) + " in a neighbor list but not in the "
-                         "vertex list.")
-                    raise BadGraphInputException(m)
         return g
 
     @classmethod
@@ -475,13 +407,21 @@ class DirectedGraph(object):
         """ Checks if a certain edge already exists in this graph """
         return v_vals in self._vals_to_edges_map
 
+    def get_vertex(self, v_val):
+        """ Gets a vertex in this graph """
+        return self._vals_to_vertices_map.get(v_val)
+
+    def get_edge(self, v_vals):
+        """ Gets an edge between two vertices in this graph """
+        return self._vals_to_edges_map.get(v_vals)
+
     def add_vertex(self, v_val):
         """ Adds a vertex to this graph """
+        if not is_hashable(v_val):
+            raise TypeError(str(v_val) + " must be hashable")
         v = DirectedVertex(val=v_val)
         if self.has_vertex(v_val):
             raise VertexAlreadyExistsException(v)
-        if v_val in self._vals_to_vertices_map:
-            raise VertexAlreadyExistsException(v_val)
 
         self._vertices.add(v)
         self._vals_to_vertices_map[v_val] = v
@@ -490,8 +430,8 @@ class DirectedGraph(object):
 
     def add_edge(self, v_from_val, v_to_val, attrs=None):
         """ Adds an edge from one vertex in this graph to another """
-        v_from = self[v_from_val]
-        v_to = self[v_to_val]
+        v_from = self.get_vertex(v_from_val)
+        v_to = self.get_vertex(v_to_val)
         e = DirectedEdge(v_from, v_to, attrs=attrs)
         if self.has_edge((v_from_val, v_to_val)):
             raise EdgeAlreadyExistsException(e)
@@ -504,7 +444,7 @@ class DirectedGraph(object):
 
     def remove_vertex(self, v_val):
         """ Removes a vertex from this graph """
-        v = self[v_val]
+        v = self.get_vertex(v_val)
         for e in set(v.edges):
             self.remove_edge(e.v_from.val, e.v_to.val)
         self._vertices.discard(v)
@@ -512,8 +452,8 @@ class DirectedGraph(object):
 
     def remove_edge(self, v_from_val, v_to_val):
         """ Removes an edge from one vertex in this graph to another """
-        v_from = self[v_from_val]
-        v_to = self[v_to_val]
+        v_from = self.get_vertex(v_from_val)
+        v_to = self.get_vertex(v_to_val)
         e = DirectedEdge(v_from, v_to)
 
         v_from.remove_edge(e)
@@ -524,11 +464,11 @@ class DirectedGraph(object):
     def search(self, start_val, goal_val=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from
             some vertex """
-        assert start_val in self
-        assert goal_val is None or goal_val in self
+        assert self.has_vertex(start_val)
+        assert goal_val is None or self.has_vertex(goal_val)
         assert method in set(['breadth_first', 'depth_first'])
-        start = self[start_val]
-        goal = self[goal_val] if goal_val is not None else None
+        start = self.get_vertex(start_val)
+        goal = self.get_vertex(goal_val)
         pop_idx = 0 if method == 'breadth_first' else -1
 
         vertex_queue = [(start, [start])]
@@ -575,10 +515,10 @@ class BadGraphInputException(Exception):
 
 class VertexAlreadyExistsException(Exception):
     def __init__(self, v):
-        m = str(v) + " already exists."
+        m = str(v) + " already exists"
         super(VertexAlreadyExistsException, self).__init__(m)
 
 class EdgeAlreadyExistsException(Exception):
     def __init__(self, e):
-        m = str(e) + " already exists."
+        m = str(e) + " already exists"
         super(EdgeAlreadyExistsException, self).__init__(m)
