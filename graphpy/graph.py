@@ -157,7 +157,7 @@ class UndirectedGraph(object):
         return self._vals_to_vertices_map.get(v_val)
 
     def get_edge(self, v_vals):
-        """ Gets an edge between two vertices in this graph """
+        """ Gets an edge between vertices in this graph """
         return self._vals_to_edges_map.get(v_vals)
 
     def add_vertex(self, v_val):
@@ -174,7 +174,7 @@ class UndirectedGraph(object):
         return v.val
 
     def add_edge(self, v0_val, v1_val, attrs=None):
-        """ Adds an edge between two vertices in this graph """
+        """ Adds an edge between vertices in this graph """
         v0 = self.get_vertex(v0_val)
         v1 = self.get_vertex(v1_val)
         e = UndirectedEdge(v0, v1, attrs=attrs)
@@ -197,7 +197,7 @@ class UndirectedGraph(object):
         del self._vals_to_vertices_map[v_val]
 
     def remove_edge(self, v0_val, v1_val):
-        """ Removes an edge between two vertices in this graph """
+        """ Removes an edge between vertices in this graph """
         v0 = self.get_vertex(v0_val)
         v1 = self.get_vertex(v1_val)
         e = UndirectedEdge(v0, v1)
@@ -412,7 +412,7 @@ class DirectedGraph(object):
         return self._vals_to_vertices_map.get(v_val)
 
     def get_edge(self, v_vals):
-        """ Gets an edge between two vertices in this graph """
+        """ Gets an edge between vertices in this graph """
         return self._vals_to_edges_map.get(v_vals)
 
     def add_vertex(self, v_val):

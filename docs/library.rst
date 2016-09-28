@@ -189,6 +189,16 @@ graphpy.graph
             - **v_vals** <tuple>
         - **Returns**
             - bool for whether or not there is an edge in this graph between *v_vals*[0] and *v_vals*[1]
+    - *method* **get_vertex** (*v_val*)
+        - **Parameters**
+            - **v_val** <hashable>
+        - **Returns**
+            - UndirectedVertex object with val of *v_val*, or None if no such vertex is in this graph
+    - *method* **get_edge** (*v_vals*)
+        - **Parameters**
+            - **v_vals** <tuple>
+        - **Returns**
+            - UndirectedEdge object with vertices with vals of *v_vals*[0] and *v_vals*[1], or None if no such edge is in this graph
     - *method* **add_vertex** (*val*)
         - **Parameters**
             - **val** <hashable>
@@ -292,6 +302,16 @@ graphpy.graph
             - **v_vals** <tuple>
         - **Returns**
             - bool for whether or not there is an edge in this graph from *v_vals*[0] to *v_vals*[1]
+    - *method* **get_vertex** (*v_val*)
+        - **Parameters**
+            - **v_val** <hashable>
+        - **Returns**
+            - DirectedVertex object with val of *v_val*, or None if no such vertex is in this graph
+    - *method* **get_edge** (*v_vals*)
+        - **Parameters**
+            - **v_vals** <tuple>
+        - **Returns**
+            - DirectedEdge object with vertices with vals of *v_vals*[0] and *v_vals*[1], or None if no such edge is in this graph
     - *method* **add_vertex** (*val*)
         - **Parameters**
             - **val** <hashable>
