@@ -59,20 +59,20 @@ class TestUndirectedGraph(unittest.TestCase):
 
     def test_create_undirected_graph_from_lists(self):
         """ Create an undirected graph from lists of vertices and edges """
-        vertices = ['v0', 'v1', 'v2', 'v3', 'v4']
-        edges = [('v0', 'v1', {'weight': 3}),
-                 ('v0', 'v2', {'weight': 4}),
-                 ('v1', 'v3')]
+        vertices = ['v0', 1, (2, 2), 'v3', 'v4']
+        edges = [('v0', 1, {'weight': 3}),
+                 ('v0', (2, 2), {'weight': 4}),
+                 (1, 'v3')]
         g = UndirectedGraph.from_lists(vertices, edges)
 
         v0 = g.get_vertex('v0')
-        v1 = g.get_vertex('v1')
-        v2 = g.get_vertex('v2')
+        v1 = g.get_vertex(1)
+        v2 = g.get_vertex((2, 2))
         v3 = g.get_vertex('v3')
         v4 = g.get_vertex('v4')
-        e01 = g.get_edge(('v0', 'v1'))
-        e02 = g.get_edge(('v0', 'v2'))
-        e13 = g.get_edge(('v1', 'v3'))
+        e01 = g.get_edge(('v0', 1))
+        e02 = g.get_edge(('v0', (2, 2)))
+        e13 = g.get_edge((1, 'v3'))
         self.assertEqual(g.num_vertices, 5)
         self.assertEqual(g.num_edges, 3)
         self.assertEqual(set(v0.neighbors), set([v1, v2]))
@@ -96,20 +96,21 @@ class TestUndirectedGraph(unittest.TestCase):
 
     def test_create_undirected_graph_from_dict(self):
         """ Create an undirected graph from an adjacency dictionary """
-        graph_dict = {'v0': ['v1', 'v1', ('v2', {'weight': 5})],
-                      'v1': ['v0', 'v3'],
-                      'v2': [],
+        graph_dict = {'v0': [1, 1, ((2, 2), {'weight': 5})],
+                      1: ['v0', 'v3'],
+                      (2, 2): [],
                       'v3': [],
                       'v4': []}
         g = UndirectedGraph.from_dict(graph_dict)
 
         v0 = g.get_vertex('v0')
-        v1 = g.get_vertex('v1')
-        v2 = g.get_vertex('v2')
+        v1 = g.get_vertex(1)
+        v2 = g.get_vertex((2, 2))
         v3 = g.get_vertex('v3')
         v4 = g.get_vertex('v4')
-        e01 = g.get_edge(('v0', 'v1'))
-        e02 = g.get_edge(('v0', 'v2'))
+        e01 = g.get_edge(('v0', 1))
+        e02 = g.get_edge(('v0', (2, 2)))
+        e13 = g.get_edge((1, 'v3'))
         self.assertEqual(g.num_vertices, 5)
         self.assertEqual(g.num_edges, 3)
         self.assertEqual(set(v0.neighbors), set([v1, v2]))
@@ -119,6 +120,7 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertEqual(set(v4.neighbors), set())
         self.assertIsNone(e01.get('weight'))
         self.assertEqual(e02.get('weight'), 5)
+        self.assertIsNone(e13.get('weight'))
         with self.assertRaises(BadGraphInputException):
             _ = UndirectedGraph.from_dict({'v0': [{'weight': 5}],
                                            'v1': [{'weight': 3}]})
@@ -414,22 +416,22 @@ class TestDirectedGraph(unittest.TestCase):
 
     def test_create_directed_graph_from_lists(self):
         """ Create a directed graph from lists of vertices and edges """
-        vertices = ['v0', 'v1', 'v2', 'v3', 'v4']
-        edges = [('v0', 'v1', {'weight': 3}),
-                 ('v0', 'v2', {'weight': 4}),
-                 ('v1', 'v3'),
-                 ('v1', 'v0', {'weight': 5})]
+        vertices = ['v0', 1, (2, 2), 'v3', 'v4']
+        edges = [('v0', 1, {'weight': 3}),
+                 ('v0', (2, 2), {'weight': 4}),
+                 (1, 'v3'),
+                 (1, 'v0', {'weight': 5})]
         g = DirectedGraph.from_lists(vertices, edges)
 
         v0 = g.get_vertex('v0')
-        v1 = g.get_vertex('v1')
-        v2 = g.get_vertex('v2')
+        v1 = g.get_vertex(1)
+        v2 = g.get_vertex((2, 2))
         v3 = g.get_vertex('v3')
         v4 = g.get_vertex('v4')
-        e01 = g.get_edge(('v0', 'v1'))
-        e02 = g.get_edge(('v0', 'v2'))
-        e13 = g.get_edge(('v1', 'v3'))
-        e10 = g.get_edge(('v1', 'v0'))
+        e01 = g.get_edge(('v0', 1))
+        e02 = g.get_edge(('v0', (2, 2)))
+        e13 = g.get_edge((1, 'v3'))
+        e10 = g.get_edge((1, 'v0'))
         self.assertEqual(g.num_vertices, 5)
         self.assertEqual(g.num_edges, 4)
         self.assertEqual(set(v0.outs), set([v1, v2]))
@@ -459,20 +461,20 @@ class TestDirectedGraph(unittest.TestCase):
 
     def test_create_directed_graph_from_dict(self):
         """ Create a directed graph from an adjacency dictionary """
-        graph_dict = {'v0': ['v1', 'v1', ('v2', {'weight': 5})],
-                      'v1': ['v0', 'v3'],
-                      'v2': [],
+        graph_dict = {'v0': [1, 1, ((2, 2), {'weight': 5})],
+                      1: ['v0', 'v3'],
+                      (2, 2): [],
                       'v3': [],
                       'v4': []}
         g = DirectedGraph.from_dict(graph_dict)
 
         v0 = g.get_vertex('v0')
-        v1 = g.get_vertex('v1')
-        v2 = g.get_vertex('v2')
+        v1 = g.get_vertex(1)
+        v2 = g.get_vertex((2, 2))
         v3 = g.get_vertex('v3')
         v4 = g.get_vertex('v4')
-        e01 = g.get_edge(('v0', 'v1'))
-        e02 = g.get_edge(('v0', 'v2'))
+        e01 = g.get_edge(('v0', 1))
+        e02 = g.get_edge(('v0', (2, 2)))
         self.assertEqual(g.num_vertices, 5)
         self.assertEqual(g.num_edges, 4)
         self.assertEqual(set(v0.outs), set([v1, v2]))
