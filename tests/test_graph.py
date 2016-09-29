@@ -31,7 +31,7 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertEqual(len(g), 1)
 
         g.add_vertex('v1')
-        g.add_edge('v0', 'v1')
+        g.add_edge(('v0', 'v1'))
 
         self.assertEqual(len(g), 2)
 
@@ -50,7 +50,7 @@ class TestUndirectedGraph(unittest.TestCase):
 
         g.add_vertex('v0')
         g.add_vertex('v1')
-        g.add_edge('v0', 'v1')
+        g.add_edge(('v0', 'v1'))
 
         for v in g:
             counter += 1
@@ -169,7 +169,7 @@ class TestUndirectedGraph(unittest.TestCase):
         g = UndirectedGraph()
         g.add_vertex('v0')
         g.add_vertex('v1')
-        g.add_edge('v0', 'v1')
+        g.add_edge(('v0', 'v1'))
 
         v0 = g.get_vertex('v0')
         v1 = g.get_vertex('v1')
@@ -239,8 +239,8 @@ class TestUndirectedGraph(unittest.TestCase):
         g = UndirectedGraph()
         g.add_vertex('v0')
         g.add_vertex('v1')
-        g.add_edge('v0', 'v0', attrs={'weight': 5})
-        g.add_edge('v0', 'v1', attrs={'weight': 7})
+        g.add_edge(('v0', 'v0'), attrs={'weight': 5})
+        g.add_edge(('v0', 'v1'), attrs={'weight': 7})
 
         e00 = g.get_edge(('v0', 'v0'))
         e01 = g.get_edge(('v0', 'v1'))
@@ -257,8 +257,8 @@ class TestUndirectedGraph(unittest.TestCase):
         g.add_vertex('v0')
         g.add_vertex('v1')
         g.add_vertex('v2')
-        g.add_edge('v0', 'v1')
-        g.add_edge('v1', 'v2')
+        g.add_edge(('v0', 'v1'))
+        g.add_edge(('v1', 'v2'))
 
         g.remove_vertex('v0')
 
@@ -284,16 +284,16 @@ class TestUndirectedGraph(unittest.TestCase):
         g.add_vertex('v0')
         g.add_vertex('v1')
         g.add_vertex('v2')
-        g.add_edge('v0', 'v1')
-        g.add_edge('v0', 'v2')
+        g.add_edge(('v0', 'v1'))
+        g.add_edge(('v0', 'v2'))
 
-        g.remove_edge('v0', 'v1')
+        g.remove_edge(('v0', 'v1'))
 
         self.assertFalse(g.has_edge(('v0', 'v1')))
         self.assertFalse(g.has_edge(('v1', 'v0')))
         self.assertTrue(g.has_edge(('v0', 'v2')))
 
-        g.remove_edge('v0', 'v2')
+        g.remove_edge(('v0', 'v2'))
 
         self.assertFalse(g.has_edge(('v0', 'v1')))
         self.assertFalse(g.has_edge(('v1', 'v0')))
@@ -308,10 +308,10 @@ class TestUndirectedGraph(unittest.TestCase):
         g.add_vertex('v2')
         g.add_vertex('v3')
         g.add_vertex('v4')
-        g.add_edge('v0', 'v0')
-        g.add_edge('v0', 'v1')
-        g.add_edge('v0', 'v2')
-        g.add_edge('v1', 'v3')
+        g.add_edge(('v0', 'v0'))
+        g.add_edge(('v0', 'v1'))
+        g.add_edge(('v0', 'v2'))
+        g.add_edge(('v1', 'v3'))
 
         self.assertEqual(g.search('v0', goal_val='v0'), ['v0'])
         self.assertEqual(g.search('v0', goal_val='v1'), ['v0', 'v1'])
@@ -362,10 +362,10 @@ class TestUndirectedGraph(unittest.TestCase):
         g = UndirectedGraph()
         g.add_vertex('v0')
         g.add_vertex('v1')
-        g.add_edge('v0', 'v1')
+        g.add_edge(('v0', 'v1'))
 
         with self.assertRaises(EdgeAlreadyExistsException):
-            g.add_edge('v1', 'v0')
+            g.add_edge(('v1', 'v0'))
 
 
 ################################################################################
@@ -388,7 +388,7 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertEqual(len(g), 1)
 
         g.add_vertex('v1')
-        g.add_edge('v0', 'v1')
+        g.add_edge(('v0', 'v1'))
 
         self.assertEqual(len(g), 2)
 
@@ -407,7 +407,7 @@ class TestDirectedGraph(unittest.TestCase):
 
         g.add_vertex('v0')
         g.add_vertex('v1')
-        g.add_edge('v0', 'v1')
+        g.add_edge(('v0', 'v1'))
 
         for v in g:
             counter += 1
@@ -552,7 +552,7 @@ class TestDirectedGraph(unittest.TestCase):
         g = DirectedGraph()
         g.add_vertex('v0')
         g.add_vertex('v1')
-        g.add_edge('v0', 'v1')
+        g.add_edge(('v0', 'v1'))
 
         v0 = g.get_vertex('v0')
         v1 = g.get_vertex('v1')
@@ -644,8 +644,8 @@ class TestDirectedGraph(unittest.TestCase):
         g = DirectedGraph()
         g.add_vertex('v0')
         g.add_vertex('v1')
-        g.add_edge('v0', 'v0', attrs={'weight': 5})
-        g.add_edge('v0', 'v1', attrs={'weight': 7})
+        g.add_edge(('v0', 'v0'), attrs={'weight': 5})
+        g.add_edge(('v0', 'v1'), attrs={'weight': 7})
 
         e00 = g.get_edge(('v0', 'v0'))
         e01 = g.get_edge(('v0', 'v1'))
@@ -662,8 +662,8 @@ class TestDirectedGraph(unittest.TestCase):
         g.add_vertex('v0')
         g.add_vertex('v1')
         g.add_vertex('v2')
-        g.add_edge('v0', 'v1')
-        g.add_edge('v1', 'v2')
+        g.add_edge(('v0', 'v1'))
+        g.add_edge(('v1', 'v2'))
 
         g.remove_vertex('v0')
 
@@ -689,16 +689,16 @@ class TestDirectedGraph(unittest.TestCase):
         g.add_vertex('v0')
         g.add_vertex('v1')
         g.add_vertex('v2')
-        g.add_edge('v0', 'v1')
-        g.add_edge('v0', 'v2')
+        g.add_edge(('v0', 'v1'))
+        g.add_edge(('v0', 'v2'))
 
-        g.remove_edge('v0', 'v1')
+        g.remove_edge(('v0', 'v1'))
 
         self.assertFalse(g.has_edge(('v0', 'v1')))
         self.assertFalse(g.has_edge(('v1', 'v0')))
         self.assertTrue(g.has_edge(('v0', 'v2')))
 
-        g.remove_edge('v0', 'v2')
+        g.remove_edge(('v0', 'v2'))
 
         self.assertFalse(g.has_edge(('v0', 'v1')))
         self.assertFalse(g.has_edge(('v1', 'v0')))
@@ -713,10 +713,10 @@ class TestDirectedGraph(unittest.TestCase):
         g.add_vertex('v2')
         g.add_vertex('v3')
         g.add_vertex('v4')
-        g.add_edge('v0', 'v0')
-        g.add_edge('v0', 'v1')
-        g.add_edge('v2', 'v0')
-        g.add_edge('v1', 'v3')
+        g.add_edge(('v0', 'v0'))
+        g.add_edge(('v0', 'v1'))
+        g.add_edge(('v2', 'v0'))
+        g.add_edge(('v1', 'v3'))
 
         self.assertEqual(g.search('v0', goal_val='v0'), ['v0'])
         self.assertEqual(g.search('v0', goal_val='v1'), ['v0', 'v1'])
@@ -763,10 +763,10 @@ class TestDirectedGraph(unittest.TestCase):
         g = DirectedGraph()
         g.add_vertex('v0')
         g.add_vertex('v1')
-        g.add_edge('v0', 'v1')
+        g.add_edge(('v0', 'v1'))
 
         with self.assertRaises(EdgeAlreadyExistsException):
-            g.add_edge('v0', 'v1')
+            g.add_edge(('v0', 'v1'))
 
 
 def n_choose_2(n):

@@ -31,13 +31,17 @@ To begin, create a graph from a dictionary of vertex vals::
 
 You can also initialize a graph, then add vertices and edges::
 
-    from graphpy.graph import UndirectedGraph
-
     g = UndirectedGraph()
 
     g.add_vertex('v0')
     g.add_vertex('v1')
-    g.add_edge('v0', 'v1')
+    g.add_edge(('v0', 'v1'))
+
+A vertex's val can be any hashable object, like a string, int, tuple, etc.::
+
+    g = UndirectedGraph.from_dict({'v0': [1],
+                                   1: ['v0', (2, 2)],
+                                   (2, 2): [1]})
 
 Retrieve vertex and edge objects::
 
@@ -64,7 +68,7 @@ From there, use graphs to model situations, implement more graph algorithms, and
 Documentation
 -------------
 
-Find the documentation at: http://graphpy.readthedocs.org/en/latest
+Find the full documentation at: http://graphpy.readthedocs.org/en/latest
 
 Installation
 ------------

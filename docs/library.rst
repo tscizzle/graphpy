@@ -204,18 +204,16 @@ graphpy.graph
             - **val** <hashable>
         - **Returns**
             - the new vertex's val, which is an arbitrary id if *val* is None
-    - *method* **add_edge** (*v0_val*, *v1_val*, *attrs* =None)
+    - *method* **add_edge** (*v_vals*, *attrs* =None)
         - **Parameters**
-            - **v0_val** <hashable>
-            - **v1_val** <hashable>
+            - **v_vals** <tuple>
             - **attrs** <dict>
     - *method* **remove_vertex** (*val*)
         - **Parameters**
             - **val** <hashable>
-    - *method* **remove_edge** (*v0_val*, *v1_val*)
+    - *method* **remove_edge** (*v_vals*)
         - **Parameters**
-            - **v0_val** <hashable>
-            - **v1_val** <hashable>
+            - **v_vals** <tuple>
     - *method* **search** (*start_val*, *goal_val* =None, *method* ='breadth_first')
         - **Parameters**
             - **start_val** <hashable>
@@ -317,18 +315,16 @@ graphpy.graph
             - **val** <hashable>
         - **Returns**
             - the new vertex's val, which is an arbitrary id if *val* is None
-    - *method* **add_edge** (*v_from_val*, *v_to_val*, *attrs* =None)
+    - *method* **add_edge** (*v_vals*, *attrs* =None)
         - **Parameters**
-            - **v_from_val** <hashable>
-            - **v_to_val** <hashable>
+            - **v_vals** <tuple>
             - **attrs** <dict>
     - *method* **remove_vertex** (*val*)
         - **Parameters**
             - **val** <hashable>
-    - *method* **remove_edge** (*v_from_val*, *v_to_val*)
+    - *method* **remove_edge** (*v_vals*)
         - **Parameters**
-            - **v_from_val** <hashable>
-            - **v_to_val** <hashable>
+            - **v_vals** <tuple>
     - *method* **search** (*start_val*, *goal_val* =None, *method* ='breadth_first')
         - **Parameters**
             - **start_val** <hashable>

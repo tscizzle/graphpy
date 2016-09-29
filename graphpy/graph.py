@@ -47,7 +47,7 @@ class UndirectedGraph(object):
             v0_val = e[0]
             v1_val = e[1]
             attrs = e[2] if len(e) == 3 else None
-            g.add_edge(v0_val, v1_val, attrs=attrs)
+            g.add_edge((v0_val, v1_val), attrs=attrs)
         return g
 
     @classmethod
@@ -74,7 +74,7 @@ class UndirectedGraph(object):
                 if not g.has_vertex(neighbor_val):
                     g.add_vertex(neighbor_val)
                 try:
-                    g.add_edge(v_val, neighbor_val, attrs=neighbor_attrs)
+                    g.add_edge((v_val, neighbor_val), attrs=neighbor_attrs)
                 except EdgeAlreadyExistsException:
                     pass
         return g
@@ -88,7 +88,7 @@ class UndirectedGraph(object):
             g.add_vertex(v.val)
         for e in directed_graph.edges:
             try:
-                g.add_edge(e.v_from.val, e.v_to.val)
+                g.add_edge((e.v_from.val, e.v_to.val))
             except EdgeAlreadyExistsException:
                 pass
         return g
@@ -103,7 +103,7 @@ class UndirectedGraph(object):
         for v0 in g.vertices:
             for v1 in g.vertices:
                 if v0 > v1 and random.random() < p:
-                    g.add_edge(v0.val, v1.val)
+                    g.add_edge((v0.val, v1.val))
         return g
 
     @classmethod
@@ -173,8 +173,9 @@ class UndirectedGraph(object):
 
         return v.val
 
-    def add_edge(self, v0_val, v1_val, attrs=None):
+    def add_edge(self, v_vals, attrs=None):
         """ Adds an edge between vertices in this graph """
+        v0_val, v1_val = v_vals
         v0 = self.get_vertex(v0_val)
         v1 = self.get_vertex(v1_val)
         e = UndirectedEdge(v0, v1, attrs=attrs)
@@ -192,12 +193,13 @@ class UndirectedGraph(object):
         """ Removes a vertex from this graph """
         v = self.get_vertex(v_val)
         for e in set(v.edges):
-            self.remove_edge(*[v.val for v in e.vertices])
+            self.remove_edge(tuple(v.val for v in e.vertices))
         self._vertices.discard(v)
         del self._vals_to_vertices_map[v_val]
 
-    def remove_edge(self, v0_val, v1_val):
+    def remove_edge(self, v_vals):
         """ Removes an edge between vertices in this graph """
+        v0_val, v1_val = v_vals
         v0 = self.get_vertex(v0_val)
         v1 = self.get_vertex(v1_val)
         e = UndirectedEdge(v0, v1)
@@ -289,7 +291,7 @@ class DirectedGraph(object):
             v_from_val = e[0]
             v_to_val = e[1]
             attrs = e[2] if len(e) == 3 else None
-            g.add_edge(v_from_val, v_to_val, attrs=attrs)
+            g.add_edge((v_from_val, v_to_val), attrs=attrs)
         return g
 
     @classmethod
@@ -315,7 +317,7 @@ class DirectedGraph(object):
                 if not g.has_vertex(out_val):
                     g.add_vertex(out_val)
                 try:
-                    g.add_edge(v_val, out_val, attrs=out_attrs)
+                    g.add_edge((v_val, out_val), attrs=out_attrs)
                 except EdgeAlreadyExistsException:
                     pass
         return g
@@ -328,7 +330,7 @@ class DirectedGraph(object):
         for v in transpose_graph.vertices:
             g.add_vertex(v.val)
         for e in transpose_graph.edges:
-            g.add_edge(e.v_to.val, e.v_from.val)
+            g.add_edge((e.v_to.val, e.v_from.val))
         return g
 
     @classmethod
@@ -342,7 +344,7 @@ class DirectedGraph(object):
         for v0 in g.vertices:
             for v1 in g.vertices:
                 if random.random() < p:
-                    g.add_edge(v0.val, v1.val)
+                    g.add_edge((v0.val, v1.val))
         return g
 
     @classmethod
@@ -428,8 +430,9 @@ class DirectedGraph(object):
 
         return v.val
 
-    def add_edge(self, v_from_val, v_to_val, attrs=None):
+    def add_edge(self, v_vals, attrs=None):
         """ Adds an edge from one vertex in this graph to another """
+        v_from_val, v_to_val = v_vals
         v_from = self.get_vertex(v_from_val)
         v_to = self.get_vertex(v_to_val)
         e = DirectedEdge(v_from, v_to, attrs=attrs)
@@ -446,12 +449,13 @@ class DirectedGraph(object):
         """ Removes a vertex from this graph """
         v = self.get_vertex(v_val)
         for e in set(v.edges):
-            self.remove_edge(e.v_from.val, e.v_to.val)
+            self.remove_edge((e.v_from.val, e.v_to.val))
         self._vertices.discard(v)
         del self._vals_to_vertices_map[v_val]
 
-    def remove_edge(self, v_from_val, v_to_val):
+    def remove_edge(self, v_vals):
         """ Removes an edge from one vertex in this graph to another """
+        v_from_val, v_to_val = v_vals
         v_from = self.get_vertex(v_from_val)
         v_to = self.get_vertex(v_to_val)
         e = DirectedEdge(v_from, v_to)
