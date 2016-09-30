@@ -12,10 +12,10 @@ Implementation of an edge, as used in graphs
 
 class UndirectedEdge(object):
 
-    def __init__(self, v0, v1, attrs=None):
-        self._vertices = frozenset([v0, v1])
+    def __init__(self, vertices, attrs=None):
+        self._vertices = frozenset(vertices)
         self._attrs = attrs or {}
-        self._is_self_edge = v0 == v1
+        self._is_self_edge = vertices[0] == vertices[1]
 
     def __repr__(self):
         vertices = (tuple(self._vertices) if not self._is_self_edge else
@@ -49,12 +49,15 @@ class UndirectedEdge(object):
         return self._is_self_edge
 
     def get(self, attr):
+        """ Get an attribute """
         return self._attrs.get(attr)
 
     def set(self, attr, value):
+        """ Set an attribute """
         self._attrs[attr] = value
 
     def del_attr(self, attr):
+        """ Delete an attribute """
         del self._attrs[attr]
 
 
@@ -67,9 +70,9 @@ class UndirectedEdge(object):
 
 class DirectedEdge(object):
 
-    def __init__(self, v_from, v_to, attrs=None):
-        self._v_from = v_from
-        self._v_to = v_to
+    def __init__(self, vertices, attrs=None):
+        self._v_from = vertices[0]
+        self._v_to = vertices[1]
         self._attrs = attrs or {}
 
     def __repr__(self):
@@ -100,10 +103,13 @@ class DirectedEdge(object):
         return self._attrs
 
     def get(self, attr):
+        """ Get an attribute """
         return self._attrs.get(attr)
 
     def set(self, attr, value):
+        """ Set an attribute """
         self._attrs[attr] = value
 
     def del_attr(self, attr):
+        """ Delete an attribute """
         del self._attrs[attr]

@@ -41,13 +41,21 @@ class UndirectedGraph(object):
         """ Generate a graph by passing in a list of vertex vals and a list of
             edges between those vertices """
         g = cls()
-        for v_val in vertices:
-            g.add_vertex(v_val)
+
+        for v in vertices:
+            if isinstance(v, tuple) and (len(v) == 1 or len(v) == 2):
+                g.add_vertex(*v)
+            else:
+                m = (str(v) + " must be a tuple and have length 1 or 2")
+                raise BadGraphInputException(m)
+
         for e in edges:
-            v0_val = e[0]
-            v1_val = e[1]
-            attrs = e[2] if len(e) == 3 else None
-            g.add_edge((v0_val, v1_val), attrs=attrs)
+            if isinstance(e, tuple) and (len(e) == 1 or len(e) == 2):
+                g.add_edge(*e)
+            else:
+                m = (str(e) + " must be a tuple and have length 1 or 2")
+                raise BadGraphInputException(m)
+
         return g
 
     @classmethod
@@ -55,28 +63,34 @@ class UndirectedGraph(object):
         """ Generate a graph by passing in a dictionary of vertex vals each
             mapped to a set of vals of vertices to which there is an edge """
         g = cls()
+
         for v_val in graph_dict:
             g.add_vertex(v_val)
+
         for v_val, neighbor_edge_list in graph_dict.items():
             for neighbor_edge in neighbor_edge_list:
-                if is_hashable(neighbor_edge):
-                    neighbor_val = neighbor_edge
-                    neighbor_attrs = None
-                elif (isinstance(neighbor_edge, tuple) and
-                      len(neighbor_edge) == 2 and
-                      is_hashable(neighbor_edge[0]) and
-                      isinstance(neighbor_edge[1], dict)):
-                    neighbor_val, neighbor_attrs = neighbor_edge
+                if (isinstance(neighbor_edge, tuple) and
+                    (len(neighbor_edge) == 1 or len(neighbor_edge) == 2)):
+                    neighbor_val = neighbor_edge[0]
+                    edge_attrs = (neighbor_edge[1] if len(neighbor_edge) == 2
+                                                   else None)
                 else:
-                    m = (str(neighbor_edge) + " must be either a string or a "
-                         "tuple of a string and a dict")
+                    m = (str(neighbor_edge) + " must be a tuple and have "
+                         "length 1 or 2")
                     raise BadGraphInputException(m)
+
+                if not is_hashable(neighbor_val):
+                    m = (str(neighbor_val) + " is not hashable")
+                    raise BadGraphInputException(m)
+
                 if not g.has_vertex(neighbor_val):
                     g.add_vertex(neighbor_val)
+
                 try:
-                    g.add_edge((v_val, neighbor_val), attrs=neighbor_attrs)
+                    g.add_edge((v_val, neighbor_val), attrs=edge_attrs)
                 except EdgeAlreadyExistsException:
                     pass
+
         return g
 
     @classmethod
@@ -160,11 +174,11 @@ class UndirectedGraph(object):
         """ Gets an edge between vertices in this graph """
         return self._vals_to_edges_map.get(v_vals)
 
-    def add_vertex(self, v_val):
+    def add_vertex(self, v_val=None, attrs=None):
         """ Adds a vertex to this graph """
         if not is_hashable(v_val):
             raise TypeError(str(v_val) + " must be hashable")
-        v = UndirectedVertex(val=v_val)
+        v = UndirectedVertex(val=v_val, attrs=attrs)
         if self.has_vertex(v_val):
             raise VertexAlreadyExistsException(v)
 
@@ -178,7 +192,7 @@ class UndirectedGraph(object):
         v0_val, v1_val = v_vals
         v0 = self.get_vertex(v0_val)
         v1 = self.get_vertex(v1_val)
-        e = UndirectedEdge(v0, v1, attrs=attrs)
+        e = UndirectedEdge((v0, v1), attrs=attrs)
         if self.has_edge((v0_val, v1_val)):
             raise EdgeAlreadyExistsException(e)
 
@@ -202,7 +216,7 @@ class UndirectedGraph(object):
         v0_val, v1_val = v_vals
         v0 = self.get_vertex(v0_val)
         v1 = self.get_vertex(v1_val)
-        e = UndirectedEdge(v0, v1)
+        e = UndirectedEdge((v0, v1))
 
         v0.remove_edge(e)
         if not e.is_self_edge:
@@ -285,13 +299,21 @@ class DirectedGraph(object):
         """ Generate a graph by passing in a list of vertex vals and a list of
             edges between those vertices """
         g = cls()
-        for v_val in vertices:
-            g.add_vertex(v_val)
+
+        for v in vertices:
+            if isinstance(v, tuple) and (len(v) == 1 or len(v) == 2):
+                g.add_vertex(*v)
+            else:
+                m = (str(v) + " must be a tuple and have length 1 or 2")
+                raise BadGraphInputException(m)
+
         for e in edges:
-            v_from_val = e[0]
-            v_to_val = e[1]
-            attrs = e[2] if len(e) == 3 else None
-            g.add_edge((v_from_val, v_to_val), attrs=attrs)
+            if isinstance(e, tuple) and (len(e) == 1 or len(e) == 2):
+                g.add_edge(*e)
+            else:
+                m = (str(e) + " must be a tuple and have length 1 or 2")
+                raise BadGraphInputException(m)
+
         return g
 
     @classmethod
@@ -299,27 +321,33 @@ class DirectedGraph(object):
         """ Generate a graph by passing in a dictionary of vertex vals each
             mapped to a set of vals of vertices to which there is an edge """
         g = cls()
+
         for v_val in graph_dict:
             g.add_vertex(v_val)
+
         for v_val, out_edge_list in graph_dict.items():
             for out_edge in out_edge_list:
-                if is_hashable(out_edge):
-                    out_val = out_edge
-                    out_attrs = None
-                elif (isinstance(out_edge, tuple) and len(out_edge) == 2 and
-                      is_hashable(out_edge[0]) and
-                      isinstance(out_edge[1], dict)):
-                    out_val, out_attrs = out_edge
+                if (isinstance(out_edge, tuple) and
+                    (len(out_edge) == 1 or len(out_edge) == 2)):
+                    out_val = out_edge[0]
+                    edge_attrs = out_edge[1] if len(out_edge) == 2 else None
                 else:
-                    m = (str(out_edge) + " must be either a string or a tuple "
-                         "of a string and a dict")
+                    m = (str(out_edge) + " must be tuple and have length 1 or "
+                         "2")
                     raise BadGraphInputException(m)
+
+                if not is_hashable(out_val):
+                    m = (str(out_val) + " is not hashable")
+                    raise BadGraphInputException(m)
+
                 if not g.has_vertex(out_val):
                     g.add_vertex(out_val)
+
                 try:
-                    g.add_edge((v_val, out_val), attrs=out_attrs)
+                    g.add_edge((v_val, out_val), attrs=edge_attrs)
                 except EdgeAlreadyExistsException:
                     pass
+
         return g
 
     @classmethod
@@ -417,11 +445,11 @@ class DirectedGraph(object):
         """ Gets an edge between vertices in this graph """
         return self._vals_to_edges_map.get(v_vals)
 
-    def add_vertex(self, v_val):
+    def add_vertex(self, v_val=None, attrs=None):
         """ Adds a vertex to this graph """
         if not is_hashable(v_val):
             raise TypeError(str(v_val) + " must be hashable")
-        v = DirectedVertex(val=v_val)
+        v = DirectedVertex(val=v_val, attrs=attrs)
         if self.has_vertex(v_val):
             raise VertexAlreadyExistsException(v)
 
@@ -435,7 +463,7 @@ class DirectedGraph(object):
         v_from_val, v_to_val = v_vals
         v_from = self.get_vertex(v_from_val)
         v_to = self.get_vertex(v_to_val)
-        e = DirectedEdge(v_from, v_to, attrs=attrs)
+        e = DirectedEdge((v_from, v_to), attrs=attrs)
         if self.has_edge((v_from_val, v_to_val)):
             raise EdgeAlreadyExistsException(e)
 
@@ -458,7 +486,7 @@ class DirectedGraph(object):
         v_from_val, v_to_val = v_vals
         v_from = self.get_vertex(v_from_val)
         v_to = self.get_vertex(v_to_val)
-        e = DirectedEdge(v_from, v_to)
+        e = DirectedEdge((v_from, v_to))
 
         v_from.remove_edge(e)
         v_to.remove_edge(e)

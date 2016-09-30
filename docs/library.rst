@@ -2,12 +2,12 @@ graphpy
 =======
 
 graphpy.edge
-----------
+------------
 
-*class* graphpy.edge.UndirectedEdge(*v0*, *v1*, *attrs* =None)
+*class* graphpy.edge.UndirectedEdge(*vertices*, *attrs* =None)
     - **Parameters**
-        - **v0** <UndirectedVertex>
-        - **v1** <UndirectedVertex>
+        - **vertices** <tuple>
+            - tuple of length 2 of UndirectedVertex objects
         - **attrs** <dict>
     - *property* **vertices**
         - frozenset of the two UndirectedVertex objects this edge connects
@@ -33,10 +33,10 @@ graphpy.edge
             - **attr** <hashable>
                 - key in this edge's *attrs* dict
 
-*class* graphpy.edge.DirectedEdge(*v_from*, *v_to*, *attrs* =None)
+*class* graphpy.edge.DirectedEdge(*vertices*, *attrs* =None)
     - **Parameters**
-        - **v_from** <DirectedVertex>
-        - **v_to** <DirectedVertex>
+        - **vertices** <tuple>
+            - tuple of length 2 of DirectedVertex objects
         - **attrs** <dict>
     - *property* **v_from**
         - DirectedVertex object from which this edge points (the tail)
@@ -63,11 +63,12 @@ graphpy.edge
                 - key in this edge's *attrs* dict
 
 graphpy.vertex
-------------
+--------------
 
-*class* graphpy.vertex.UndirectedVertex(*val* =None)
+*class* graphpy.vertex.UndirectedVertex(*val* =None, *attrs* =None)
     - **Parameters**
         - **val** <hashable>
+        - **attrs** <dict>
     - *property* **val**
         - hashable val of this vertex
     - *property* **edges**
@@ -86,10 +87,28 @@ graphpy.vertex
     - *method* **remove_edge** (*e*)
         - **Parameters**
             - **e** <UndirectedEdge>
+    - *method* **get** (*attr*)
+        - **Parameters**
+            - **attr** <hashable>
+                - key in this vertex's *attrs* dict
+        - **Returns**
+            - any object, whatever value the key *attr* points to in this vertex's *attrs* dict
+            - None, if this vertex does not have the attribute
+    - *method* **set** (**attr**, **value**)
+        - **Parameters**
+            - **attr** <hashable>
+                - to be a key in this vertex's *attrs* dict
+            - **value** <any object>
+                - to be the value pointed to by *attr* in this vertex's *attrs* dict
+    - *method* **del_attr** (*attr*)
+        - **Parameters**
+            - **attr** <hashable>
+                - key in this vertex's *attrs* dict
 
-*class* graphpy.vertex.DirectedVertex(*val* =None)
+*class* graphpy.vertex.DirectedVertex(*val* =None, *attrs* =None)
     - **Parameters**
         - **val** <hashable>
+        - **attrs** <dict>
     - *property* **val**
         - hashable val of this vertex
     - *property* **edges**
@@ -112,6 +131,23 @@ graphpy.vertex
     - *method* **remove_edge** (*e*)
         - **Parameters**
             - **e** <DirectedEdge>
+    - *method* **get** (*attr*)
+        - **Parameters**
+            - **attr** <hashable>
+                - key in this vertex's *attrs* dict
+        - **Returns**
+            - any object, whatever value the key *attr* points to in this vertex's *attrs* dict
+            - None, if this vertex does not have the attribute
+    - *method* **set** (**attr**, **value**)
+        - **Parameters**
+            - **attr** <hashable>
+                - to be a key in this vertex's *attrs* dict
+            - **value** <any object>
+                - to be the value pointed to by *attr* in this vertex's *attrs* dict
+    - *method* **del_attr** (*attr*)
+        - **Parameters**
+            - **attr** <hashable>
+                - key in this vertex's *attrs* dict
 
 *exception* graphpy.vertex.VertexNotPartOfEdgeException(*v*, *e*)
     - Cannot add an edge to a vertex which is not one of that edge's endpoints
@@ -120,25 +156,26 @@ graphpy.vertex
     - Cannot add an edge to a vertex that already has that edge
 
 graphpy.graph
------------
+-------------
 
 *class* graphpy.graph.UndirectedGraph()
     - *classmethod* **from_lists** (*vertices*, *edges*)
         - **Parameters**
-            - **vertices** <hashable[]>
+            - **vertices** <tuple[]>
+                - each tuple is of the form (hashable,) representing (val,), or (hashable, dict) representing (val, attrs)
             - **edges** <tuple[]>
-                - each tuple is of the form (hashable, hashable) representing (v0_val, v1_val), or (hashable, hashable, dict) representing (v0_val, v1_val, attrs)
+                - each tuple is of the form ((hashable, hashable),) representing ((v0_val, v1_val),), or ((hashable, hashable), dict) representing ((v0_val, v1_val), attrs)
         - **Returns**
             - UndirectedGraph object defined by *vertices* and *edges*
     - *classmethod* **from_dict** (*graph_dict*)
         - **Parameters**
             - **graph_dict** <dict>
-                - hashable -> (hashable | tuple)[]
+                - hashable -> tuple[]
                 - each vertex's val maps to a list of elements which each represent an edge from that vertex
                 - each element (i.e. edge) in the mapped-to list is in one of two forms
-                    - hashable, val of the vertex to which the edge points
-                    - (hashable, dict), (val of the vertex to which the edge points, the edge's attributes)
-                - if there are duplicate declarations of an edge (like v1 appearing in v0's list and v0 appearing in v1's list) with differnet attributes, the choice of which to keep is made arbitrarily
+                    - (hashable,), length-1 tuple containing the val of the vertex to which the edge points
+                    - (hashable, dict), length-2 tuple containing the val of the vertex to which the edge points and the edge's attributes
+                - if there are duplicate declarations of an edge (like v1 appearing in v0's list and v0 appearing in v1's list) with different attributes, the one to keep is chosen arbitrarily
         - **Returns**
             - UndirectedGraph object defined by *graph_dict*
     - *classmethod* **from_directed_graph** (*directed_graph*)
@@ -188,7 +225,7 @@ graphpy.graph
         - **Parameters**
             - **v_vals** <tuple>
         - **Returns**
-            - bool for whether or not there is an edge in this graph between *v_vals*[0] and *v_vals*[1]
+            - bool for whether or not there is an edge in this graph between v_vals[0] and v_vals[1]
     - *method* **get_vertex** (*v_val*)
         - **Parameters**
             - **v_val** <hashable>
@@ -198,10 +235,11 @@ graphpy.graph
         - **Parameters**
             - **v_vals** <tuple>
         - **Returns**
-            - UndirectedEdge object with vertices with vals of *v_vals*[0] and *v_vals*[1], or None if no such edge is in this graph
-    - *method* **add_vertex** (*val*)
+            - UndirectedEdge object with vertices with vals of v_vals[0] and v_vals[1], or None if no such edge is in this graph
+    - *method* **add_vertex** (*val* =None, *attrs* =None)
         - **Parameters**
             - **val** <hashable>
+            - **attrs** <dict>
         - **Returns**
             - the new vertex's val, which is an arbitrary id if *val* is None
     - *method* **add_edge** (*v_vals*, *attrs* =None)
@@ -233,20 +271,21 @@ graphpy.graph
 *class* graphpy.graph.DirectedGraph()
     - *classmethod* **from_lists** (*vertices*, *edges*)
         - **Parameters**
-            - **vertices** <hashable[]>
+            - **vertices** <tuple[]>
+                - each tuple is of the form (hashable,) representing (val,), or (hashable, dict) representing (val, attrs)
             - **edges** <tuple[]>
-                - each tuple is of the form (hashable, hashable) representing (v_from_val, v_to_val), or (hashable, hashable, dict) representing (v_from_val, v_to_val, attrs)
+                - each tuple is of the form ((hashable, hashable),) representing ((v_from_val, v_to_val),), or ((hashable, hashable), dict)) representing ((v_from_val, v_to_val), attrs))
         - **Returns**
             - DirectedGraph object defined by *vertices* and *edges*
     - *classmethod* **from_dict** (*graph_dict*)
         - **Parameters**
             - **graph_dict** <dict>
-                - hashable -> (hashable | tuple)[]
+                - hashable -> tuple[]
                 - each vertex's val maps to a list of elements which each represent an edge from that vertex
                 - each element (i.e. edge) in the mapped-to list is in one of two forms
-                    - hashable, val of the vertex to which the edge points
-                    - (hashable, dict), (val of the vertex to which the edge points, the edge's attributes)
-                - if there are duplicate declarations of an edge (like v1 appearing in v0's list and v0 appearing in v1's list) with differnet attributes, the choice of which to keep is made arbitrarily
+                    - (hashable,), length-1 tuple containing the val of the vertex to which the edge points
+                    - (hashable, dict), length-2 tuple containing the val of the vertex to which the edge points and the edge's attributes
+                - if there are duplicate declarations of an edge (like v1 appearing in v0's list and v0 appearing in v1's list) with different attributes, the one to keep is chosen arbitrarily
         - **Returns**
             - DirectedGraph object defined by *graph_dict*
     - *classmethod* **from_transpose** (*transpose_graph*)
@@ -299,7 +338,7 @@ graphpy.graph
         - **Parameters**
             - **v_vals** <tuple>
         - **Returns**
-            - bool for whether or not there is an edge in this graph from *v_vals*[0] to *v_vals*[1]
+            - bool for whether or not there is an edge in this graph from v_vals[0] to v_vals[1]
     - *method* **get_vertex** (*v_val*)
         - **Parameters**
             - **v_val** <hashable>
@@ -309,10 +348,11 @@ graphpy.graph
         - **Parameters**
             - **v_vals** <tuple>
         - **Returns**
-            - DirectedEdge object with vertices with vals of *v_vals*[0] and *v_vals*[1], or None if no such edge is in this graph
-    - *method* **add_vertex** (*val*)
+            - DirectedEdge object with vertices with vals of v_vals[0] and v_vals[1], or None if no such edge is in this graph
+    - *method* **add_vertex** (*val* =None, attrs =None)
         - **Parameters**
             - **val** <hashable>
+            - **attrs** <dict>
         - **Returns**
             - the new vertex's val, which is an arbitrary id if *val* is None
     - *method* **add_edge** (*v_vals*, *attrs* =None)

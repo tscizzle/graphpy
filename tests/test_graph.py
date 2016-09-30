@@ -26,11 +26,11 @@ class TestUndirectedGraph(unittest.TestCase):
 
         self.assertEqual(len(g), 0)
 
-        g.add_vertex('v0')
+        g.add_vertex(v_val='v0')
 
         self.assertEqual(len(g), 1)
 
-        g.add_vertex('v1')
+        g.add_vertex(v_val='v1')
         g.add_edge(('v0', 'v1'))
 
         self.assertEqual(len(g), 2)
@@ -48,8 +48,8 @@ class TestUndirectedGraph(unittest.TestCase):
             counter += 1
         self.assertEqual(counter, 0)
 
-        g.add_vertex('v0')
-        g.add_vertex('v1')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
         g.add_edge(('v0', 'v1'))
 
         for v in g:
@@ -59,10 +59,10 @@ class TestUndirectedGraph(unittest.TestCase):
 
     def test_create_undirected_graph_from_lists(self):
         """ Create an undirected graph from lists of vertices and edges """
-        vertices = ['v0', 1, (2, 2), 'v3', 'v4']
-        edges = [('v0', 1, {'weight': 3}),
-                 ('v0', (2, 2), {'weight': 4}),
-                 (1, 'v3')]
+        vertices = [('v0',), (1,), ((2, 2),), ('v3',), ('v4',)]
+        edges = [(('v0', 1), {'weight': 3}),
+                 (('v0', (2, 2)), {'weight': 4}),
+                 ((1, 'v3'),)]
         g = UndirectedGraph.from_lists(vertices, edges)
 
         v0 = g.get_vertex('v0')
@@ -84,20 +84,20 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertEqual(e02.get('weight'), 4)
         self.assertIsNone(e13.get('weight'))
 
-        duplicate_vertices = ['v0_dupe', 'v0_dupe']
+        duplicate_vertices = [('v0_dupe',), ('v0_dupe',)]
         with self.assertRaises(VertexAlreadyExistsException):
             _ = UndirectedGraph.from_lists(duplicate_vertices, [])
 
-        vertices_dupe_edge = ['v0_dupe_edge', 'v1_dupe_edge']
-        duplicate_edges = [('v0_dupe_edge', 'v1_dupe_edge'),
-                           ('v1_dupe_edge', 'v0_dupe_edge')]
+        vertices_dupe_edge = [('v0_dupe_edge',), ('v1_dupe_edge',)]
+        duplicate_edges = [(('v0_dupe_edge', 'v1_dupe_edge'),),
+                           (('v1_dupe_edge', 'v0_dupe_edge'),)]
         with self.assertRaises(EdgeAlreadyExistsException):
             _ = UndirectedGraph.from_lists(vertices_dupe_edge, duplicate_edges)
 
     def test_create_undirected_graph_from_dict(self):
         """ Create an undirected graph from an adjacency dictionary """
-        graph_dict = {'v0': [1, 1, ((2, 2), {'weight': 5})],
-                      1: ['v0', 'v3'],
+        graph_dict = {'v0': [(1,), (1,), ((2, 2), {'weight': 5})],
+                      1: [('v0',), ('v3',)],
                       (2, 2): [],
                       'v3': [],
                       'v4': []}
@@ -122,15 +122,15 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertEqual(e02.get('weight'), 5)
         self.assertIsNone(e13.get('weight'))
         with self.assertRaises(BadGraphInputException):
-            _ = UndirectedGraph.from_dict({'v0': [{'weight': 5}],
-                                           'v1': [{'weight': 3}]})
+            _ = UndirectedGraph.from_dict({'v0': [({'weight': 5},)],
+                                           'v1': [({'weight': 3},)]})
 
     def test_create_undirected_graph_from_directed_graph(self):
         """ Create an undirected graph from a directed graph """
-        graph_dict = {'v0': ['v0', 'v1', 'v2'],
-                      'v1': ['v0', 'v3'],
+        graph_dict = {'v0': [('v0',), ('v1',), ('v2',)],
+                      'v1': [('v0',), ('v3',)],
                       'v2': [],
-                      'v3': ['v1'],
+                      'v3': [('v1',)],
                       'v4': []}
         dg = DirectedGraph.from_dict(graph_dict)
         g = UndirectedGraph.from_directed_graph(dg)
@@ -167,8 +167,8 @@ class TestUndirectedGraph(unittest.TestCase):
     def test_undirected_graph_vertices_and_edges(self):
         """ Get undirected graphs' vertices and edges properties """
         g = UndirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
         g.add_edge(('v0', 'v1'))
 
         v0 = g.get_vertex('v0')
@@ -183,7 +183,7 @@ class TestUndirectedGraph(unittest.TestCase):
 
     def test_undirected_graph_num_vertices_and_num_edges(self):
         """ Get the number of an undirected graph's vertices and edges """
-        g = UndirectedGraph.from_dict({'v0': ['v1'],
+        g = UndirectedGraph.from_dict({'v0': [('v1',)],
                                        'v1': []})
 
         self.assertEqual(g.num_vertices, 2)
@@ -195,7 +195,7 @@ class TestUndirectedGraph(unittest.TestCase):
 
     def test_undirected_graph_average_degree(self):
         """ Get the average degree of all vertices in an undirected graph """
-        g = UndirectedGraph.from_dict({'v0': ['v1'],
+        g = UndirectedGraph.from_dict({'v0': [('v1',)],
                                        'v1': [],
                                        'v2': []})
         empty_g = UndirectedGraph()
@@ -208,10 +208,10 @@ class TestUndirectedGraph(unittest.TestCase):
     def test_undirected_graph_is_connected(self):
         """ Get whether a path exists for every pair of vertices in an
             undirected graph """
-        g_connected = UndirectedGraph.from_dict({'v0': ['v1', 'v2'],
+        g_connected = UndirectedGraph.from_dict({'v0': [('v1',), ('v2',)],
                                                  'v1': [],
                                                  'v2': []})
-        g_disconnected = UndirectedGraph.from_dict({'v0': ['v1'],
+        g_disconnected = UndirectedGraph.from_dict({'v0': [('v1',)],
                                                     'v1': [],
                                                     'v2': []})
 
@@ -225,20 +225,22 @@ class TestUndirectedGraph(unittest.TestCase):
     def test_undirected_graph_add_vertex(self):
         """ Add vertices to an undirected graph """
         g = UndirectedGraph()
-        v0_val = g.add_vertex('v0')
-        v1_val = g.add_vertex('v1')
+        v0_val = g.add_vertex(v_val='v0', attrs={'city': 'Modena'})
+        v1_val = g.add_vertex(v_val='v1')
 
         self.assertEqual(v0_val, 'v0')
         self.assertEqual(v1_val, 'v1')
         self.assertTrue(g.has_vertex('v0'))
         self.assertTrue(g.has_vertex('v1'))
         self.assertFalse(g.has_vertex('v2'))
+        self.assertEqual(g.get_vertex(v0_val).get('city'), 'Modena')
+        self.assertIsNone(g.get_vertex(v1_val).get('city'))
 
     def test_undirected_graph_add_edge(self):
         """ Add edges to an undirected graph """
         g = UndirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
         g.add_edge(('v0', 'v0'), attrs={'weight': 5})
         g.add_edge(('v0', 'v1'), attrs={'weight': 7})
 
@@ -254,9 +256,9 @@ class TestUndirectedGraph(unittest.TestCase):
     def test_undirected_graph_remove_vertex(self):
         """ Remove vertices from an undirected graph """
         g = UndirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
-        g.add_vertex('v2')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
+        g.add_vertex(v_val='v2')
         g.add_edge(('v0', 'v1'))
         g.add_edge(('v1', 'v2'))
 
@@ -281,9 +283,9 @@ class TestUndirectedGraph(unittest.TestCase):
     def test_undirected_graph_remove_edge(self):
         """ Remove edges from an undirected graph """
         g = UndirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
-        g.add_vertex('v2')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
+        g.add_vertex(v_val='v2')
         g.add_edge(('v0', 'v1'))
         g.add_edge(('v0', 'v2'))
 
@@ -303,11 +305,11 @@ class TestUndirectedGraph(unittest.TestCase):
         """ Search for paths from an undirected vertex to all vertices reachable
             from it """
         g = UndirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
-        g.add_vertex('v2')
-        g.add_vertex('v3')
-        g.add_vertex('v4')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
+        g.add_vertex(v_val='v2')
+        g.add_vertex(v_val='v3')
+        g.add_vertex(v_val='v4')
         g.add_edge(('v0', 'v0'))
         g.add_edge(('v0', 'v1'))
         g.add_edge(('v0', 'v2'))
@@ -351,17 +353,17 @@ class TestUndirectedGraph(unittest.TestCase):
         """ An undirected graph should not be able to add a vertex that already
             exists in the graph """
         g = UndirectedGraph()
-        g.add_vertex('v0')
+        g.add_vertex(v_val='v0')
 
         with self.assertRaises(VertexAlreadyExistsException):
-            g.add_vertex('v0')
+            g.add_vertex(v_val='v0')
 
     def test_undirected_graph_edge_already_exists_exception(self):
         """ An undirected graph should not be able to add an edge that already
             exists in the graph """
         g = UndirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
         g.add_edge(('v0', 'v1'))
 
         with self.assertRaises(EdgeAlreadyExistsException):
@@ -383,11 +385,11 @@ class TestDirectedGraph(unittest.TestCase):
 
         self.assertEqual(len(g), 0)
 
-        g.add_vertex('v0')
+        g.add_vertex(v_val='v0')
 
         self.assertEqual(len(g), 1)
 
-        g.add_vertex('v1')
+        g.add_vertex(v_val='v1')
         g.add_edge(('v0', 'v1'))
 
         self.assertEqual(len(g), 2)
@@ -405,8 +407,8 @@ class TestDirectedGraph(unittest.TestCase):
             counter += 1
         self.assertEqual(counter, 0)
 
-        g.add_vertex('v0')
-        g.add_vertex('v1')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
         g.add_edge(('v0', 'v1'))
 
         for v in g:
@@ -416,11 +418,11 @@ class TestDirectedGraph(unittest.TestCase):
 
     def test_create_directed_graph_from_lists(self):
         """ Create a directed graph from lists of vertices and edges """
-        vertices = ['v0', 1, (2, 2), 'v3', 'v4']
-        edges = [('v0', 1, {'weight': 3}),
-                 ('v0', (2, 2), {'weight': 4}),
-                 (1, 'v3'),
-                 (1, 'v0', {'weight': 5})]
+        vertices = [('v0',), (1,), ((2, 2),), ('v3',), ('v4',)]
+        edges = [(('v0', 1), {'weight': 3}),
+                 (('v0', (2, 2)), {'weight': 4}),
+                 ((1, 'v3'),),
+                 ((1, 'v0'), {'weight': 5})]
         g = DirectedGraph.from_lists(vertices, edges)
 
         v0 = g.get_vertex('v0')
@@ -449,20 +451,20 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertIsNone(e13.get('weight'))
         self.assertEqual(e10.get('weight'), 5)
 
-        duplicate_vertices = ['v0_dupe', 'v0_dupe']
+        duplicate_vertices = [('v0_dupe',), ('v0_dupe',)]
         with self.assertRaises(VertexAlreadyExistsException):
             _ = DirectedGraph.from_lists(duplicate_vertices, [])
 
-        vertices_dupe_edge = ['v0_dupe_edge', 'v1_dupe_edge']
-        duplicate_edges = [('v0_dupe_edge', 'v1_dupe_edge'),
-                           ('v0_dupe_edge', 'v1_dupe_edge')]
+        vertices_dupe_edge = [('v0_dupe_edge',), ('v1_dupe_edge',)]
+        duplicate_edges = [(('v0_dupe_edge', 'v1_dupe_edge'),),
+                           (('v0_dupe_edge', 'v1_dupe_edge'),)]
         with self.assertRaises(EdgeAlreadyExistsException):
             _ = DirectedGraph.from_lists(vertices_dupe_edge, duplicate_edges)
 
     def test_create_directed_graph_from_dict(self):
         """ Create a directed graph from an adjacency dictionary """
-        graph_dict = {'v0': [1, 1, ((2, 2), {'weight': 5})],
-                      1: ['v0', 'v3'],
+        graph_dict = {'v0': [(1,), (1,), ((2, 2), {'weight': 5})],
+                      1: [('v0',), ('v3',)],
                       (2, 2): [],
                       'v3': [],
                       'v4': []}
@@ -490,13 +492,13 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertIsNone(e01.get('weight'))
         self.assertEqual(e02.get('weight'), 5)
         with self.assertRaises(BadGraphInputException):
-            _ = DirectedGraph.from_dict({'v0': [{'weight': 5}],
-                                         'v1': [{'weight': 3}]})
+            _ = DirectedGraph.from_dict({'v0': [({'weight': 5},)],
+                                         'v1': [({'weight': 3},)]})
 
     def test_create_directed_graph_from_transpose(self):
         """ Create a directed graph by reversing the edges of an input graph """
-        graph_dict = {'v0': ['v1', 'v2'],
-                      'v1': ['v0', 'v3'],
+        graph_dict = {'v0': [('v1',), ('v2',)],
+                      'v1': [('v0',), ('v3',)],
                       'v2': [],
                       'v3': [],
                       'v4': []}
@@ -550,8 +552,8 @@ class TestDirectedGraph(unittest.TestCase):
     def test_directed_graph_vertices_and_edges(self):
         """ Get directed graphs' vertices and edges properties """
         g = DirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
         g.add_edge(('v0', 'v1'))
 
         v0 = g.get_vertex('v0')
@@ -566,7 +568,7 @@ class TestDirectedGraph(unittest.TestCase):
 
     def test_directed_graph_num_vertices_and_num_edges(self):
         """ Get the number of a directed graph's vertices and edges """
-        g = DirectedGraph.from_dict({'v0': ['v1'],
+        g = DirectedGraph.from_dict({'v0': [('v1',)],
                                      'v1': []})
 
         self.assertEqual(g.num_vertices, 2)
@@ -579,7 +581,7 @@ class TestDirectedGraph(unittest.TestCase):
     def test_directed_graph_average_outs_and_average_ins(self):
         """ Get the average out degree and in degree of all vertices in a
             directed graph """
-        g = DirectedGraph.from_dict({'v0': ['v1'],
+        g = DirectedGraph.from_dict({'v0': [('v1',)],
                                      'v1': [],
                                      'v2': []})
         empty_g = DirectedGraph()
@@ -596,10 +598,10 @@ class TestDirectedGraph(unittest.TestCase):
     def test_directed_graph_is_weakly_connected(self):
         """ Get whether a path exists for every pair of vertices in a directed
             graph when treating its edges as undirected """
-        g_connected = DirectedGraph.from_dict({'v0': ['v1', 'v2'],
+        g_connected = DirectedGraph.from_dict({'v0': [('v1',), ('v2',)],
                                                'v1': [],
                                                'v2': []})
-        g_disconnected = DirectedGraph.from_dict({'v0': ['v1'],
+        g_disconnected = DirectedGraph.from_dict({'v0': [('v1',)],
                                                   'v1': [],
                                                   'v2': []})
 
@@ -613,10 +615,10 @@ class TestDirectedGraph(unittest.TestCase):
     def test_directed_graph_is_strongly_connected(self):
         """ Get whether a path exists in both directions for every pair of
             vertices in a directed graph """
-        g_connected = DirectedGraph.from_dict({'v0': ['v1'],
-                                               'v1': ['v2'],
-                                               'v2': ['v0']})
-        g_disconnected = DirectedGraph.from_dict({'v0': ['v1', 'v2'],
+        g_connected = DirectedGraph.from_dict({'v0': [('v1',)],
+                                               'v1': [('v2',)],
+                                               'v2': [('v0',)]})
+        g_disconnected = DirectedGraph.from_dict({'v0': [('v1',), ('v2',)],
                                                   'v1': [],
                                                   'v2': []})
 
@@ -630,20 +632,22 @@ class TestDirectedGraph(unittest.TestCase):
     def test_directed_graph_add_vertex(self):
         """ Add vertices to a directed graph """
         g = DirectedGraph()
-        v0_val = g.add_vertex('v0')
-        v1_val = g.add_vertex('v1')
+        v0_val = g.add_vertex(v_val='v0', attrs={'city': 'Modena'})
+        v1_val = g.add_vertex(v_val='v1')
 
         self.assertEqual(v0_val, 'v0')
         self.assertEqual(v1_val, 'v1')
         self.assertTrue(g.has_vertex('v0'))
         self.assertTrue(g.has_vertex('v1'))
         self.assertFalse(g.has_vertex('v2'))
+        self.assertEqual(g.get_vertex('v0').get('city'), 'Modena')
+        self.assertIsNone(g.get_vertex('v1').get('city'))
 
     def test_directed_graph_add_edge(self):
         """ Add edges to a directed graph """
         g = DirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
         g.add_edge(('v0', 'v0'), attrs={'weight': 5})
         g.add_edge(('v0', 'v1'), attrs={'weight': 7})
 
@@ -659,9 +663,9 @@ class TestDirectedGraph(unittest.TestCase):
     def test_directed_graph_remove_vertex(self):
         """ Remove vertices from a directed graph """
         g = DirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
-        g.add_vertex('v2')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
+        g.add_vertex(v_val='v2')
         g.add_edge(('v0', 'v1'))
         g.add_edge(('v1', 'v2'))
 
@@ -686,9 +690,9 @@ class TestDirectedGraph(unittest.TestCase):
     def test_directed_graph_remove_edge(self):
         """ Remove edges from a directed graph """
         g = DirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
-        g.add_vertex('v2')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
+        g.add_vertex(v_val='v2')
         g.add_edge(('v0', 'v1'))
         g.add_edge(('v0', 'v2'))
 
@@ -708,11 +712,11 @@ class TestDirectedGraph(unittest.TestCase):
         """ Search for paths from a directed vertex to all vertices reachable
             from it """
         g = DirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
-        g.add_vertex('v2')
-        g.add_vertex('v3')
-        g.add_vertex('v4')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
+        g.add_vertex(v_val='v2')
+        g.add_vertex(v_val='v3')
+        g.add_vertex(v_val='v4')
         g.add_edge(('v0', 'v0'))
         g.add_edge(('v0', 'v1'))
         g.add_edge(('v2', 'v0'))
@@ -752,7 +756,7 @@ class TestDirectedGraph(unittest.TestCase):
         """ A directed graph should not be able to add a vertex that already
             exists in the graph """
         g = DirectedGraph()
-        g.add_vertex('v0')
+        g.add_vertex(v_val='v0')
 
         with self.assertRaises(VertexAlreadyExistsException):
             g.add_vertex('v0')
@@ -761,8 +765,8 @@ class TestDirectedGraph(unittest.TestCase):
         """ A directed graph should not be able to add an edge that already
             exists in the graph """
         g = DirectedGraph()
-        g.add_vertex('v0')
-        g.add_vertex('v1')
+        g.add_vertex(v_val='v0')
+        g.add_vertex(v_val='v1')
         g.add_edge(('v0', 'v1'))
 
         with self.assertRaises(EdgeAlreadyExistsException):

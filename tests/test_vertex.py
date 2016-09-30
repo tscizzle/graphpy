@@ -40,9 +40,9 @@ class TestUndirectedVertex(unittest.TestCase):
         v0 = UndirectedVertex(val='v0')
         v1 = UndirectedVertex(val='v1')
         v2 = UndirectedVertex(val='v2')
-        e00 = UndirectedEdge(v0, v0)
-        e01 = UndirectedEdge(v0, v1)
-        e02 = UndirectedEdge(v0, v2)
+        e00 = UndirectedEdge((v0, v0))
+        e01 = UndirectedEdge((v0, v1))
+        e02 = UndirectedEdge((v0, v2))
         v0.add_edge(e00)
         v0.add_edge(e01)
         v1.add_edge(e01)
@@ -60,10 +60,10 @@ class TestUndirectedVertex(unittest.TestCase):
         v0 = UndirectedVertex(val='v0')
         v1 = UndirectedVertex(val='v1')
         v2 = UndirectedVertex(val='v2')
-        e00 = UndirectedEdge(v0, v0)
-        e01 = UndirectedEdge(v0, v1)
-        e11 = UndirectedEdge(v1, v1)
-        e02 = UndirectedEdge(v0, v2)
+        e00 = UndirectedEdge((v0, v0))
+        e01 = UndirectedEdge((v0, v1))
+        e11 = UndirectedEdge((v1, v1))
+        e02 = UndirectedEdge((v0, v2))
         v0.add_edge(e00)
         v0.add_edge(e01)
         v1.add_edge(e01)
@@ -88,9 +88,9 @@ class TestUndirectedVertex(unittest.TestCase):
         v0 = UndirectedVertex(val='v0')
         v1 = UndirectedVertex(val='v1')
         v2 = UndirectedVertex(val='v2')
-        e00 = UndirectedEdge(v0, v0)
-        e01 = UndirectedEdge(v0, v1)
-        e02 = UndirectedEdge(v0, v2)
+        e00 = UndirectedEdge((v0, v0))
+        e01 = UndirectedEdge((v0, v1))
+        e02 = UndirectedEdge((v0, v2))
         v0.add_edge(e01)
         v0.add_edge(e02)
 
@@ -111,10 +111,10 @@ class TestUndirectedVertex(unittest.TestCase):
         v0 = UndirectedVertex(val='v0')
         v1 = UndirectedVertex(val='v1')
         v2 = UndirectedVertex(val='v2')
-        e00 = UndirectedEdge(v0, v0)
-        e01 = UndirectedEdge(v0, v1)
-        e10 = UndirectedEdge(v1, v0)
-        e02 = UndirectedEdge(v0, v2)
+        e00 = UndirectedEdge((v0, v0))
+        e01 = UndirectedEdge((v0, v1))
+        e10 = UndirectedEdge((v1, v0))
+        e02 = UndirectedEdge((v0, v2))
         v0.add_edge(e00)
         v0.add_edge(e01)
 
@@ -128,9 +128,9 @@ class TestUndirectedVertex(unittest.TestCase):
         v0 = UndirectedVertex(val='v0')
         v1 = UndirectedVertex(val='v1')
         v2 = UndirectedVertex(val='v2')
-        e01 = UndirectedEdge(v0, v1)
-        e10 = UndirectedEdge(v1, v0)
-        e02 = UndirectedEdge(v0, v2)
+        e01 = UndirectedEdge((v0, v1))
+        e10 = UndirectedEdge((v1, v0))
+        e02 = UndirectedEdge((v0, v2))
         v0.add_edge(e01)
         v0.add_edge(e02)
 
@@ -146,12 +146,43 @@ class TestUndirectedVertex(unittest.TestCase):
         self.assertFalse(e10 in v0)
         self.assertFalse(e02 in v0)
 
+    def test_undirected_vertex_get(self):
+        """ Get an attribute of an undirected vertex """
+        v0 = UndirectedVertex(val='v0', attrs={'city': 'Modena'})
+
+        self.assertEqual(v0.get('city'), 'Modena')
+        self.assertIsNone(v0.get('notthere'))
+
+    def test_undirected_vertex_set(self):
+        """ Set an attribute of an undirected vertex """
+        v0 = UndirectedVertex(val='v0')
+
+        v0.set('city', 'Modena')
+
+        self.assertEqual(v0.attrs, {'city': 'Modena'})
+
+        v0.set(0, 1)
+
+        self.assertEqual(v0.attrs, {'city': 'Modena', 0: 1})
+
+    def test_undirected_vertex_del_attr(self):
+        """ Delete an attribute of an undirected vertex """
+        v0 = UndirectedVertex(val='v0', attrs={'city': 'Modena', 0: 1})
+
+        v0.del_attr('city')
+
+        self.assertEqual(v0.attrs, {0: 1})
+
+        v0.del_attr(0)
+
+        self.assertEqual(v0.attrs, {})
+
     def test_undirected_vertex_already_has_edge(self):
         """ An undirected vertex should not be able to add an edge that it
             already has """
         v0 = UndirectedVertex(val='v0')
         v1 = UndirectedVertex(val='v1')
-        e01 = UndirectedEdge(v0, v1)
+        e01 = UndirectedEdge((v0, v1))
         v0.add_edge(e01)
 
         with self.assertRaises(VertexAlreadyHasEdgeException):
@@ -168,7 +199,7 @@ class TestUndirectedVertex(unittest.TestCase):
         v0 = UndirectedVertex(val='v0')
         v1 = UndirectedVertex(val='v1')
         v2 = UndirectedVertex(val='v2')
-        e12 = UndirectedEdge(v1, v2)
+        e12 = UndirectedEdge((v1, v2))
 
         with self.assertRaises(VertexNotPartOfEdgeException):
             v0.add_edge(e12)
@@ -203,9 +234,9 @@ class TestDirectedVertex(unittest.TestCase):
         v0 = DirectedVertex(val='v0')
         v1 = DirectedVertex(val='v1')
         v2 = DirectedVertex(val='v2')
-        e00 = DirectedEdge(v0, v0)
-        e01 = DirectedEdge(v0, v1)
-        e20 = DirectedEdge(v2, v0)
+        e00 = DirectedEdge((v0, v0))
+        e01 = DirectedEdge((v0, v1))
+        e20 = DirectedEdge((v2, v0))
         v0.add_edge(e00)
         v0.add_edge(e01)
         v1.add_edge(e01)
@@ -224,10 +255,10 @@ class TestDirectedVertex(unittest.TestCase):
         v0 = DirectedVertex(val='v0')
         v1 = DirectedVertex(val='v1')
         v2 = DirectedVertex(val='v2')
-        e00 = DirectedEdge(v0, v0)
-        e01 = DirectedEdge(v0, v1)
-        e02 = DirectedEdge(v0, v2)
-        e10 = DirectedEdge(v1, v0)
+        e00 = DirectedEdge((v0, v0))
+        e01 = DirectedEdge((v0, v1))
+        e02 = DirectedEdge((v0, v2))
+        e10 = DirectedEdge((v1, v0))
         v0.add_edge(e00)
         v0.add_edge(e01)
         v0.add_edge(e02)
@@ -244,9 +275,9 @@ class TestDirectedVertex(unittest.TestCase):
         v0 = DirectedVertex(val='v0')
         v1 = DirectedVertex(val='v1')
         v2 = DirectedVertex(val='v2')
-        e01 = DirectedEdge(v0, v1)
-        e10 = DirectedEdge(v1, v0)
-        e02 = DirectedEdge(v0, v2)
+        e01 = DirectedEdge((v0, v1))
+        e10 = DirectedEdge((v1, v0))
+        e02 = DirectedEdge((v0, v2))
         v0.add_edge(e01)
 
         self.assertTrue(e01 in v0)
@@ -258,9 +289,9 @@ class TestDirectedVertex(unittest.TestCase):
         v0 = DirectedVertex(val='v0')
         v1 = DirectedVertex(val='v1')
         v2 = DirectedVertex(val='v2')
-        e01 = DirectedEdge(v0, v1)
-        e10 = DirectedEdge(v1, v0)
-        e02 = DirectedEdge(v0, v2)
+        e01 = DirectedEdge((v0, v1))
+        e10 = DirectedEdge((v1, v0))
+        e02 = DirectedEdge((v0, v2))
         v0.add_edge(e01)
         v0.add_edge(e10)
         v0.add_edge(e02)
@@ -277,13 +308,44 @@ class TestDirectedVertex(unittest.TestCase):
         self.assertTrue(e10 in v0)
         self.assertFalse(e02 in v0)
 
+    def test_directed_vertex_get(self):
+        """ Get an attribute of a directed vertex """
+        v0 = DirectedVertex(val='v0', attrs={'city': 'Modena'})
+
+        self.assertEqual(v0.get('city'), 'Modena')
+        self.assertIsNone(v0.get('notthere'))
+
+    def test_directed_vertex_set(self):
+        """ Set an attribute of an directed vertex """
+        v0 = DirectedVertex(val='v0')
+
+        v0.set('city', 'Modena')
+
+        self.assertEqual(v0.attrs, {'city': 'Modena'})
+
+        v0.set(0, 1)
+
+        self.assertEqual(v0.attrs, {'city': 'Modena', 0: 1})
+
+    def test_directed_vertex_del_attr(self):
+        """ Delete an attribute of a directed vertex """
+        v0 = DirectedVertex(val='v0', attrs={'city': 'Modena', 0: 1})
+
+        v0.del_attr('city')
+
+        self.assertEqual(v0.attrs, {0: 1})
+
+        v0.del_attr(0)
+
+        self.assertEqual(v0.attrs, {})
+
     def test_directed_vertex_already_has_edge(self):
         """ A directed vertex should not be able to add an edge that it already
             has """
         v0 = DirectedVertex(val='v0')
         v1 = DirectedVertex(val='v1')
-        e01 = DirectedEdge(v0, v1)
-        e10 = DirectedEdge(v1, v0)
+        e01 = DirectedEdge((v0, v1))
+        e10 = DirectedEdge((v1, v0))
         v0.add_edge(e01)
 
         with self.assertRaises(VertexAlreadyHasEdgeException):
@@ -300,7 +362,7 @@ class TestDirectedVertex(unittest.TestCase):
         v0 = DirectedVertex(val='v0')
         v1 = DirectedVertex(val='v1')
         v2 = DirectedVertex(val='v2')
-        e12 = DirectedEdge(v1, v2)
+        e12 = DirectedEdge((v1, v2))
 
         with self.assertRaises(VertexNotPartOfEdgeException):
             v0.add_edge(e12)

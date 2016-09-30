@@ -12,8 +12,9 @@ Implementation of a vertex, as used in graphs
 
 class UndirectedVertex(object):
 
-    def __init__(self, val=None):
+    def __init__(self, val=None, attrs=None):
         self._val = val or id(self)
+        self._attrs = attrs or {}
         self._edges = set()
         self._has_self_edge = False
 
@@ -30,6 +31,10 @@ class UndirectedVertex(object):
     @property
     def val(self):
         return self._val
+
+    @property
+    def attrs(self):
+        return self._attrs
 
     @property
     def edges(self):
@@ -70,6 +75,18 @@ class UndirectedVertex(object):
         if e.is_self_edge:
             self._has_self_edge = False
 
+    def get(self, attr):
+        """ Get an attribute """
+        return self._attrs.get(attr)
+
+    def set(self, attr, value):
+        """ Set an attribute """
+        self._attrs[attr] = value
+
+    def del_attr(self, attr):
+        """ Delete an attribute """
+        del self._attrs[attr]
+
 
 ################################################################################
 #                                                                              #
@@ -80,8 +97,9 @@ class UndirectedVertex(object):
 
 class DirectedVertex(object):
 
-    def __init__(self, val=None):
+    def __init__(self, val=None, attrs=None):
         self._val = val or id(self)
+        self._attrs = attrs or {}
         self._edges = set()
 
     def __repr__(self):
@@ -97,6 +115,10 @@ class DirectedVertex(object):
     @property
     def val(self):
         return self._val
+
+    @property
+    def attrs(self):
+        return self._attrs
 
     @property
     def edges(self):
@@ -139,6 +161,18 @@ class DirectedVertex(object):
     def remove_edge(self, e):
         """ Removes an edge from this vertex """
         self._edges.discard(e)
+
+    def get(self, attr):
+        """ Get an attribute """
+        return self._attrs.get(attr)
+
+    def set(self, attr, value):
+        """ Set an attribute """
+        self._attrs[attr] = value
+
+    def del_attr(self, attr):
+        """ Delete an attribute """
+        del self._attrs[attr]
 
 
 ################################################################################
