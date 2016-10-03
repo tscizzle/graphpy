@@ -22,12 +22,20 @@ Use
 
 There are two types of each object: ``Undirected`` and ``Directed``.
 
-To begin, create a graph from a dictionary of vertex vals::
+To begin, import one of the graph classes::
 
     from graphpy.graph import UndirectedGraph
 
-    g = UndirectedGraph.from_dict({'v0': ['v1'],
+and create a graph from a dictionary of vertex vals::
+
+    # graph with vertices 'v0' and 'v1', with an edge between them
+
+    g = UndirectedGraph.from_dict({'v0': [('v1',)],
                                    'v1': []})
+
+or from a list of vertices and a list of edges::
+
+    g = UndirectedGraph.from_lists([('v0',), ('v1',)], [('v0', 'v1')])
 
 You can also initialize a graph, then add vertices and edges::
 
@@ -39,11 +47,15 @@ You can also initialize a graph, then add vertices and edges::
 
 A vertex's val can be any hashable object, like a string, int, tuple, etc.::
 
-    g = UndirectedGraph.from_dict({'v0': [1],
-                                   1: ['v0', (2, 2)],
-                                   (2, 2): [1]})
+    # graph with vertices 'v0', 1, and (2, 2), with some edges
+
+    g = UndirectedGraph.from_dict({'v0': [(1,)],
+                                   1: [('v0',), ((2, 2),)],
+                                   (2, 2): [(1,)]})
 
 Retrieve vertex and edge objects::
+
+    # v is an UndirectedVertex object, and e is an UndirectedEdge object
 
     v = g.get_vertex('v0')
     print v.degree
@@ -61,7 +73,11 @@ Perform graph algorithms, such as search::
     paths = g.search(start='v0', method='depth_first')
     print paths
 
-From there, use graphs to model situations, implement more graph algorithms, and whatever else you desire. And as always have fun!
+Create graphs with vertices and edges that have whatever attributes you want (for example, edge weights)::
+
+    g = UndirectedGraph.from_lists([('v0', {'city': 'Paris'}), ('v1', {'city': 'London'})], [('v0', 'v1', {'weight': 5})])
+
+From there, use graphs to model situations, implement more graph algorithms, and whatever else you desire. And, as always, have fun!
 
 (The tests found on Github at https://github.com/tscizzle/graphpy/tree/master/tests give many more examples and showcase the rest of the library's functionality.)
 
