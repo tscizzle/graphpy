@@ -101,23 +101,33 @@ class TestUndirectedGraph(unittest.TestCase):
                       (2, 2): [],
                       'v3': [],
                       'v4': []}
-        g = UndirectedGraph.from_dict(graph_dict)
+        vertex_attrs = {'v0': {'city': 'Paris'},
+                        1: {'continent': 'Europe', 'city': 'London'},
+                        'v5': {'city': 'Jamestown'}}
+        g = UndirectedGraph.from_dict(graph_dict, vertex_attrs=vertex_attrs)
 
         v0 = g.get_vertex('v0')
         v1 = g.get_vertex(1)
         v2 = g.get_vertex((2, 2))
         v3 = g.get_vertex('v3')
         v4 = g.get_vertex('v4')
+        v5 = g.get_vertex('v5')
         e01 = g.get_edge(('v0', 1))
         e02 = g.get_edge(('v0', (2, 2)))
         e13 = g.get_edge((1, 'v3'))
-        self.assertEqual(g.num_vertices, 5)
+        self.assertEqual(g.num_vertices, 6)
         self.assertEqual(g.num_edges, 3)
         self.assertEqual(set(v0.neighbors), set([v1, v2]))
         self.assertEqual(set(v1.neighbors), set([v0, v3]))
         self.assertEqual(set(v2.neighbors), set([v0]))
         self.assertEqual(set(v3.neighbors), set([v1]))
         self.assertEqual(set(v4.neighbors), set())
+        self.assertEqual(set(v5.neighbors), set())
+        self.assertEqual(v0.get('city'), 'Paris')
+        self.assertEqual(v1.get('continent'), 'Europe')
+        self.assertEqual(v1.get('city'), 'London')
+        self.assertEqual(v5.get('city'), 'Jamestown')
+        self.assertIsNone(v2.get('city'))
         self.assertIsNone(e01.get('weight'))
         self.assertEqual(e02.get('weight'), 5)
         self.assertIsNone(e13.get('weight'))
@@ -468,16 +478,20 @@ class TestDirectedGraph(unittest.TestCase):
                       (2, 2): [],
                       'v3': [],
                       'v4': []}
-        g = DirectedGraph.from_dict(graph_dict)
+        vertex_attrs = {'v0': {'city': 'Paris'},
+                        1: {'continent': 'Europe', 'city': 'London'},
+                        'v5': {'city': 'Jamestown'}}
+        g = DirectedGraph.from_dict(graph_dict, vertex_attrs=vertex_attrs)
 
         v0 = g.get_vertex('v0')
         v1 = g.get_vertex(1)
         v2 = g.get_vertex((2, 2))
         v3 = g.get_vertex('v3')
         v4 = g.get_vertex('v4')
+        v5 = g.get_vertex('v5')
         e01 = g.get_edge(('v0', 1))
         e02 = g.get_edge(('v0', (2, 2)))
-        self.assertEqual(g.num_vertices, 5)
+        self.assertEqual(g.num_vertices, 6)
         self.assertEqual(g.num_edges, 4)
         self.assertEqual(set(v0.outs), set([v1, v2]))
         self.assertEqual(set(v1.outs), set([v0, v3]))
@@ -489,6 +503,11 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertEqual(set(v2.ins), set([v0]))
         self.assertEqual(set(v3.ins), set([v1]))
         self.assertEqual(set(v4.ins), set())
+        self.assertEqual(v0.get('city'), 'Paris')
+        self.assertEqual(v1.get('continent'), 'Europe')
+        self.assertEqual(v1.get('city'), 'London')
+        self.assertEqual(v5.get('city'), 'Jamestown')
+        self.assertIsNone(v2.get('city'))
         self.assertIsNone(e01.get('weight'))
         self.assertEqual(e02.get('weight'), 5)
         with self.assertRaises(BadGraphInputException):

@@ -59,9 +59,11 @@ class UndirectedGraph(object):
         return g
 
     @classmethod
-    def from_dict(cls, graph_dict):
+    def from_dict(cls, graph_dict, vertex_attrs=None):
         """ Generate a graph by passing in a dictionary of vertex vals each
             mapped to a set of vals of vertices to which there is an edge """
+        vertex_attrs = vertex_attrs or {}
+
         g = cls()
 
         for v_val in graph_dict:
@@ -90,6 +92,13 @@ class UndirectedGraph(object):
                     g.add_edge((v_val, neighbor_val), attrs=edge_attrs)
                 except EdgeAlreadyExistsException:
                     pass
+
+        for v_val, v_attrs in vertex_attrs.items():
+            if not g.has_vertex(v_val):
+                g.add_vertex(v_val)
+            v = g.get_vertex(v_val)
+            for attr, value in v_attrs.items():
+                v.set(attr, value)
 
         return g
 
@@ -317,9 +326,11 @@ class DirectedGraph(object):
         return g
 
     @classmethod
-    def from_dict(cls, graph_dict):
+    def from_dict(cls, graph_dict, vertex_attrs=None):
         """ Generate a graph by passing in a dictionary of vertex vals each
             mapped to a set of vals of vertices to which there is an edge """
+        vertex_attrs = vertex_attrs or {}
+
         g = cls()
 
         for v_val in graph_dict:
@@ -347,6 +358,13 @@ class DirectedGraph(object):
                     g.add_edge((v_val, out_val), attrs=edge_attrs)
                 except EdgeAlreadyExistsException:
                     pass
+
+        for v_val, v_attrs in vertex_attrs.items():
+            if not g.has_vertex(v_val):
+                g.add_vertex(v_val)
+            v = g.get_vertex(v_val)
+            for attr, value in v_attrs.items():
+                v.set(attr, value)
 
         return g
 
