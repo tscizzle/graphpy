@@ -28,6 +28,10 @@ graphpy.edge
                 - to be a key in this edge's *attrs* dict
             - **value** <any object>
                 - to be the value pointed to by *attr* in this edge's *attrs* dict
+    - *method* **has_attr** (*attr*)
+        - **Parameters**
+            - **attr** <hashable>
+                - potential key in this edge's *attrs* dict
     - *method* **del_attr** (*attr*)
         - **Parameters**
             - **attr** <hashable>
@@ -57,6 +61,10 @@ graphpy.edge
                 - to be a key in this edge's *attrs* dict
             - **value** <any object>
                 - to be the value pointed to by *attr* in this edge's *attrs* dict
+    - *method* **has_attr** (*attr*)
+        - **Parameters**
+            - **attr** <hashable>
+                - potential key in this edge's *attrs* dict
     - *method* **del_attr** (*attr*)
         - **Parameters**
             - **attr** <hashable>
@@ -100,6 +108,10 @@ graphpy.vertex
                 - to be a key in this vertex's *attrs* dict
             - **value** <any object>
                 - to be the value pointed to by *attr* in this vertex's *attrs* dict
+    - *method* **has_attr** (*attr*)
+        - **Parameters**
+            - **attr** <hashable>
+                - potential key in this vertex's *attrs* dict
     - *method* **del_attr** (*attr*)
         - **Parameters**
             - **attr** <hashable>
@@ -144,6 +156,10 @@ graphpy.vertex
                 - to be a key in this vertex's *attrs* dict
             - **value** <any object>
                 - to be the value pointed to by *attr* in this vertex's *attrs* dict
+    - *method* **has_attr** (*attr*)
+        - **Parameters**
+            - **attr** <hashable>
+                - potential key in this vertex's *attrs* dict
     - *method* **del_attr** (*attr*)
         - **Parameters**
             - **attr** <hashable>

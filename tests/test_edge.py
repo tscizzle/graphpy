@@ -119,6 +119,19 @@ class TestUndirectedEdge(unittest.TestCase):
 
         self.assertEqual(e01.attrs, {'weight': 5, 0: 1})
 
+    def test_undirected_edge_has_attr(self):
+        """ Check if an undirected edge has a particular attribute """
+        v0 = UndirectedVertex(val='v0')
+        v1 = UndirectedVertex(val='v1')
+        e01 = UndirectedEdge((v0, v1), attrs={'weight': 5, 0: 1})
+
+        self.assertTrue(e01.has_attr('weight'))
+        self.assertFalse(e01.has_attr('length'))
+
+        e01.del_attr('weight')
+
+        self.assertFalse(e01.has_attr('weight'))
+
     def test_undirected_edge_del_attr(self):
         """ Delete an attribute of an undirected edge """
         v0 = UndirectedVertex(val='v0')
@@ -240,6 +253,19 @@ class TestDirectedEdge(unittest.TestCase):
         e01.set(0, 1)
 
         self.assertEqual(e01.attrs, {'weight': 5, 0: 1})
+
+    def test_directed_edge_has_attr(self):
+        """ Check if a directed edge has a particular attribute """
+        v0 = DirectedVertex(val='v0')
+        v1 = DirectedVertex(val='v1')
+        e01 = DirectedEdge((v0, v1), attrs={'weight': 5, 0: 1})
+
+        self.assertTrue(e01.has_attr('weight'))
+        self.assertFalse(e01.has_attr('length'))
+
+        e01.del_attr('weight')
+
+        self.assertFalse(e01.has_attr('weight'))
 
     def test_directed_edge_del_attr(self):
         """ Delete an attribute of a directed edge """

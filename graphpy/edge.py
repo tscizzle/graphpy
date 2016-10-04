@@ -56,6 +56,10 @@ class UndirectedEdge(object):
         """ Set an attribute """
         self._attrs[attr] = value
 
+    def has_attr(self, attr):
+        """ Check if an attribute exists """
+        return attr in self._attrs
+
     def del_attr(self, attr):
         """ Delete an attribute """
         del self._attrs[attr]
@@ -109,6 +113,10 @@ class DirectedEdge(object):
     def set(self, attr, value):
         """ Set an attribute """
         self._attrs[attr] = value
+
+    def has_attr(self, attr):
+        """ Check if an attribute exists """
+        return attr in self._attrs
 
     def del_attr(self, attr):
         """ Delete an attribute """
