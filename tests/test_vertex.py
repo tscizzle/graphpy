@@ -165,6 +165,17 @@ class TestUndirectedVertex(unittest.TestCase):
 
         self.assertEqual(v0.attrs, {'city': 'Modena', 0: 1})
 
+    def test_undirected_vertex_has_attr(self):
+        """ Check if an undirected vertex has a particular attribute """
+        v0 = UndirectedVertex(val='v0', attrs={'city': 'Modena', 0: 1})
+
+        self.assertTrue(v0.has_attr('city'))
+        self.assertFalse(v0.has_attr('town'))
+
+        v0.del_attr('city')
+
+        self.assertFalse(v0.has_attr('city'))
+
     def test_undirected_vertex_del_attr(self):
         """ Delete an attribute of an undirected vertex """
         v0 = UndirectedVertex(val='v0', attrs={'city': 'Modena', 0: 1})
@@ -326,6 +337,17 @@ class TestDirectedVertex(unittest.TestCase):
         v0.set(0, 1)
 
         self.assertEqual(v0.attrs, {'city': 'Modena', 0: 1})
+
+    def test_undirected_vertex_has_attr(self):
+        """ Check if a directed vertex has a particular attribute """
+        v0 = DirectedVertex(val='v0', attrs={'city': 'Modena', 0: 1})
+
+        self.assertTrue(v0.has_attr('city'))
+        self.assertFalse(v0.has_attr('town'))
+
+        v0.del_attr('city')
+
+        self.assertFalse(v0.has_attr('city'))
 
     def test_directed_vertex_del_attr(self):
         """ Delete an attribute of a directed vertex """
