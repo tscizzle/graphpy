@@ -9,6 +9,12 @@ graphpy.edge
         - **vertices** <tuple>
             - tuple of length 2 of UndirectedVertex objects
         - **attrs** <dict>
+    - *__eq__*
+        - equality is based on the `vertices` property
+    - *__ne__*
+        - non-equality is based on the `vertices` property
+    - *__hash__*
+        - hashing is based on the `vertices` property
     - *property* **vertices**
         - frozenset of the two UndirectedVertex objects this edge connects
     - *property* **attrs**
@@ -42,6 +48,12 @@ graphpy.edge
         - **vertices** <tuple>
             - tuple of length 2 of DirectedVertex objects
         - **attrs** <dict>
+    - *__eq__*
+        - equality is based on the `v_from` and `v_to` properties
+    - *__ne__*
+        - non-equality is based on the `v_from` and `v_to` properties
+    - *__hash__*
+        - hashing is based on the `v_from` and `v_to` properties
     - *property* **v_from**
         - DirectedVertex object from which this edge points (the tail)
     - *property* **v_to**
