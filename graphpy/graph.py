@@ -7,6 +7,7 @@ from edge import UndirectedEdge, DirectedEdge
 from vertex import UndirectedVertex, DirectedVertex
 from helpers import is_hashable
 
+import copy
 import random
 
 
@@ -107,13 +108,16 @@ class UndirectedGraph(object):
         """ Generate an undirected graph by turning a directed graph's edges
             into undirected edges and removing duplicate edges """
         g = cls()
+
         for v in directed_graph.vertices:
             g.add_vertex(v.val)
+
         for e in directed_graph.edges:
             try:
                 g.add_edge((e.v_from.val, e.v_to.val))
             except EdgeAlreadyExistsException:
                 pass
+
         return g
 
     @classmethod
@@ -121,12 +125,15 @@ class UndirectedGraph(object):
         """ Generate a graph using a set of vertex vals where each pair of
             vertices has some probability of having an edge between them """
         g = cls()
+
         for v_val in vertex_vals:
             g.add_vertex(v_val)
+
         for v0 in g.vertices:
             for v1 in g.vertices:
                 if v0 > v1 and random.random() < p:
                     g.add_edge((v0.val, v1.val))
+
         return g
 
     @classmethod
@@ -166,6 +173,19 @@ class UndirectedGraph(object):
             vertex """
         return (len(self.search(tuple(self._vertices)[0].val)) ==
                 self.num_vertices)
+
+    def clone(self):
+        """ Clones this graph """
+        g = self.__class__()
+
+        for v in self._vertices:
+            g.add_vertex(v.val, attrs=copy.deepcopy(v.attrs))
+
+        for e in self._edges:
+            g.add_edge(tuple(v.val for v in e.vertices),
+                       attrs=copy.deepcopy(e.attrs))
+
+        return g
 
     def has_vertex(self, v_val):
         """ Checks if a certain vertex already exists in this graph """
@@ -446,6 +466,18 @@ class DirectedGraph(object):
         v_t = tuple(t.vertices)[0]
         return (len(self.search(v_self.val)) == len(t.search(v_t.val)) ==
                 self.num_vertices)
+
+    def clone(self):
+        """ Clones this graph """
+        g = self.__class__()
+
+        for v in self._vertices:
+            g.add_vertex(v.val, attrs=copy.deepcopy(v.attrs))
+
+        for e in self._edges:
+            g.add_edge((e.v_from.val, e.v_to.val), attrs=copy.deepcopy(e.attrs))
+
+        return g
 
     def has_vertex(self, v_val):
         """ Checks if a certain vertex already exists in this graph """

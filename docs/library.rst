@@ -21,7 +21,7 @@ graphpy.edge
     - *method* **__ne__** (*other*)
         - can do `e0 != e1` to check edge non-equality
         - non-equality is based on the `vertices` property
-    - *__hash__*
+    - *method* **__hash__**
         - can do `hash(e)` to hash this edge, and that hash is also used for the hashing of dictionary keys
         - hashing is based on the `vertices` property
     - *method* **get** (*attr*)
@@ -57,7 +57,7 @@ graphpy.edge
     - *method* **__ne__** (*other*)
         - can do `e0 != e1` to check edge non-equality
         - non-equality is based on the `v_from` and `v_to` properties
-    - *__hash__*
+    - *method* **__hash__**
         - can do `hash(e)` to hash this edge, and that hash is also used for the hashing of dictionary keys
         - hashing is based on the `v_from` and `v_to` properties
     - *property* **v_from**
@@ -254,6 +254,10 @@ graphpy.graph
         - Can do ``len(g)`` to get the number of vertices in UndirectedGraph ``g``
     - *method* **__iter__**
         - Can do ``for v in g`` to iterate through the vertices of UndirectedGraph ``g``
+    - *method* **clone**
+        - **Returns**
+            - UndirectedGraph, a copy of this graph with all new UndirectedVertex and UndirectedEdge objects
+            - all vertex and edge attrs are deepcopied
     - *method* **has_vertex** (*v_val*)
         - **Parameters**
             - **v_val** <hashable>
@@ -371,6 +375,10 @@ graphpy.graph
         - Can do ``len(g)`` to get the number of vertices in DirectedGraph ``g``
     - *method* **__iter__**
         - Can do ``for v in g`` to iterate through the vertices of DirectedGraph ``g``
+    - *method* **clone**
+        - **Returns**
+            - DirectedGraph, a copy of this graph with all new DirectedVertex and DirectedEdge objects
+            - all vertex and edge attrs are deepcopied
     - *method* **has_vertex** (*v_val*)
         - **Parameters**
             - **v_val** <hashable>

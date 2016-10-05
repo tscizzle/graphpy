@@ -59,7 +59,11 @@ class TestUndirectedGraph(unittest.TestCase):
 
     def test_create_undirected_graph_from_lists(self):
         """ Create an undirected graph from lists of vertices and edges """
-        vertices = [('v0',), (1,), ((2, 2),), ('v3',), ('v4',)]
+        vertices = [('v0', {'city': 'Paris'}),
+                    (1, {'continent': 'Europe', 'city': 'London'}),
+                    ((2, 2),),
+                    ('v3',),
+                    ('v4',)]
         edges = [(('v0', 1), {'weight': 3}),
                  (('v0', (2, 2)), {'weight': 4}),
                  ((1, 'v3'),)]
@@ -80,6 +84,10 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertEqual(set(v2.neighbors), set([v0]))
         self.assertEqual(set(v3.neighbors), set([v1]))
         self.assertEqual(set(v4.neighbors), set())
+        self.assertEqual(v0.get('city'), 'Paris')
+        self.assertEqual(v1.get('continent'), 'Europe')
+        self.assertEqual(v1.get('city'), 'London')
+        self.assertIsNone(v2.get('city'))
         self.assertEqual(e01.get('weight'), 3)
         self.assertEqual(e02.get('weight'), 4)
         self.assertIsNone(e13.get('weight'))
@@ -231,6 +239,47 @@ class TestUndirectedGraph(unittest.TestCase):
             g_connected.is_connected = False
         with self.assertRaises(AttributeError):
             g_disconnected.is_connected = True
+
+    def test_undirected_graph_clone(self):
+        """ Clone an undirected graph """
+        vertices = [('v0', {'city': 'Paris'}),
+                    ('v1', {'continent': 'Europe', 'city': 'London'}),
+                    ('v2',),
+                    ('v3',),
+                    ('v4',)]
+        edges = [(('v0', 'v1'), {'weight': 3}),
+                 (('v0', 'v2'), {'weight': 4}),
+                 (('v1', 'v3'),)]
+        g = UndirectedGraph.from_lists(vertices, edges)
+
+        g_prime = g.clone()
+
+        v0 = g.get_vertex('v0')
+        v0_prime = g_prime.get_vertex('v0')
+        e01 = g.get_edge(('v0', 'v1'))
+        e01_prime = g_prime.get_edge(('v0', 'v1'))
+        self.assertEqual(g_prime.num_vertices, g.num_vertices)
+        self.assertEqual(g_prime.num_edges, g.num_edges)
+        self.assertNotEqual(v0, v0_prime)
+        self.assertNotEqual(e01, e01_prime)
+        self.assertEqual(v0.attrs, v0_prime.attrs)
+
+        g.add_vertex('v5', {'city': 'Jamestown'})
+
+        self.assertTrue(g.has_vertex('v5'))
+        self.assertFalse(g_prime.has_vertex('v5'))
+
+        g.remove_vertex('v0')
+
+        self.assertFalse(g.has_vertex('v0'))
+        self.assertTrue(g_prime.has_vertex('v0'))
+        self.assertFalse(g.has_edge(('v0', 'v1')))
+        self.assertTrue(g_prime.has_edge(('v0', 'v1')))
+
+        e01.set('weight', 5)
+
+        self.assertEqual(e01.get('weight'), 5)
+        self.assertEqual(e01_prime.get('weight'), 3)
 
     def test_undirected_graph_add_vertex(self):
         """ Add vertices to an undirected graph """
@@ -428,7 +477,11 @@ class TestDirectedGraph(unittest.TestCase):
 
     def test_create_directed_graph_from_lists(self):
         """ Create a directed graph from lists of vertices and edges """
-        vertices = [('v0',), (1,), ((2, 2),), ('v3',), ('v4',)]
+        vertices = [('v0', {'city': 'Paris'}),
+                    (1, {'continent': 'Europe', 'city': 'London'}),
+                    ((2, 2),),
+                    ('v3',),
+                    ('v4',)]
         edges = [(('v0', 1), {'weight': 3}),
                  (('v0', (2, 2)), {'weight': 4}),
                  ((1, 'v3'),),
@@ -456,6 +509,10 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertEqual(set(v2.ins), set([v0]))
         self.assertEqual(set(v3.ins), set([v1]))
         self.assertEqual(set(v4.ins), set())
+        self.assertEqual(v0.get('city'), 'Paris')
+        self.assertEqual(v1.get('continent'), 'Europe')
+        self.assertEqual(v1.get('city'), 'London')
+        self.assertIsNone(v2.get('city'))
         self.assertEqual(e01.get('weight'), 3)
         self.assertEqual(e02.get('weight'), 4)
         self.assertIsNone(e13.get('weight'))
@@ -647,6 +704,47 @@ class TestDirectedGraph(unittest.TestCase):
             g_connected.is_strongly_connected = False
         with self.assertRaises(AttributeError):
             g_disconnected.is_strongly_connected = True
+
+    def test_directed_graph_clone(self):
+        """ Clone a directed graph """
+        vertices = [('v0', {'city': 'Paris'}),
+                    ('v1', {'continent': 'Europe', 'city': 'London'}),
+                    ('v2',),
+                    ('v3',),
+                    ('v4',)]
+        edges = [(('v0', 'v1'), {'weight': 3}),
+                 (('v0', 'v2'), {'weight': 4}),
+                 (('v1', 'v3'),)]
+        g = DirectedGraph.from_lists(vertices, edges)
+
+        g_prime = g.clone()
+
+        v0 = g.get_vertex('v0')
+        v0_prime = g_prime.get_vertex('v0')
+        e01 = g.get_edge(('v0', 'v1'))
+        e01_prime = g_prime.get_edge(('v0', 'v1'))
+        self.assertEqual(g_prime.num_vertices, g.num_vertices)
+        self.assertEqual(g_prime.num_edges, g.num_edges)
+        self.assertNotEqual(v0, v0_prime)
+        self.assertNotEqual(e01, e01_prime)
+        self.assertEqual(v0.attrs, v0_prime.attrs)
+
+        g.add_vertex('v5', {'city': 'Jamestown'})
+
+        self.assertTrue(g.has_vertex('v5'))
+        self.assertFalse(g_prime.has_vertex('v5'))
+
+        g.remove_vertex('v0')
+
+        self.assertFalse(g.has_vertex('v0'))
+        self.assertTrue(g_prime.has_vertex('v0'))
+        self.assertFalse(g.has_edge(('v0', 'v1')))
+        self.assertTrue(g_prime.has_edge(('v0', 'v1')))
+
+        e01.set('weight', 5)
+
+        self.assertEqual(e01.get('weight'), 5)
+        self.assertEqual(e01_prime.get('weight'), 3)
 
     def test_directed_graph_add_vertex(self):
         """ Add vertices to a directed graph """
