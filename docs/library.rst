@@ -16,14 +16,14 @@ graphpy.edge
     - *property* **is_self_edge**
         - bool for whether or not this edge connects a vertex to itself
     - *method* **__eq__** (*other*)
-        - can do `e0 == e1` to check edge equality
-        - equality is based on the `vertices` property
+        - can do ``e0 == e1`` to check edge equality
+        - equality is based on the ``vertices`` property
     - *method* **__ne__** (*other*)
-        - can do `e0 != e1` to check edge non-equality
-        - non-equality is based on the `vertices` property
+        - can do ``e0 != e1`` to check edge non-equality
+        - non-equality is based on the ``vertices`` property
     - *method* **__hash__**
-        - can do `hash(e)` to hash this edge, and that hash is also used for the hashing of dictionary keys
-        - hashing is based on the `vertices` property
+        - can do ``hash(e)`` to hash this edge, and that hash is also used for the hashing of dictionary keys
+        - hashing is based on the ``vertices`` property
     - *method* **get** (*attr*)
         - **Parameters**
             - **attr** <hashable>
@@ -52,14 +52,14 @@ graphpy.edge
             - tuple of length 2 of DirectedVertex objects
         - **attrs** <dict>
     - *method* **__eq__** (*other*)
-        - can do `e0 == e1` to check edge equality
-        - equality is based on the `v_from` and `v_to` properties
+        - can do ``e0 == e1`` to check edge equality
+        - equality is based on the ``v_from`` and ``v_to`` properties
     - *method* **__ne__** (*other*)
-        - can do `e0 != e1` to check edge non-equality
-        - non-equality is based on the `v_from` and `v_to` properties
+        - can do ``e0 != e1`` to check edge non-equality
+        - non-equality is based on the ``v_from`` and ``v_to`` properties
     - *method* **__hash__**
-        - can do `hash(e)` to hash this edge, and that hash is also used for the hashing of dictionary keys
-        - hashing is based on the `v_from` and `v_to` properties
+        - can do ``hash(e)`` to hash this edge, and that hash is also used for the hashing of dictionary keys
+        - hashing is based on the ``v_from`` and ``v_to`` properties
     - *property* **v_from**
         - DirectedVertex object from which this edge points (the tail)
     - *property* **v_to**
