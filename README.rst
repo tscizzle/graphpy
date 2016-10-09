@@ -35,7 +35,8 @@ and create a graph from a dictionary of vertex vals::
 
 or from a list of vertices and a list of edges::
 
-    g = UndirectedGraph.from_lists([('v0',), ('v1',)], [('v0', 'v1')])
+    g = UndirectedGraph.from_lists([('v0',), ('v1',)],
+                                   [('v0', 'v1')])
 
 You can also initialize a graph, then add vertices and edges::
 
@@ -75,7 +76,8 @@ Perform graph algorithms, such as search::
 
 Create graphs with vertices and edges that have whatever attributes you want (for example, edge weights)::
 
-    g = UndirectedGraph.from_lists([('v0', {'city': 'Paris'}), ('v1', {'city': 'London'})], [('v0', 'v1', {'weight': 5})])
+    g = UndirectedGraph.from_lists([('v0', {'city': 'Paris'}), ('v1', {'city': 'London'})],
+                                   [('v0', 'v1', {'weight': 5})])
 
 From there, use graphs to model situations, implement more graph algorithms, and whatever else you desire. And, as always, have fun!
 
