@@ -183,12 +183,6 @@ graphpy.vertex
             - **attr** <hashable>
                 - key in this vertex's *attrs* dict
 
-*exception* graphpy.vertex.VertexNotPartOfEdgeException(*v*, *e*)
-    - Cannot add an edge to a vertex which is not one of that edge's endpoints
-
-*exception* graphpy.vertex.VertexAlreadyHasEdgeException(*v*, *e*)
-    - Cannot add an edge to a vertex that already has that edge
-
 graphpy.graph
 -------------
 
@@ -309,6 +303,25 @@ graphpy.graph
         - **Returns**
             - hashable[] if *goal_val* is specified, representing the path from *start_val* to *goal_val*
             - dict mapping hashable -> hashable[] if *goal_val* is not specified, each value representing the path from *start_val* to that value's key
+    - *method* **dijkstra** (*start_val*, *goal_val* =None, *return_distances* =False, *priority_queue* =PriorityQueue)
+        - **Parameters**
+            - **start_val** <hashable>
+                - vertex to act as the root of the search algorithm
+            - **goal_val** <hashable>
+                - optional
+                - if specified, the search algorithm terminates when this vertex is found
+                - if not specified, the search algorithm goes through the entire graph
+            - **return_distances** <bool>
+                - optional
+                - whether or not to return distances instead of full paths
+            - **priority_queue** <class>
+                - optional
+                - specs for a suitable priority queue class can be found in the **extras** section of these docs
+        - **Returns**
+            - hashable[] if *goal_val* is specified, representing the path from *start_val* to *goal_val*
+            - dict mapping hashable -> hashable[] if *goal_val* is not specified, each value representing the path from *start_val* to that value's key
+            - if *return_distances* is True, instead of the path (hashable[]) it is just the distance (number)
+            - if a vertex is not reachable from *start_val*, its path is None and its distance is `inf`
 
 *class* graphpy.graph.DirectedGraph()
     - *classmethod* **from_lists** (*vertices*, *edges*)
@@ -346,7 +359,8 @@ graphpy.graph
                 - List of vals of the vertices to include
             - **p** <float>
                 - float between 0 and 1
-                - represents the probability each pair of vertices has of having an edge between them in a certain direction (so for any pair (v0, v1) there is *p* probability this graph has the edge (v0 -> v1), and this is separate and independent of whether this graph has (v1 -> v0))
+                - represents the probability each pair of vertices has of having an edge between them in a certain direction
+                    - (so for any pair (v0, v1) there is *p* probability this graph has the edge (v0 -> v1), and this is separate from and independent of whether this graph has the edge (v1 -> v0))
         - **Returns**
             - DirectedGraph object with edges between random pairs of vertices
     - *classmethod* **complete_graph** (*vertex_vals*)
@@ -430,9 +444,25 @@ graphpy.graph
         - **Returns**
             - hashable[] if *goal_val* is specified, representing the path from *start_val* to *goal_val*
             - dict mapping hashable -> hashable[] if *goal_val* is not specified, each value representing the path from *start_val* to that value's key
-
-*exception* graphpy.graph.BadGraphInputException
-    - Indicates there is something wrong with an input graph_dict
+    - *method* **dijkstra** (*start_val*, *goal_val* =None, *return_distances* =False, *priority_queue* =PriorityQueue)
+        - **Parameters**
+            - **start_val** <hashable>
+                - vertex to act as the root of the search algorithm
+            - **goal_val** <hashable>
+                - optional
+                - if specified, the search algorithm terminates when this vertex is found
+                - if not specified, the search algorithm goes through the entire graph
+            - **return_distances** <bool>
+                - optional
+                - whether or not to return distances instead of full paths
+            - **priority_queue** <class>
+                - optional
+                - specs for a suitable priority queue class can be found in the **extras** section of these docs
+        - **Returns**
+            - hashable[] if *goal_val* is specified, representing the path from *start_val* to *goal_val*
+            - dict mapping hashable -> hashable[] if *goal_val* is not specified, each value representing the path from *start_val* to that value's key
+            - if *return_distances* is True, instead of the path (hashable[]) it is just the distance (number)
+            - if a vertex is not reachable from *start_val*, its path is None and its distance is `inf`
 
 *exception* graphpy.graph.VertexAlreadyExistsException (*v*)
     - Cannot add a vertex to a graph that already has that vertex

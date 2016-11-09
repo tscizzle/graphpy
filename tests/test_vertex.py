@@ -4,9 +4,7 @@ Tests for vertex.py
 
 
 from graphpy.edge import UndirectedEdge, DirectedEdge
-from graphpy.vertex import (UndirectedVertex, DirectedVertex,
-                            VertexAlreadyHasEdgeException,
-                            VertexNotPartOfEdgeException)
+from graphpy.vertex import UndirectedVertex, DirectedVertex
 
 import unittest
 
@@ -196,11 +194,11 @@ class TestUndirectedVertex(unittest.TestCase):
         e01 = UndirectedEdge((v0, v1))
         v0.add_edge(e01)
 
-        with self.assertRaises(VertexAlreadyHasEdgeException):
+        with self.assertRaises(ValueError):
             v0.add_edge(e01)
         try:
             v1.add_edge(e01)
-        except VertexAlreadyHasEdgeException:
+        except ValueError:
             self.fail("Adding the edge (v0, v1) to v0 should not stop the edge "
                       "(v0, v1) from being added to v1.")
 
@@ -212,7 +210,7 @@ class TestUndirectedVertex(unittest.TestCase):
         v2 = UndirectedVertex(val='v2')
         e12 = UndirectedEdge((v1, v2))
 
-        with self.assertRaises(VertexNotPartOfEdgeException):
+        with self.assertRaises(ValueError):
             v0.add_edge(e12)
 
 
@@ -370,11 +368,16 @@ class TestDirectedVertex(unittest.TestCase):
         e10 = DirectedEdge((v1, v0))
         v0.add_edge(e01)
 
-        with self.assertRaises(VertexAlreadyHasEdgeException):
+        with self.assertRaises(ValueError):
             v0.add_edge(e01)
         try:
+            v1.add_edge(e01)
+        except ValueError:
+            self.fail("Adding the edge (v0, v1) to v0 should not stop the edge "
+                      "(v0, v1) from being added to v1.")
+        try:
             v0.add_edge(e10)
-        except VertexAlreadyHasEdgeException:
+        except ValueError:
             self.fail("There should be no exception because (v1 -> v0) is a "
                       "different edge than (v0 -> v1) for a directed vertex.")
 
@@ -386,7 +389,7 @@ class TestDirectedVertex(unittest.TestCase):
         v2 = DirectedVertex(val='v2')
         e12 = DirectedEdge((v1, v2))
 
-        with self.assertRaises(VertexNotPartOfEdgeException):
+        with self.assertRaises(ValueError):
             v0.add_edge(e12)
 
 

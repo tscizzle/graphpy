@@ -59,9 +59,9 @@ class UndirectedVertex(object):
     def add_edge(self, e):
         """ Adds an edge to this vertex """
         if self not in e.vertices:
-            raise VertexNotPartOfEdgeException(self, e)
+            raise ValueError(str(self) + " is not part of " + str(e) + ".")
         if e in self:
-            raise VertexAlreadyHasEdgeException(self, e)
+            raise ValueError(str(self) + " already has " + str(e) + ".")
 
         self._edges.add(e)
 
@@ -156,9 +156,9 @@ class DirectedVertex(object):
     def add_edge(self, e):
         """ Adds an edge to this vertex """
         if self != e.v_from and self != e.v_to:
-            raise VertexNotPartOfEdgeException(self, e)
+            raise ValueError(str(self) + " is not part of " + str(e) + ".")
         if e in self:
-            raise VertexAlreadyHasEdgeException(self, e)
+            raise ValueError(str(self) + " already has " + str(e) + ".")
 
         self._edges.add(e)
 
@@ -181,21 +181,3 @@ class DirectedVertex(object):
     def del_attr(self, attr):
         """ Delete an attribute """
         del self._attrs[attr]
-
-
-################################################################################
-#                                                                              #
-#                                  Exceptions                                  #
-#                                                                              #
-################################################################################
-
-
-class VertexNotPartOfEdgeException(Exception):
-    def __init__(self, v, e):
-        m = str(v) + " is not part of " + str(e) + "."
-        super(VertexNotPartOfEdgeException, self).__init__(m)
-
-class VertexAlreadyHasEdgeException(Exception):
-    def __init__(self, v, e):
-        m = str(v) + " already has " + str(e) + "."
-        super(VertexAlreadyHasEdgeException, self).__init__(m)

@@ -3,10 +3,7 @@ Tests for graph.py
 """
 
 
-from graphpy.graph import (UndirectedGraph, DirectedGraph,
-                           BadGraphInputException,
-                           VertexAlreadyExistsException,
-                           EdgeAlreadyExistsException)
+from graphpy.graph import UndirectedGraph, DirectedGraph
 
 import unittest
 
@@ -93,13 +90,13 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertIsNone(e13.get('weight'))
 
         duplicate_vertices = [('v0_dupe',), ('v0_dupe',)]
-        with self.assertRaises(VertexAlreadyExistsException):
+        with self.assertRaises(ValueError):
             _ = UndirectedGraph.from_lists(duplicate_vertices, [])
 
         vertices_dupe_edge = [('v0_dupe_edge',), ('v1_dupe_edge',)]
         duplicate_edges = [(('v0_dupe_edge', 'v1_dupe_edge'),),
                            (('v1_dupe_edge', 'v0_dupe_edge'),)]
-        with self.assertRaises(EdgeAlreadyExistsException):
+        with self.assertRaises(ValueError):
             _ = UndirectedGraph.from_lists(vertices_dupe_edge, duplicate_edges)
 
     def test_create_undirected_graph_from_dict(self):
@@ -139,7 +136,7 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertIsNone(e01.get('weight'))
         self.assertEqual(e02.get('weight'), 5)
         self.assertIsNone(e13.get('weight'))
-        with self.assertRaises(BadGraphInputException):
+        with self.assertRaises(ValueError):
             _ = UndirectedGraph.from_dict({'v0': [({'weight': 5},)],
                                            'v1': [({'weight': 3},)]})
 
@@ -247,7 +244,8 @@ class TestUndirectedGraph(unittest.TestCase):
                     ('v2',),
                     ('v3',),
                     ('v4',)]
-        edges = [(('v0', 'v1'), {'weight': 3}),
+        edges = [(('v0', 'v0'), {'weight': 1}),
+                 (('v0', 'v1'), {'weight': 3}),
                  (('v0', 'v2'), {'weight': 4}),
                  (('v1', 'v3'),)]
         g = UndirectedGraph.from_lists(vertices, edges)
@@ -363,6 +361,13 @@ class TestUndirectedGraph(unittest.TestCase):
     def test_undirected_graph_search(self):
         """ Search for paths from an undirected vertex to all vertices reachable
             from it """
+
+        """ __
+           | /
+           v0 - v1 - v3
+             \
+              v2
+        """
         g = UndirectedGraph()
         g.add_vertex(v_val='v0')
         g.add_vertex(v_val='v1')
@@ -377,8 +382,7 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertEqual(g.search('v0', goal_val='v0'), ['v0'])
         self.assertEqual(g.search('v0', goal_val='v1'), ['v0', 'v1'])
         self.assertEqual(g.search('v0', goal_val='v2'), ['v0', 'v2'])
-        self.assertEqual(g.search('v0', goal_val='v3'),
-                         ['v0', 'v1', 'v3'])
+        self.assertEqual(g.search('v0', goal_val='v3'), ['v0', 'v1', 'v3'])
         self.assertIsNone(g.search('v0', goal_val='v4'))
         self.assertEqual(g.search('v0'), {'v0': ['v0'],
                                           'v1': ['v0', 'v1'],
@@ -399,13 +403,70 @@ class TestUndirectedGraph(unittest.TestCase):
                           'v2': ['v0', 'v2'],
                           'v3': ['v0', 'v1', 'v3']})
 
+    def test_undirected_graph_dijkstra(self):
+        """ Perform Dijkstra's algorithm on an undirected graph """
+
+        """ 1_   E              1_   E
+           | /                 | /
+           A- 1 -B- 5 -D       A- 3 -B- 5 -D
+             \   |               \   |
+              2  0                2  -2
+               \ |                 \ |
+                 C                   C
+        """
+        g = UndirectedGraph()
+        g.add_vertex(v_val='A')
+        g.add_vertex(v_val='B')
+        g.add_vertex(v_val='C')
+        g.add_vertex(v_val='D')
+        g.add_vertex(v_val='E')
+        g.add_edge(('A', 'A'), attrs={'weight': 1})
+        g.add_edge(('A', 'B'), attrs={'weight': 1})
+        g.add_edge(('A', 'C'), attrs={'weight': 2})
+        g.add_edge(('B', 'C'), attrs={'weight': 0})
+        g.add_edge(('B', 'D'), attrs={'weight': 5})
+        negative_weight_g = g.clone()
+        negative_weight_g.get_edge(('A', 'B')).set('weight', 3)
+        negative_weight_g.get_edge(('B', 'C')).set('weight', -2)
+
+        self.assertEqual(g.dijkstra('A', goal_val='A'), ['A'])
+        self.assertEqual(g.dijkstra('A', goal_val='B'), ['A', 'B'])
+        self.assertEqual(g.dijkstra('A', goal_val='C'), ['A', 'B', 'C'])
+        self.assertEqual(g.dijkstra('A', goal_val='D'), ['A', 'B', 'D'])
+        self.assertIsNone(g.dijkstra('A', goal_val='E'))
+        # when returning all paths (no goal specified), paths aren't evaluated
+        # until requested, to avoid the O(|V|^2) cost of backtracking |V| paths
+        A_paths = g.dijkstra('A')
+        # request each key
+        _ = [A_paths[v.val] for v in g]
+        self.assertEqual(dict(A_paths), {'A': ['A'],
+                                         'B': ['A', 'B'],
+                                         'C': ['A', 'B', 'C'],
+                                         'D': ['A', 'B', 'D'],
+                                         'E': None})
+        self.assertEqual(g.dijkstra('A', goal_val='A', return_distances=True),
+                         0)
+        self.assertEqual(g.dijkstra('A', goal_val='B', return_distances=True),
+                         1)
+        self.assertEqual(g.dijkstra('A', goal_val='C', return_distances=True),
+                         1)
+        self.assertEqual(g.dijkstra('A', goal_val='D', return_distances=True),
+                         6)
+        self.assertEqual(g.dijkstra('A', goal_val='E', return_distances=True),
+                         float('inf'))
+        self.assertEqual(g.dijkstra('A', return_distances=True),
+                         {'A': 0, 'B': 1, 'C': 1, 'D': 6, 'E': float('inf')})
+
+        with self.assertRaises(ValueError):
+            negative_weight_g.dijkstra('A')
+
     def test_bad_undirected_graph_input(self):
         """ An undirected graph from_dict input must be of a certain form """
         graph_dict = {'v0': ['v1', {'weight': 3}],
                       'v1': [],
                       'v2': []}
 
-        with self.assertRaises(BadGraphInputException):
+        with self.assertRaises(ValueError):
             _ = UndirectedGraph.from_dict(graph_dict)
 
     def test_undirected_graph_vertex_already_exists(self):
@@ -414,7 +475,7 @@ class TestUndirectedGraph(unittest.TestCase):
         g = UndirectedGraph()
         g.add_vertex(v_val='v0')
 
-        with self.assertRaises(VertexAlreadyExistsException):
+        with self.assertRaises(ValueError):
             g.add_vertex(v_val='v0')
 
     def test_undirected_graph_edge_already_exists_exception(self):
@@ -425,7 +486,7 @@ class TestUndirectedGraph(unittest.TestCase):
         g.add_vertex(v_val='v1')
         g.add_edge(('v0', 'v1'))
 
-        with self.assertRaises(EdgeAlreadyExistsException):
+        with self.assertRaises(ValueError):
             g.add_edge(('v1', 'v0'))
 
 
@@ -519,13 +580,13 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertEqual(e10.get('weight'), 5)
 
         duplicate_vertices = [('v0_dupe',), ('v0_dupe',)]
-        with self.assertRaises(VertexAlreadyExistsException):
+        with self.assertRaises(ValueError):
             _ = DirectedGraph.from_lists(duplicate_vertices, [])
 
         vertices_dupe_edge = [('v0_dupe_edge',), ('v1_dupe_edge',)]
         duplicate_edges = [(('v0_dupe_edge', 'v1_dupe_edge'),),
                            (('v0_dupe_edge', 'v1_dupe_edge'),)]
-        with self.assertRaises(EdgeAlreadyExistsException):
+        with self.assertRaises(ValueError):
             _ = DirectedGraph.from_lists(vertices_dupe_edge, duplicate_edges)
 
     def test_create_directed_graph_from_dict(self):
@@ -567,7 +628,7 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertIsNone(v2.get('city'))
         self.assertIsNone(e01.get('weight'))
         self.assertEqual(e02.get('weight'), 5)
-        with self.assertRaises(BadGraphInputException):
+        with self.assertRaises(ValueError):
             _ = DirectedGraph.from_dict({'v0': [({'weight': 5},)],
                                          'v1': [({'weight': 3},)]})
 
@@ -712,7 +773,8 @@ class TestDirectedGraph(unittest.TestCase):
                     ('v2',),
                     ('v3',),
                     ('v4',)]
-        edges = [(('v0', 'v1'), {'weight': 3}),
+        edges = [(('v0', 'v0'), {'weight': 1}),
+                 (('v0', 'v1'), {'weight': 3}),
                  (('v0', 'v2'), {'weight': 4}),
                  (('v1', 'v3'),)]
         g = DirectedGraph.from_lists(vertices, edges)
@@ -828,6 +890,15 @@ class TestDirectedGraph(unittest.TestCase):
     def test_directed_graph_search(self):
         """ Search for paths from a directed vertex to all vertices reachable
             from it """
+
+        """
+         __
+        |  /
+        | <
+        v0 -> v1 -> v3
+          \
+           > v2
+        """
         g = DirectedGraph()
         g.add_vertex(v_val='v0')
         g.add_vertex(v_val='v1')
@@ -860,13 +931,76 @@ class TestDirectedGraph(unittest.TestCase):
                           'v1': ['v0', 'v1'],
                           'v3': ['v0', 'v1', 'v3']})
 
+    def test_directed_graph_dijkstra(self):
+        """ Perform Dijkstra's algorithm on a directed graph """
+
+        ## TODO: design directed graphs for regular (including non-reachable),
+        ##       and negative values, including a check that direction of edges
+        ##       matters
+
+        """ 1_    E              1_    E
+           |  /                 |  /
+           | <                  | <
+           A- 1 ->B- 5 ->D      A- 3 ->B- 5 ->D
+             \    |    /          \    |    /
+              2   0   1            2  -2   1
+               \  v  /              \  v  /
+                > C <                > C <
+        """
+        g = DirectedGraph()
+        g.add_vertex(v_val='A')
+        g.add_vertex(v_val='B')
+        g.add_vertex(v_val='C')
+        g.add_vertex(v_val='D')
+        g.add_vertex(v_val='E')
+        g.add_edge(('A', 'A'), attrs={'weight': 1})
+        g.add_edge(('A', 'B'), attrs={'weight': 1})
+        g.add_edge(('A', 'C'), attrs={'weight': 2})
+        g.add_edge(('B', 'C'), attrs={'weight': 0})
+        g.add_edge(('B', 'D'), attrs={'weight': 5})
+        g.add_edge(('D', 'C'), attrs={'weight': 1})
+        negative_weight_g = g.clone()
+        negative_weight_g.get_edge(('A', 'B')).set('weight', 3)
+        negative_weight_g.get_edge(('B', 'C')).set('weight', -2)
+
+        self.assertEqual(g.dijkstra('A', goal_val='A'), ['A'])
+        self.assertEqual(g.dijkstra('A', goal_val='B'), ['A', 'B'])
+        self.assertEqual(g.dijkstra('A', goal_val='C'), ['A', 'B', 'C'])
+        self.assertEqual(g.dijkstra('A', goal_val='D'), ['A', 'B', 'D'])
+        self.assertIsNone(g.dijkstra('A', goal_val='E'))
+        # when returning all paths (no goal specified), paths aren't evaluated
+        # until requested, to avoid the O(|V|^2) cost of backtracking |V| paths
+        A_paths = g.dijkstra('A')
+        # request each key
+        _ = [A_paths[v.val] for v in g]
+        self.assertEqual(dict(A_paths), {'A': ['A'],
+                                         'B': ['A', 'B'],
+                                         'C': ['A', 'B', 'C'],
+                                         'D': ['A', 'B', 'D'],
+                                         'E': None})
+        self.assertEqual(g.dijkstra('A', goal_val='A', return_distances=True),
+                         0)
+        self.assertEqual(g.dijkstra('A', goal_val='B', return_distances=True),
+                         1)
+        self.assertEqual(g.dijkstra('A', goal_val='C', return_distances=True),
+                         1)
+        self.assertEqual(g.dijkstra('A', goal_val='D', return_distances=True),
+                         6)
+        self.assertEqual(g.dijkstra('A', goal_val='E', return_distances=True),
+                         float('inf'))
+        self.assertEqual(g.dijkstra('A', return_distances=True),
+                         {'A': 0, 'B': 1, 'C': 1, 'D': 6, 'E': float('inf')})
+
+        with self.assertRaises(ValueError):
+            negative_weight_g.dijkstra('A')
+
     def test_bad_directed_graph_input(self):
         """ A directed graph from_dict input must be of a certain form """
         graph_dict = {'v0': ['v1', {'weight': 3}],
                       'v1': [],
                       'v2': []}
 
-        with self.assertRaises(BadGraphInputException):
+        with self.assertRaises(ValueError):
             _ = UndirectedGraph.from_dict(graph_dict)
 
     def test_directed_graph_vertex_already_exists(self):
@@ -875,7 +1009,7 @@ class TestDirectedGraph(unittest.TestCase):
         g = DirectedGraph()
         g.add_vertex(v_val='v0')
 
-        with self.assertRaises(VertexAlreadyExistsException):
+        with self.assertRaises(ValueError):
             g.add_vertex('v0')
 
     def test_directed_graph_edge_already_exists_exception(self):
@@ -886,7 +1020,7 @@ class TestDirectedGraph(unittest.TestCase):
         g.add_vertex(v_val='v1')
         g.add_edge(('v0', 'v1'))
 
-        with self.assertRaises(EdgeAlreadyExistsException):
+        with self.assertRaises(ValueError):
             g.add_edge(('v0', 'v1'))
 
 

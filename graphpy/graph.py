@@ -5,7 +5,7 @@ Implementation of a graph
 
 from edge import UndirectedEdge, DirectedEdge
 from vertex import UndirectedVertex, DirectedVertex
-from helpers import is_hashable
+from helpers import *
 
 import copy
 import random
@@ -48,14 +48,14 @@ class UndirectedGraph(object):
                 g.add_vertex(*v)
             else:
                 m = (str(v) + " must be a tuple and have length 1 or 2")
-                raise BadGraphInputException(m)
+                raise ValueError(m)
 
         for e in edges:
             if isinstance(e, tuple) and (len(e) == 1 or len(e) == 2):
                 g.add_edge(*e)
             else:
                 m = (str(e) + " must be a tuple and have length 1 or 2")
-                raise BadGraphInputException(m)
+                raise ValueError(m)
 
         return g
 
@@ -80,19 +80,17 @@ class UndirectedGraph(object):
                 else:
                     m = (str(neighbor_edge) + " must be a tuple and have "
                          "length 1 or 2")
-                    raise BadGraphInputException(m)
+                    raise ValueError(m)
 
                 if not is_hashable(neighbor_val):
-                    m = (str(neighbor_val) + " is not hashable")
-                    raise BadGraphInputException(m)
+                    raise ValueError(str(neighbor_val) + " is not hashable")
 
                 if not g.has_vertex(neighbor_val):
                     g.add_vertex(neighbor_val)
 
-                try:
-                    g.add_edge((v_val, neighbor_val), attrs=edge_attrs)
-                except EdgeAlreadyExistsException:
-                    pass
+                v_vals = (v_val, neighbor_val)
+                if not g.has_edge(v_vals):
+                    g.add_edge(v_vals, attrs=edge_attrs)
 
         for v_val, v_attrs in vertex_attrs.items():
             if not g.has_vertex(v_val):
@@ -113,10 +111,9 @@ class UndirectedGraph(object):
             g.add_vertex(v.val)
 
         for e in directed_graph.edges:
-            try:
-                g.add_edge((e.v_from.val, e.v_to.val))
-            except EdgeAlreadyExistsException:
-                pass
+            v_vals = (e.v_from.val, e.v_to.val)
+            if not g.has_edge(v_vals):
+                g.add_edge(v_vals)
 
         return g
 
@@ -182,7 +179,8 @@ class UndirectedGraph(object):
             g.add_vertex(v.val, attrs=copy.deepcopy(v.attrs))
 
         for e in self._edges:
-            g.add_edge(tuple(v.val for v in e.vertices),
+            vertices = list(e.vertices)
+            g.add_edge((vertices[0].val, vertices[-1].val),
                        attrs=copy.deepcopy(e.attrs))
 
         return g
@@ -209,7 +207,7 @@ class UndirectedGraph(object):
             raise TypeError(str(v_val) + " must be hashable")
         v = UndirectedVertex(val=v_val, attrs=attrs)
         if self.has_vertex(v_val):
-            raise VertexAlreadyExistsException(v)
+            raise ValueError(str(v) + " already exists")
 
         self._vertices.add(v)
         self._vals_to_vertices_map[v_val] = v
@@ -223,7 +221,7 @@ class UndirectedGraph(object):
         v1 = self.get_vertex(v1_val)
         e = UndirectedEdge((v0, v1), attrs=attrs)
         if self.has_edge((v0_val, v1_val)):
-            raise EdgeAlreadyExistsException(e)
+            raise ValueError(str(e) + " already exists")
 
         v0.add_edge(e)
         if not e.is_self_edge:
@@ -236,7 +234,8 @@ class UndirectedGraph(object):
         """ Removes a vertex from this graph """
         v = self.get_vertex(v_val)
         for e in set(v.edges):
-            self.remove_edge(tuple(v.val for v in e.vertices))
+            vertices = list(e.vertices)
+            self.remove_edge((vertices[0].val, vertices[-1].val))
         self._vertices.discard(v)
         del self._vals_to_vertices_map[v_val]
 
@@ -257,7 +256,8 @@ class UndirectedGraph(object):
 
     def search(self, start_val, goal_val=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from
-            some vertex """
+            a source vertex """
+        ## TODO: change these asserts to raises of ValueError
         assert self.has_vertex(start_val)
         assert goal_val is None or self.has_vertex(goal_val)
         assert method in set(['breadth_first', 'depth_first'])
@@ -295,6 +295,76 @@ class UndirectedGraph(object):
             return None
 
         return paths
+
+    def dijkstra(self, start_val, goal_val=None, return_distances=False,
+                 priority_queue=PriorityQueue):
+        """ Find the shortest path to either some goal vertex or to all vertices
+            reachable from a source vertex """
+        for e in self._edges:
+            edge_weight = e.get('weight')
+            if edge_weight is None:
+                raise ValueError(str(e) + " must have a weight")
+            if edge_weight < 0:
+                raise ValueError(str(e) + " must have a non-negative weight")
+        start = self.get_vertex(start_val)
+        goal = self.get_vertex(goal_val)
+
+        distances = {v: float('inf') for v in self}
+        predecessors = {v: -1 for v in self}
+        cloud_so_far = set([start])
+
+        distances[start] = 0
+        predecessors[start] = None
+
+        # relax edges until there are no vertices left not in the cloud
+        vertex_queue = priority_queue(data=[(distances[v], v) for v in self])
+        while vertex_queue:
+            # move the closest vertex that's not in the cloud into the cloud
+            _, current_vertex = vertex_queue.pop_min()
+            cloud_so_far.add(current_vertex)
+
+            # if searching for a specific vertex, check if this is it
+            if current_vertex == goal:
+                break
+
+            # conditionally relax each of that vertex's edges
+            current_distance = distances[current_vertex]
+            eligible_neighbors = [n for n in current_vertex.neighbors
+                                  if n not in cloud_so_far]
+            for neighbor in eligible_neighbors:
+                current_neighbor_distance = distances[neighbor]
+                e = self.get_edge((current_vertex.val, neighbor.val))
+                new_neighbor_distance = current_distance + e.get('weight')
+                if new_neighbor_distance < current_neighbor_distance:
+                    distances[neighbor] = new_neighbor_distance
+                    predecessors[neighbor] = current_vertex
+                    vertex_queue.decrease_key(neighbor, new_neighbor_distance)
+
+        # with the algorithm complete, prepare the output
+
+        namify_keys = lambda dic: {v.val: d for v, d in dic.items()}
+        namify_values = lambda dic: {k: v.val if hasattr(v, 'val') else v
+                                     for k, v in dic.items()}
+        namified_distances = namify_keys(distances)
+        namified_predecessors = namify_values(namify_keys(predecessors))
+
+        def backtrack(target_val):
+            """ Use our predecessor map to get the shortest path from our start
+                to some target """
+            if namified_predecessors[target_val] == -1:
+                return None
+            path = [target_val]
+            while namified_predecessors[path[-1]] is not None:
+                path.append(namified_predecessors[path[-1]])
+            path.reverse()
+            return path
+
+        if goal_val is not None:
+            return (namified_distances[goal_val] if return_distances
+                                                 else backtrack(goal_val))
+        else:
+            return (namified_distances if return_distances
+                                       else keydefaultdict(backtrack))
 
 
 ################################################################################
@@ -334,14 +404,14 @@ class DirectedGraph(object):
                 g.add_vertex(*v)
             else:
                 m = (str(v) + " must be a tuple and have length 1 or 2")
-                raise BadGraphInputException(m)
+                raise ValueError(m)
 
         for e in edges:
             if isinstance(e, tuple) and (len(e) == 1 or len(e) == 2):
                 g.add_edge(*e)
             else:
                 m = (str(e) + " must be a tuple and have length 1 or 2")
-                raise BadGraphInputException(m)
+                raise ValueError(m)
 
         return g
 
@@ -365,19 +435,17 @@ class DirectedGraph(object):
                 else:
                     m = (str(out_edge) + " must be tuple and have length 1 or "
                          "2")
-                    raise BadGraphInputException(m)
+                    raise ValueError(m)
 
                 if not is_hashable(out_val):
-                    m = (str(out_val) + " is not hashable")
-                    raise BadGraphInputException(m)
+                    raise ValueError(str(out_val) + " is not hashable")
 
                 if not g.has_vertex(out_val):
                     g.add_vertex(out_val)
 
-                try:
-                    g.add_edge((v_val, out_val), attrs=edge_attrs)
-                except EdgeAlreadyExistsException:
-                    pass
+                v_vals = (v_val, out_val)
+                if not g.has_edge(v_vals):
+                    g.add_edge(v_vals, attrs=edge_attrs)
 
         for v_val, v_attrs in vertex_attrs.items():
             if not g.has_vertex(v_val):
@@ -501,7 +569,7 @@ class DirectedGraph(object):
             raise TypeError(str(v_val) + " must be hashable")
         v = DirectedVertex(val=v_val, attrs=attrs)
         if self.has_vertex(v_val):
-            raise VertexAlreadyExistsException(v)
+            raise ValueError(str(v) + " already exists")
 
         self._vertices.add(v)
         self._vals_to_vertices_map[v_val] = v
@@ -515,7 +583,7 @@ class DirectedGraph(object):
         v_to = self.get_vertex(v_to_val)
         e = DirectedEdge((v_from, v_to), attrs=attrs)
         if self.has_edge((v_from_val, v_to_val)):
-            raise EdgeAlreadyExistsException(e)
+            raise ValueError(str(e) + " already exists")
 
         v_from.add_edge(e)
         if v_from != v_to:
@@ -546,6 +614,7 @@ class DirectedGraph(object):
     def search(self, start_val, goal_val=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from
             some vertex """
+        ## TODO: change these asserts to raises of ValueError
         assert self.has_vertex(start_val)
         assert goal_val is None or self.has_vertex(goal_val)
         assert method in set(['breadth_first', 'depth_first'])
@@ -584,23 +653,14 @@ class DirectedGraph(object):
 
         return paths
 
-
-################################################################################
-#                                                                              #
-#                                  Exceptions                                  #
-#                                                                              #
-################################################################################
-
-
-class BadGraphInputException(Exception):
-    pass
-
-class VertexAlreadyExistsException(Exception):
-    def __init__(self, v):
-        m = str(v) + " already exists"
-        super(VertexAlreadyExistsException, self).__init__(m)
-
-class EdgeAlreadyExistsException(Exception):
-    def __init__(self, e):
-        m = str(e) + " already exists"
-        super(EdgeAlreadyExistsException, self).__init__(m)
+    def dijkstra(self, start_val, goal_val=None, return_distances=False,
+                 priority_queue=PriorityQueue):
+        """ Find the shortest path to either some goal vertex or to all vertices
+            reachable from a source vertex """
+        for e in self._edges:
+            edge_weight = e.get('weight')
+            if edge_weight is None:
+                raise ValueError(str(e) + " must have a weight")
+            if edge_weight < 0:
+                raise ValueError(str(e) + " must have a non-negative weight")
+        raise NotImplementedError
