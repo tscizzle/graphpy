@@ -934,10 +934,6 @@ class TestDirectedGraph(unittest.TestCase):
     def test_directed_graph_dijkstra(self):
         """ Perform Dijkstra's algorithm on a directed graph """
 
-        ## TODO: design directed graphs for regular (including non-reachable),
-        ##       and negative values, including a check that direction of edges
-        ##       matters
-
         """ 1_    E              1_    E
            |  /                 |  /
            | <                  | <

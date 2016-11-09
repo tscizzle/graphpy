@@ -663,4 +663,62 @@ class DirectedGraph(object):
                 raise ValueError(str(e) + " must have a weight")
             if edge_weight < 0:
                 raise ValueError(str(e) + " must have a non-negative weight")
-        raise NotImplementedError
+        start = self.get_vertex(start_val)
+        goal = self.get_vertex(goal_val)
+
+        distances = {v: float('inf') for v in self}
+        predecessors = {v: -1 for v in self}
+        cloud_so_far = set([start])
+
+        distances[start] = 0
+        predecessors[start] = None
+
+        # relax edges until there are no vertices left not in the cloud
+        vertex_queue = priority_queue(data=[(distances[v], v) for v in self])
+        while vertex_queue:
+            # move the closest vertex that's not in the cloud into the cloud
+            _, current_vertex = vertex_queue.pop_min()
+            cloud_so_far.add(current_vertex)
+
+            # if searching for a specific vertex, check if this is it
+            if current_vertex == goal:
+                break
+
+            # conditionally relax each of that vertex's edges
+            current_distance = distances[current_vertex]
+            eligible_outs = [n for n in current_vertex.outs
+                             if n not in cloud_so_far]
+            for out in eligible_outs:
+                current_out_distance = distances[out]
+                e = self.get_edge((current_vertex.val, out.val))
+                new_out_distance = current_distance + e.get('weight')
+                if new_out_distance < current_out_distance:
+                    distances[out] = new_out_distance
+                    predecessors[out] = current_vertex
+                    vertex_queue.decrease_key(out, new_out_distance)
+
+        # with the algorithm complete, prepare the output
+
+        namify_keys = lambda dic: {v.val: d for v, d in dic.items()}
+        namify_values = lambda dic: {k: v.val if hasattr(v, 'val') else v
+                                     for k, v in dic.items()}
+        namified_distances = namify_keys(distances)
+        namified_predecessors = namify_values(namify_keys(predecessors))
+
+        def backtrack(target_val):
+            """ Use our predecessor map to get the shortest path from our start
+                to some target """
+            if namified_predecessors[target_val] == -1:
+                return None
+            path = [target_val]
+            while namified_predecessors[path[-1]] is not None:
+                path.append(namified_predecessors[path[-1]])
+            path.reverse()
+            return path
+
+        if goal_val is not None:
+            return (namified_distances[goal_val] if return_distances
+                                                 else backtrack(goal_val))
+        else:
+            return (namified_distances if return_distances
+                                       else keydefaultdict(backtrack))
