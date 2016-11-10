@@ -428,6 +428,8 @@ class TestUndirectedGraph(unittest.TestCase):
         negative_weight_g = g.clone()
         negative_weight_g.get_edge(('A', 'B')).set('weight', 3)
         negative_weight_g.get_edge(('B', 'C')).set('weight', -2)
+        missing_weight_g = g.clone()
+        missing_weight_g.get_edge(('A', 'B')).set('weight', None)
 
         self.assertEqual(g.dijkstra('A', goal_val='A'), ['A'])
         self.assertEqual(g.dijkstra('A', goal_val='B'), ['A', 'B'])
@@ -459,6 +461,8 @@ class TestUndirectedGraph(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             negative_weight_g.dijkstra('A')
+        with self.assertRaises(ValueError):
+            missing_weight_g.dijkstra('A')
 
     def test_bad_undirected_graph_input(self):
         """ An undirected graph from_dict input must be of a certain form """
@@ -958,6 +962,8 @@ class TestDirectedGraph(unittest.TestCase):
         negative_weight_g = g.clone()
         negative_weight_g.get_edge(('A', 'B')).set('weight', 3)
         negative_weight_g.get_edge(('B', 'C')).set('weight', -2)
+        missing_weight_g = g.clone()
+        missing_weight_g.get_edge(('A', 'B')).set('weight', None)
 
         self.assertEqual(g.dijkstra('A', goal_val='A'), ['A'])
         self.assertEqual(g.dijkstra('A', goal_val='B'), ['A', 'B'])
@@ -989,6 +995,8 @@ class TestDirectedGraph(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             negative_weight_g.dijkstra('A')
+        with self.assertRaises(ValueError):
+            missing_weight_g.dijkstra('A')
 
     def test_bad_directed_graph_input(self):
         """ A directed graph from_dict input must be of a certain form """

@@ -257,10 +257,6 @@ class UndirectedGraph(object):
     def search(self, start_val, goal_val=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from
             a source vertex """
-        ## TODO: change these asserts to raises of ValueError
-        assert self.has_vertex(start_val)
-        assert goal_val is None or self.has_vertex(goal_val)
-        assert method in set(['breadth_first', 'depth_first'])
         start = self.get_vertex(start_val)
         goal = self.get_vertex(goal_val)
         pop_idx = 0 if method == 'breadth_first' else -1
@@ -614,10 +610,6 @@ class DirectedGraph(object):
     def search(self, start_val, goal_val=None, method='breadth_first'):
         """ Search for either some goal vertex or all vertices reachable from
             some vertex """
-        ## TODO: change these asserts to raises of ValueError
-        assert self.has_vertex(start_val)
-        assert goal_val is None or self.has_vertex(goal_val)
-        assert method in set(['breadth_first', 'depth_first'])
         start = self.get_vertex(start_val)
         goal = self.get_vertex(goal_val)
         pop_idx = 0 if method == 'breadth_first' else -1
