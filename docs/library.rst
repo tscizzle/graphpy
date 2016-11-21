@@ -41,6 +41,8 @@ graphpy.edge
         - **Parameters**
             - **attr** <hashable>
                 - potential key in this edge's *attrs* dict
+        - **Returns**
+            - bool for whether or not this edge has *attr*
     - *method* **del_attr** (*attr*)
         - **Parameters**
             - **attr** <hashable>
@@ -83,6 +85,8 @@ graphpy.edge
         - **Parameters**
             - **attr** <hashable>
                 - potential key in this edge's *attrs* dict
+        - **Returns**
+            - bool for whether or not this edge has *attr*
     - *method* **del_attr** (*attr*)
         - **Parameters**
             - **attr** <hashable>
@@ -130,6 +134,8 @@ graphpy.vertex
         - **Parameters**
             - **attr** <hashable>
                 - potential key in this vertex's *attrs* dict
+        - **Returns**
+            - bool for whether or not this vertex has *attr*
     - *method* **del_attr** (*attr*)
         - **Parameters**
             - **attr** <hashable>
@@ -178,6 +184,8 @@ graphpy.vertex
         - **Parameters**
             - **attr** <hashable>
                 - potential key in this vertex's *attrs* dict
+        - **Returns**
+            - bool for whether or not this vertex has *attr*
     - *method* **del_attr** (*attr*)
         - **Parameters**
             - **attr** <hashable>
